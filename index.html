@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UK → MM Cargo Tracker & Approval</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+  </style>
+</head>
+<body class="text-slate-800 pb-20">
+
+  <!-- Top Bar -->
+  <header class="bg-slate-900 text-white sticky top-0 z-30 shadow">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="text-lg font-bold tracking-tight">📦 UK → MM Cargo Approval Board</h1>
+        <p class="text-xs text-slate-300" id="syncStatus">Loading data...</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <select id="roleSelect" onchange="changeRole()" class="bg-slate-800 text-white text-sm border border-slate-600 rounded-lg px-3 py-1.5 font-medium">
+          <option value="ALL">👑 View All (Admin / Full)</option>
+          <option value="AUNGKO">⚖️ အောင်ကို (KG စစ်ရန်)</option>
+          <option value="PAGE">💳 Page အစ်မ (Paid / Unpaid)</option>
+          <option value="UK">🇬🇧 မက်ဆန်တာ (UK Approve)</option>
+        </select>
+        <button onclick="loadData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg">🔄 Refresh</button>
+        <button onclick="openSetupModal()" id="setupBtn" class="bg-amber-600 hover:bg-amber-500 text-xs px-3 py-2 rounded-lg font-semibold">⚙️ Setup / Share Link</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 mt-5 space-y-5">
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500">စုစုပေါင်း Customer</div>
+        <div class="text-2xl font-bold mt-1" id="statTotal">0</div>
+      </div>
+      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500">⚖️ KG ကိုက်ပြီး</div>
+        <div class="text-2xl font-bold text-blue-600 mt-1" id="statKg">0</div>
+      </div>
+      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500">💳 Paid (ငွေဝင်ပြီး)</div>
+        <div class="text-2xl font-bold text-emerald-600 mt-1" id="statPaid">0</div>
+      </div>
+      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500">🇬🇧 UK Approved</div>
+        <div class="text-2xl font-bold text-purple-600 mt-1" id="statApproved">0</div>
+      </div>
+      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200 col-span-2 md:col-span-1">
+        <div class="text-xs text-slate-500">🚚 ထုတ်ပေးပြီး (Released)</div>
+        <div class="text-2xl font-bold text-slate-700 mt-1" id="statReleased">0</div>
+      </div>
+    </div>
+
+    <!-- Batch Multi-Select & Actions -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="text-sm font-semibold text-slate-700">🚢 Shipment Batches (၂ ခု ၃ ခု တွဲရွေးကြည့်နိုင်သည်):</div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="openAddBatchModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">+ Batch အသစ်ဖွင့်မည်</button>
+          <button onclick="openAddCustomerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">+ Customer ထည့်မည်</button>
+          <button onclick="openBulkModal()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">📋 အများကြီး Copy-Paste တင်မည်</button>
+        </div>
+      </div>
+
+      <!-- Batch Checkboxes -->
+      <div id="batchPills" class="flex flex-wrap gap-2 pt-1"></div>
+
+      <!-- Filters & Search -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5 pt-2 border-t border-slate-100">
+        <input type="text" id="searchInput" oninput="renderTable()" placeholder="🔍 Customer နာမည် / Notes ရှာရန်..." class="border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        <select id="statusFilter" onchange="renderTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+          <option value="ALL">အားလုံးပြမည် (All Status)</option>
+          <option value="READY_UK">🇬🇧 UK Approve လုပ်ရန်အသင့် (KG ကိုက် + Paid)</option>
+          <option value="APPROVED">✅ UK Approved ဖြစ်ပြီး (ထုတ်ပေးရန်)</option>
+          <option value="UNPAID">❌ ငွေမချေရသေးသူများ (Unpaid)</option>
+          <option value="KG_ISSUE">⚠️ KG မကိုက် / မစစ်ရသေးသူများ</option>
+        </select>
+        <label class="flex items-center gap-2 text-sm text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer">
+          <input type="checkbox" id="hideReleased" onchange="renderTable()" class="rounded text-indigo-600" />
+          <span>ထုတ်ပေးပြီးသား (Released) ဖျောက်ထားမည်</span>
+        </label>
+        <div class="flex gap-2">
+          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300">⬇️ CSV သိမ်းမည်</button>
+          <button onclick="deleteSelectedBatch()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-2 rounded-lg border border-rose-200">🗑️ Batch ဖျက်မည်</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b border-slate-200">
+            <tr>
+              <th class="px-3 py-3">Batch</th>
+              <th class="px-3 py-3">Customer နာမည်</th>
+              <th class="px-3 py-3 text-center">ပုံ/ထုပ်</th>
+              <th class="px-3 py-3">⚖️ KG (အောင်ကို)</th>
+              <th class="px-3 py-3">💳 ငွေရှင်းမှု (Page အစ်မ)</th>
+              <th class="px-3 py-3 text-center">🇬🇧 UK Approve (မက်ဆန်တာ)</th>
+              <th class="px-3 py-3">Notes</th>
+              <th class="px-3 py-3 text-center">ထုတ်ပေးမှု</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Customer Modal -->
+  <div id="addCustomerModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-md w-full p-5 space-y-3">
+      <h3 class="font-bold text-lg">Customer အသစ်ထည့်ရန်</h3>
+      <div>
+        <label class="text-xs font-semibold text-slate-600">Shipment Batch</label>
+        <select id="newCustBatch" class="w-full border rounded-lg px-3 py-2 text-sm mt-1"></select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-600">Customer နာမည်</label>
+        <input type="text" id="newCustName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" placeholder="ဥပမာ - Ma Su" />
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">ပုံ/အထုပ် အရေအတွက်</label>
+          <input type="number" id="newCustPhotos" value="1" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">UK Expected KG</label>
+          <input type="number" step="0.01" id="newCustKg" value="0" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" />
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-600">Notes (ရှိလျှင်)</label>
+        <input type="text" id="newCustNotes" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" placeholder="ဥပမာ - UK မှာ ငွေပေးပြီး" />
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
+        <button onclick="addCustomer()" class="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg font-semibold">သိမ်းမည်</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Paste Modal -->
+  <div id="bulkModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-5 space-y-3">
+      <h3 class="font-bold text-lg">Customer အများကြီး တစ်ခါတည်း တင်ရန်</h3>
+      <p class="text-xs text-slate-500">တစ်ကြောင်းလျှင် တစ်ယောက်နှုန်းဖြင့် <b>နာမည်, ပုံအရေအတွက်, KG, Notes</b> (comma ခြားပြီး) ရိုက်ထည့်ပါ — Excel/Sheets မှ Copy ကူးထည့်လည်း ရပါသည်။</p>
+      <div>
+        <label class="text-xs font-semibold text-slate-600">ထည့်မည့် Shipment Batch</label>
+        <select id="bulkBatch" class="w-full border rounded-lg px-3 py-2 text-sm mt-1"></select>
+      </div>
+      <textarea id="bulkText" rows="6" class="w-full border rounded-lg p-3 text-sm font-mono" placeholder="Ma Su, 3, 5.5, UK Paid&#10;Ko Aung, 2, 4.0, COD&#10;Daw Hla, 5, 12.2, "></textarea>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('bulkModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
+        <button onclick="importBulk()" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg font-semibold">အားလုံးထည့်မည်</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup & Magic Share Link Modal -->
+  <div id="setupModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-5 space-y-3">
+      <h3 class="font-bold text-lg">⚙️ GitHub Sync Setup (တစ်ကြိမ်သာ ထည့်ရန်)</h3>
+      <p class="text-xs text-slate-600">အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Staff / UK Share Link</b> ကို Copy ယူပြီး အောင်ကို၊ Page အစ်မ နဲ့ မက်ဆန်တာ ဆီ ပို့ပေးလိုက်ရုံပါပဲ (သူတို့ ဘာ token မှ ထည့်စရာ မလိုတော့ပါ)။</p>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold">GitHub Username</label>
+          <input type="text" id="cfgOwner" value="kyawyeaung989" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold">Repository Name</label>
+          <input type="text" id="cfgRepo" value="cargo-tracker" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" />
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold">GitHub Fine-grained Token</label>
+        <input type="password" id="cfgToken" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" placeholder="github_pat_..." />
+      </div>
+      <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+        <div class="text-xs font-semibold text-slate-700">🔗 ဝန်ထမ်းနှင့် မက်ဆန်တာ ထံ ပို့ရမည့် Ready-to-Use Link များ:</div>
+        <div class="flex gap-2">
+          <button onclick="copyMagicLink('AUNGKO')" class="flex-1 bg-blue-600 text-white text-xs py-2 rounded-lg font-medium">📋 အောင်ကို Link</button>
+          <button onclick="copyMagicLink('PAGE')" class="flex-1 bg-emerald-600 text-white text-xs py-2 rounded-lg font-medium">📋 Page အစ်မ Link</button>
+          <button onclick="copyMagicLink('UK')" class="flex-1 bg-purple-600 text-white text-xs py-2 rounded-lg font-medium">📋 UK မက်ဆန်တာ Link</button>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('setupModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
+        <button onclick="saveConfig()" class="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg font-semibold">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let appData = { batches: [], items: [] };
+    let selectedBatches = new Set();
+    let fileSha = null;
+
+    // Auto-read Magic Link parameters if opened by Staff/UK
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('t')) localStorage.setItem('gh_token', atob(params.get('t')));
+    if (params.get('o')) localStorage.setItem('gh_owner', params.get('o'));
+    if (params.get('r')) localStorage.setItem('gh_repo', params.get('r'));
+    if (params.get('role')) {
+      document.getElementById('roleSelect').value = params.get('role');
+      document.getElementById('setupBtn').style.display = 'none';
+    }
+
+    function getCfg() {
+      return {
+        owner: localStorage.getItem('gh_owner') || 'kyawyeaung989',
+        repo: localStorage.getItem('gh_repo') || 'cargo-tracker',
+        token: localStorage.getItem('gh_token') || ''
+      };
+    }
+
+    function openSetupModal() {
+      const c = getCfg();
+      document.getElementById('cfgOwner').value = c.owner;
+      document.getElementById('cfgRepo').value = c.repo;
+      document.getElementById('cfgToken').value = c.token;
+      document.getElementById('setupModal').classList.replace('hidden', 'flex');
+    }
+
+    function saveConfig() {
+      localStorage.setItem('gh_owner', document.getElementById('cfgOwner').value.trim());
+      localStorage.setItem('gh_repo', document.getElementById('cfgRepo').value.trim());
+      localStorage.setItem('gh_token', document.getElementById('cfgToken').value.trim());
+      closeModal('setupModal');
+      loadData();
+    }
+
+    function copyMagicLink(role) {
+      const c = getCfg();
+      if (!c.token) return alert('အရင်ဆုံး GitHub Token ထည့်ပြီး Save Settings နှိပ်ပါ။');
+      const base = window.location.origin + window.location.pathname;
+      const link = `${base}?o=${encodeURIComponent(c.owner)}&r=${encodeURIComponent(c.repo)}&t=${btoa(c.token)}&role=${role}`;
+      navigator.clipboard.writeText(link);
+      alert(`${role} အတွက် Link ကို Copy ကူးပြီးပါပြီ — Viber မှာ တိုက်ရိုက် ပို့ပေးလိုက်ရုံပါပဲ!`);
+    }
+
+    async function loadData() {
+      const c = getCfg();
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = '⏳ Syncing from GitHub...';
+      try {
+        const headers = c.token ? { Authorization: `token ${c.token}` } : {};
+        const res = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json?t=${Date.now()}`, { headers });
+        if (!res.ok) throw new Error('Repo သို့မဟုတ် data.json မတွေ့ပါ');
+        const json = await res.json();
+        fileSha = json.sha;
+        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        appData = JSON.parse(decoded);
+        if (selectedBatches.size === 0) appData.batches.forEach(b => selectedBatches.add(b));
+        renderBatchPills();
+        renderTable();
+        statusEl.textContent = `✅ Live Synced (${new Date().toLocaleTimeString()})`;
+      } catch (e) {
+        statusEl.textContent = `⚠️ ${e.message} — Setup ခလုတ်ကို စစ်ဆေးပါ`;
+      }
+    }
+
+    async function saveData() {
+      const c = getCfg();
+      if (!c.token) return alert('Data ပြင်ဆင်သိမ်းဆည်းရန် Setup Link သို့မဟုတ် Token လိုအပ်ပါသည်။');
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = '💾 Saving...';
+      try {
+        // Fetch latest SHA first to avoid conflict
+        const getRes = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json?t=${Date.now()}`, {
+          headers: { Authorization: `token ${c.token}` }
+        });
+        const latest = await getRes.json();
+        const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+        const putRes = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `token ${c.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Update cargo data (${new Date().toISOString()})`,
+            content: contentB64,
+            sha: latest.sha
+          })
+        });
+        if (!putRes.ok) throw new Error('Save မအောင်မြင်ပါ (Token permission စစ်ပါ)');
+        const resJson = await putRes.json();
+        fileSha = resJson.content.sha;
+        renderBatchPills();
+        renderTable();
+        statusEl.textContent = `✅ Saved (${new Date().toLocaleTimeString()})`;
+      } catch (e) {
+        alert(e.message);
+        statusEl.textContent = '❌ Save Failed';
+      }
+    }
+
+    function renderBatchPills() {
+      const container = document.getElementById('batchPills');
+      container.innerHTML = '';
+      appData.batches.forEach(b => {
+        const checked = selectedBatches.has(b);
+        const count = appData.items.filter(i => i.batch === b).length;
+        const label = document.createElement('label');
+        label.className = `flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer border transition ${checked ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-100 text-slate-700 border-slate-300'}`;
+        label.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} class="hidden" onchange="toggleBatch('${b}')" /> <span>${checked ? '✓' : '+'} ${b} (${count})</span>`;
+        container.appendChild(label);
+      });
+    }
+
+    function toggleBatch(b) {
+      if (selectedBatches.has(b)) selectedBatches.delete(b);
+      else selectedBatches.add(b);
+      renderBatchPills();
+      renderTable();
+    }
+
+    function changeRole() { renderTable(); }
+
+    function renderTable() {
+      const role = document.getElementById('roleSelect').value;
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const filter = document.getElementById('statusFilter').value;
+      const hideRel = document.getElementById('hideReleased').checked;
+
+      const activeItems = appData.items.filter(i => selectedBatches.has(i.batch));
+
+      // Count duplicate customer names across selected batches
+      const nameCounts = {};
+      activeItems.forEach(i => {
+        const k = i.customer.trim().toLowerCase();
+        nameCounts[k] = (nameCounts[k] || 0) + 1;
+      });
+
+      // Stats
+      document.getElementById('statTotal').textContent = activeItems.length;
+      document.getElementById('statKg').textContent = activeItems.filter(i => i.kgMatch === 'Match').length;
+      document.getElementById('statPaid').textContent = activeItems.filter(i => i.payment === 'Paid').length;
+      document.getElementById('statApproved').textContent = activeItems.filter(i => i.ukApproved).length;
+      document.getElementById('statReleased').textContent = activeItems.filter(i => i.released).length;
+
+      const filtered = activeItems.filter(i => {
+        if (hideRel && i.released) return false;
+        if (search && !i.customer.toLowerCase().includes(search) && !(i.notes || '').toLowerCase().includes(search)) return false;
+        if (filter === 'READY_UK') return i.kgMatch === 'Match' && i.payment === 'Paid' && !i.ukApproved;
+        if (filter === 'APPROVED') return i.ukApproved && !i.released;
+        if (filter === 'UNPAID') return i.payment !== 'Paid';
+        if (filter === 'KG_ISSUE') return i.kgMatch !== 'Match';
+        return true;
+      });
+
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      filtered.forEach(item => {
+        const isMulti = nameCounts[item.customer.trim().toLowerCase()] > 1;
+        const canEditKg = role === 'ALL' || role === 'AUNGKO';
+        const canEditPay = role === 'ALL' || role === 'PAGE';
+        const canApprove = role === 'ALL' || role === 'UK';
+
+        const tr = document.createElement('tr');
+        tr.className = item.released ? 'bg-slate-50 opacity-60' : (item.ukApproved ? 'bg-purple-50/40' : 'hover:bg-slate-50');
+        tr.innerHTML = `
+          <td class="px-3 py-2.5 text-xs font-mono text-slate-500 whitespace-nowrap">${item.batch}</td>
+          <td class="px-3 py-2.5 font-semibold">
+            ${item.customer}
+            ${isMulti ? '<span class="ml-1 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">တွဲပါရှိ</span>' : ''}
+          </td>
+          <td class="px-3 py-2.5 text-center font-medium">${item.photos}</td>
+          <td class="px-3 py-2.5 whitespace-nowrap">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-slate-400">UK:${item.expectedKg}</span>
+              <input type="number" step="0.01" value="${item.actualKg}" ${!canEditKg ? 'disabled' : ''}
+                onchange="updateItem('${item.id}', 'actualKg', parseFloat(this.value)||0)"
+                class="w-16 border rounded px-1.5 py-1 text-xs font-semibold ${!canEditKg ? 'bg-slate-100' : ''}" />
+              <select ${!canEditKg ? 'disabled' : ''} onchange="updateItem('${item.id}', 'kgMatch', this.value)"
+                class="text-xs rounded px-1.5 py-1 font-semibold border ${item.kgMatch === 'Match' ? 'bg-blue-100 text-blue-800 border-blue-200' : (item.kgMatch === 'Mismatch' ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-slate-100')}">
+                <option value="Pending" ${item.kgMatch === 'Pending' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
+                <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
+                <option value="Mismatch" ${item.kgMatch === 'Mismatch' ? 'selected' : ''}>⚠️ မကိုက်</option>
+              </select>
+            </div>
+          </td>
+          <td class="px-3 py-2.5 whitespace-nowrap">
+            <select ${!canEditPay ? 'disabled' : ''} onchange="updateItem('${item.id}', 'payment', this.value)"
+              class="text-xs rounded-lg px-2.5 py-1.5 font-bold border ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : (item.payment === 'Deposit' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-300')}">
+              <option value="Unpaid" ${item.payment === 'Unpaid' ? 'selected' : ''}>❌ Unpaid</option>
+              <option value="Deposit" ${item.payment === 'Deposit' ? 'selected' : ''}>🟡 Deposit</option>
+              <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
+            </select>
+          </td>
+          <td class="px-3 py-2.5 text-center whitespace-nowrap">
+            <button ${!canApprove ? 'disabled' : ''} onclick="updateItem('${item.id}', 'ukApproved', ${!item.ukApproved})"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${item.ukApproved ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'} ${!canApprove ? 'opacity-70 cursor-not-allowed' : ''}">
+              ${item.ukApproved ? '🇬🇧 APPROVED' : 'Approve လုပ်ရန်'}
+            </button>
+          </td>
+          <td class="px-3 py-2.5">
+            <input type="text" value="${(item.notes || '').replace(/"/g, '&quot;')}"
+              onchange="updateItem('${item.id}', 'notes', this.value)"
+              placeholder="Note ရေးရန်..."
+              class="w-40 md:w-48 border border-slate-200 rounded px-2 py-1 text-xs" />
+          </td>
+          <td class="px-3 py-2.5 text-center whitespace-nowrap">
+            <button onclick="updateItem('${item.id}', 'released', ${!item.released})"
+              class="px-2.5 py-1 rounded text-xs font-semibold border ${item.released ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}">
+              ${item.released ? '✓ ထုတ်ပြီး' : 'ထုတ်ပေးမည်'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateItem(id, field, val) {
+      const idx = appData.items.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      appData.items[idx][field] = val;
+      saveData();
+    }
+
+    function openAddBatchModal() {
+      const name = prompt('Shipment Batch နာမည်အသစ် ရိုက်ထည့်ပါ (ဥပမာ - UK-MM-Batch-02):');
+      if (!name || !name.trim()) return;
+      const b = name.trim();
+      if (!appData.batches.includes(b)) {
+        appData.batches.push(b);
+        selectedBatches.add(b);
+        saveData();
+      }
+    }
+
+    function openAddCustomerModal() {
+      const sel = document.getElementById('newCustBatch');
+      sel.innerHTML = appData.batches.map(b => `<option value="${b}">${b}</option>`).join('');
+      document.getElementById('addCustomerModal').classList.replace('hidden', 'flex');
+    }
+
+    function addCustomer() {
+      const batch = document.getElementById('newCustBatch').value;
+      const customer = document.getElementById('newCustName').value.trim();
+      if (!customer) return alert('Customer နာမည် ထည့်ပါ');
+      appData.items.push({
+        id: 'id-' + Date.now(),
+        batch,
+        customer,
+        photos: parseInt(document.getElementById('newCustPhotos').value) || 1,
+        expectedKg: parseFloat(document.getElementById('newCustKg').value) || 0,
+        actualKg: 0,
+        kgMatch: 'Pending',
+        payment: 'Unpaid',
+        ukApproved: false,
+        released: false,
+        notes: document.getElementById('newCustNotes').value.trim()
+      });
+      closeModal('addCustomerModal');
+      document.getElementById('newCustName').value = '';
+      document.getElementById('newCustNotes').value = '';
+      saveData();
+    }
+
+    function openBulkModal() {
+      const sel = document.getElementById('bulkBatch');
+      sel.innerHTML = appData.batches.map(b => `<option value="${b}">${b}</option>`).join('');
+      document.getElementById('bulkModal').classList.replace('hidden', 'flex');
+    }
+
+    function importBulk() {
+      const batch = document.getElementById('bulkBatch').value;
+      const lines = document.getElementById('bulkText').value.split('\n').map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return;
+      lines.forEach((line, i) => {
+        const parts = line.split(/,|\t/);
+        appData.items.push({
+          id: 'id-' + Date.now() + '-' + i,
+          batch,
+          customer: (parts[0] || 'Unknown').trim(),
+          photos: parseInt(parts[1]) || 1,
+          expectedKg: parseFloat(parts[2]) || 0,
+          actualKg: 0,
+          kgMatch: 'Pending',
+          payment: 'Unpaid',
+          ukApproved: false,
+          released: false,
+          notes: (parts[3] || '').trim()
+        });
+      });
+      closeModal('bulkModal');
+      document.getElementById('bulkText').value = '';
+      saveData();
+    }
+
+    function deleteSelectedBatch() {
+      const target = prompt(`အပြီးဖျက်ပစ်မည့် Batch နာမည် အတိအကျ ရိုက်ထည့်ပါ:\n(${appData.batches.join(', ')})`);
+      if (!target || !appData.batches.includes(target.trim())) return alert('Batch နာမည် မမှန်ပါ');
+      const b = target.trim();
+      const count = appData.items.filter(i => i.batch === b).length;
+      if (!confirm(`⚠️ "${b}" ထဲက Customer စာရင်း (${count}) ခုလုံးကို အပြီးဖျက်မှာ သေချာပါသလား?`)) return;
+      appData.batches = appData.batches.filter(x => x !== b);
+      appData.items = appData.items.filter(i => i.batch !== b);
+      selectedBatches.delete(b);
+      saveData();
+    }
+
+    function exportCSV() {
+      const rows = [['Batch', 'Customer', 'Photos', 'ExpectedKG', 'ActualKG', 'KG_Match', 'Payment', 'UK_Approved', 'Released', 'Notes']];
+      appData.items.filter(i => selectedBatches.has(i.batch)).forEach(i => {
+        rows.push([i.batch, i.customer, i.photos, i.expectedKg, i.actualKg, i.kgMatch, i.payment, i.ukApproved, i.released, `"${(i.notes||'').replace(/"/g,'""')}"`]);
+      });
+      const csv = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `cargo-backup-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); }
+
+    loadData();
+  </script>
+</body>
+</html>
