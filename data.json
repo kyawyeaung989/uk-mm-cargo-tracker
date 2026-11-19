@@ -13,7 +13,7 @@
       "actualKg": null,
       "kgMatch": "Match",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": ""
     }
