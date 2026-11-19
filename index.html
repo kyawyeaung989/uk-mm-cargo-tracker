@@ -3,31 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UK → MM Cargo Tracker & Approval</title>
+  <title>UK → MM Cargo Approval Board</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+    body { font-family: 'Inter', 'Noto Sans Myanmar', sans-serif; background-color: #f1f5f9; }
+    .badge-pill { transition: all 0.15s ease; }
   </style>
 </head>
-<body class="text-slate-800 pb-20">
+<body class="text-slate-800 pb-16">
 
-  <!-- Top Bar -->
-  <header class="bg-slate-900 text-white sticky top-0 z-30 shadow">
+  <!-- Top Navbar -->
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="text-lg font-bold tracking-tight">📦 UK → MM Cargo Approval Board</h1>
-        <p class="text-xs text-slate-300" id="syncStatus">Loading data...</p>
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📦</span>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg leading-tight">UK → MM Cargo Approval Board</h1>
+          <p id="syncStatus" class="text-xs text-slate-300 mt-0.5">⏳ ချိတ်ဆက်နေသည်...</p>
+        </div>
       </div>
+
       <div class="flex flex-wrap items-center gap-2">
-        <select id="roleSelect" onchange="changeRole()" class="bg-slate-800 text-white text-sm border border-slate-600 rounded-lg px-3 py-1.5 font-medium">
-          <option value="ALL">👑 View All (Admin / Full)</option>
-          <option value="AUNGKO">⚖️ အောင်ကို (KG စစ်ရန်)</option>
-          <option value="PAGE">💳 Page အစ်မ (Paid / Unpaid)</option>
-          <option value="UK">🇬🇧 မက်ဆန်တာ (UK Approve)</option>
-        </select>
-        <button onclick="loadData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg">🔄 Refresh</button>
-        <button onclick="openSetupModal()" id="setupBtn" class="bg-amber-600 hover:bg-amber-500 text-xs px-3 py-2 rounded-lg font-semibold">⚙️ Setup / Share Link</button>
+        <!-- Role Selector (Locked when opened via Staff/UK Share Link) -->
+        <div id="roleContainer">
+          <select id="roleSelect" onchange="changeRole()" class="bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-1.5 font-medium focus:outline-none">
+            <option value="admin">👑 View All (Admin / Full)</option>
+            <option value="office">⚖️ Office Staff (KG &amp; ထုတ်ပေးမှု)</option>
+            <option value="page">💳 Page Admin (Paid / Unpaid)</option>
+            <option value="uk">🇬🇧 UK Admin (UK Approve)</option>
+          </select>
+        </div>
+        <div id="lockedRoleBadge" class="hidden bg-indigo-900/90 border border-indigo-500 text-indigo-100 text-xs sm:text-sm rounded-lg px-3 py-1.5 font-semibold"></div>
+
+        <button onclick="loadFromGitHub()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs sm:text-sm px-3 py-1.5 rounded-lg font-medium flex items-center gap-1">
+          🔄 Refresh
+        </button>
+
+        <button id="setupBtn" onclick="openSetupModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1">
+          ⚙️ Setup / Share Link
+        </button>
       </div>
     </div>
   </header>
@@ -35,498 +50,1012 @@
   <main class="max-w-7xl mx-auto px-4 mt-5 space-y-5">
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
-        <div class="text-xs text-slate-500">စုစုပေါင်း Customer</div>
-        <div class="text-2xl font-bold mt-1" id="statTotal">0</div>
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">စုစုပေါင်း Customer</p>
+        <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
       </div>
-      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
-        <div class="text-xs text-slate-500">⚖️ KG ကိုက်ပြီး</div>
-        <div class="text-2xl font-bold text-blue-600 mt-1" id="statKg">0</div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">⚖️ KG ကိုက်ပြီး</p>
+        <p id="statKg" class="text-2xl font-bold text-blue-600 mt-1">0</p>
       </div>
-      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
-        <div class="text-xs text-slate-500">💳 Paid (ငွေဝင်ပြီး)</div>
-        <div class="text-2xl font-bold text-emerald-600 mt-1" id="statPaid">0</div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">💳 Paid (ငွေဝင်ပြီး)</p>
+        <p id="statPaid" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
       </div>
-      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
-        <div class="text-xs text-slate-500">🇬🇧 UK Approved</div>
-        <div class="text-2xl font-bold text-purple-600 mt-1" id="statApproved">0</div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">🇬🇧 UK Approved</p>
+        <p id="statUk" class="text-2xl font-bold text-purple-600 mt-1">0</p>
       </div>
-      <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200 col-span-2 md:col-span-1">
-        <div class="text-xs text-slate-500">🚚 ထုတ်ပေးပြီး (Released)</div>
-        <div class="text-2xl font-bold text-slate-700 mt-1" id="statReleased">0</div>
-      </div>
-    </div>
-
-    <!-- Batch Multi-Select & Actions -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="text-sm font-semibold text-slate-700">🚢 Shipment Batches (၂ ခု ၃ ခု တွဲရွေးကြည့်နိုင်သည်):</div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="openAddBatchModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">+ Batch အသစ်ဖွင့်မည်</button>
-          <button onclick="openAddCustomerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">+ Customer ထည့်မည်</button>
-          <button onclick="openBulkModal()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">📋 အများကြီး Copy-Paste တင်မည်</button>
-        </div>
-      </div>
-
-      <!-- Batch Checkboxes -->
-      <div id="batchPills" class="flex flex-wrap gap-2 pt-1"></div>
-
-      <!-- Filters & Search -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5 pt-2 border-t border-slate-100">
-        <input type="text" id="searchInput" oninput="renderTable()" placeholder="🔍 Customer နာမည် / Notes ရှာရန်..." class="border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-        <select id="statusFilter" onchange="renderTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm">
-          <option value="ALL">အားလုံးပြမည် (All Status)</option>
-          <option value="READY_UK">🇬🇧 UK Approve လုပ်ရန်အသင့် (KG ကိုက် + Paid)</option>
-          <option value="APPROVED">✅ UK Approved ဖြစ်ပြီး (ထုတ်ပေးရန်)</option>
-          <option value="UNPAID">❌ ငွေမချေရသေးသူများ (Unpaid)</option>
-          <option value="KG_ISSUE">⚠️ KG မကိုက် / မစစ်ရသေးသူများ</option>
-        </select>
-        <label class="flex items-center gap-2 text-sm text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer">
-          <input type="checkbox" id="hideReleased" onchange="renderTable()" class="rounded text-indigo-600" />
-          <span>ထုတ်ပေးပြီးသား (Released) ဖျောက်ထားမည်</span>
-        </label>
-        <div class="flex gap-2">
-          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300">⬇️ CSV သိမ်းမည်</button>
-          <button onclick="deleteSelectedBatch()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-2 rounded-lg border border-rose-200">🗑️ Batch ဖျက်မည်</button>
-        </div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 col-span-2 sm:col-span-1">
+        <p class="text-xs text-slate-500 font-medium">✅ ထုတ်ပေးနိုင်ပြီ / ပြီး</p>
+        <p class="text-2xl font-bold text-teal-600 mt-1"><span id="statReady">0</span> <span class="text-sm font-normal text-slate-400">/ <span id="statReleased">0</span></span></p>
       </div>
     </div>
 
-    <!-- Main Table -->
+    <!-- Batch & Action Bar -->
+    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 mb-2">🚢 Shipment Batches (၂ ခု ၃ ခု တွဲရွေးကြည့်နိုင်သည်):</p>
+          <div id="batchPills" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Admin Only Buttons -->
+        <div id="adminActionBtns" class="flex flex-wrap gap-2">
+          <button onclick="openNewBatchModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-semibold shadow-sm">
+            + Batch အသစ်ဖွင့်မည်
+          </button>
+          <button onclick="openAddCustomerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-semibold shadow-sm">
+            + Customer ထည့်မည်
+          </button>
+          <button onclick="openBulkImportModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-semibold shadow-sm">
+            📋 Excel Copy-Paste တင်မည်
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-2 border-t border-slate-100">
+        <div class="sm:col-span-4">
+          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes ရှာရန်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" />
+        </div>
+        <div class="sm:col-span-3">
+          <select id="statusFilter" onchange="renderTable()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+            <option value="all">အားလုံးပြမည် (All Status)</option>
+            <option value="ready">✅ ထုတ်ပေးနိုင်ပြီ (Ready)</option>
+            <option value="pending_kg">⚖️ KG မကိုက်/မစစ်ရသေး</option>
+            <option value="unpaid">💳 Unpaid (ငွေမရှင်းရသေး)</option>
+            <option value="pending_uk">🇬🇧 UK Approve စောင့်ဆိုင်းဆဲ</option>
+            <option value="released">🚚 ထုတ်ပေးပြီး (Released)</option>
+          </select>
+        </div>
+        <div class="sm:col-span-3 flex items-center">
+          <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-600 cursor-pointer select-none border border-slate-200 rounded-lg px-3 py-2 w-full bg-slate-50">
+            <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600" />
+            <span>ထုတ်ပေးပြီးသား ဖျောက်ထားမည်</span>
+          </label>
+        </div>
+        <div class="sm:col-span-2 flex gap-2">
+          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300">
+            ⬇️ CSV
+          </button>
+          <button id="deleteBatchBtn" onclick="deleteSelectedBatches()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-3 py-2 rounded-lg border border-rose-200">
+            🗑️ ဖျက်မည်
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Data Table -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b border-slate-200">
-            <tr>
-              <th class="px-3 py-3">Batch</th>
-              <th class="px-3 py-3">Customer နာမည်</th>
-              <th class="px-3 py-3 text-center">ပုံ/ထုပ်</th>
-              <th class="px-3 py-3">⚖️ KG (အောင်ကို)</th>
-              <th class="px-3 py-3">💳 ငွေရှင်းမှု (Page အစ်မ)</th>
-              <th class="px-3 py-3 text-center">🇬🇧 UK Approve (မက်ဆန်တာ)</th>
-              <th class="px-3 py-3">Notes</th>
-              <th class="px-3 py-3 text-center">ထုတ်ပေးမှု</th>
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+              <th class="py-3 px-3">Batch</th>
+              <th class="py-3 px-3">Customer နာမည်</th>
+              <th class="py-3 px-3 text-center">ပုံ/ထုပ်</th>
+              <th class="py-3 px-3">⚖️ KG (Office Staff)</th>
+              <th class="py-3 px-3">💳 ငွေရှင်းမှု (Page Admin)</th>
+              <th class="py-3 px-3">🇬🇧 UK Approve (UK Admin)</th>
+              <th class="py-3 px-3">Notes</th>
+              <th class="py-3 px-3 text-right">ထုတ်ပေးမှု (Auto Status)</th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
         </table>
       </div>
+      <div id="emptyState" class="hidden py-12 text-center text-slate-400 text-sm">
+        ပြသရန် စာရင်းမရှိသေးပါ။
+      </div>
     </div>
   </main>
 
-  <!-- Add Customer Modal -->
-  <div id="addCustomerModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl max-w-md w-full p-5 space-y-3">
-      <h3 class="font-bold text-lg">Customer အသစ်ထည့်ရန်</h3>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Shipment Batch</label>
-        <select id="newCustBatch" class="w-full border rounded-lg px-3 py-2 text-sm mt-1"></select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Customer နာမည်</label>
-        <input type="text" id="newCustName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" placeholder="ဥပမာ - Ma Su" />
-      </div>
-      <div class="grid grid-cols-2 gap-2">
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Setup & Share Link Modal -->
+  <div id="setupModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
+      <h2 class="text-lg font-bold text-slate-800">⚙️ GitHub Sync Setup (တစ်ကြိမ်သာ ထည့်ရန်)</h2>
+      <p class="text-xs text-slate-500 leading-relaxed">
+        အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Share Link</b> တွေကို Copy ယူပြီး <b>Office Staff</b>၊ <b>Page Admin</b> နဲ့ <b>UK Admin</b> ဆီ ပို့ပေးလိုက်ရုံပါပဲ (သူတို့ဆီမှာ တခြား Role ပြောင်းလို့မရအောင် Lock လုပ်ထားပြီးသား ဖြစ်ပါမယ်)။
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="text-xs font-semibold text-slate-600">ပုံ/အထုပ် အရေအတွက်</label>
-          <input type="number" id="newCustPhotos" value="1" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" />
+          <label class="block text-xs font-semibold text-slate-600 mb-1">GitHub Username</label>
+          <input id="cfgUser" type="text" placeholder="kyawyeaung989" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
         </div>
         <div>
-          <label class="text-xs font-semibold text-slate-600">UK Expected KG</label>
-          <input type="number" step="0.01" id="newCustKg" value="0" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" />
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Repository Name</label>
+          <input id="cfgRepo" type="text" placeholder="uk-mm-cargo-tracker" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
         </div>
       </div>
+
       <div>
-        <label class="text-xs font-semibold text-slate-600">Notes (ရှိလျှင်)</label>
-        <input type="text" id="newCustNotes" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" placeholder="ဥပမာ - UK မှာ ငွေပေးပြီး" />
+        <label class="block text-xs font-semibold text-slate-600 mb-1">GitHub Fine-grained Token</label>
+        <input id="cfgToken" type="password" placeholder="github_pat_..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
       </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+        <p class="text-xs font-semibold text-slate-600">🔗 ဝန်ထမ်းနှင့် UK Admin ထံ ပို့ရမည့် Locked Share Links:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button onclick="copyShareLink('office')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-3 rounded-lg">
+            📋 Office Staff Link
+          </button>
+          <button onclick="copyShareLink('page')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 px-3 rounded-lg">
+            📋 Page Admin Link
+          </button>
+          <button onclick="copyShareLink('uk')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold py-2 px-3 rounded-lg">
+            📋 UK Admin Link
+          </button>
+        </div>
+        <p id="copyFeedback" class="text-xs text-emerald-600 font-medium hidden"></p>
+      </div>
+
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
-        <button onclick="addCustomer()" class="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg font-semibold">သိမ်းမည်</button>
+        <button onclick="closeModal('setupModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
+        <button onclick="saveSetup()" class="px-4 py-2 text-sm bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg">Save Settings</button>
       </div>
     </div>
   </div>
 
-  <!-- Bulk Paste Modal -->
-  <div id="bulkModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl max-w-lg w-full p-5 space-y-3">
-      <h3 class="font-bold text-lg">Customer အများကြီး တစ်ခါတည်း တင်ရန်</h3>
-      <p class="text-xs text-slate-500">တစ်ကြောင်းလျှင် တစ်ယောက်နှုန်းဖြင့် <b>နာမည်, ပုံအရေအတွက်, KG, Notes</b> (comma ခြားပြီး) ရိုက်ထည့်ပါ — Excel/Sheets မှ Copy ကူးထည့်လည်း ရပါသည်။</p>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">ထည့်မည့် Shipment Batch</label>
-        <select id="bulkBatch" class="w-full border rounded-lg px-3 py-2 text-sm mt-1"></select>
+  <!-- 2. Per-Box KG Breakdown Modal -->
+  <div id="boxModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">📦 ပုံးအလိုက် KG ခွဲထည့်ရန်</h2>
+          <p id="boxModalSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
+        </div>
+        <div class="text-right bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
+          <span class="text-[11px] text-blue-600 block font-medium">စုစုပေါင်း (Total KG)</span>
+          <span id="boxModalTotal" class="text-lg font-bold text-blue-800">0.00 kg</span>
+        </div>
       </div>
-      <textarea id="bulkText" rows="6" class="w-full border rounded-lg p-3 text-sm font-mono" placeholder="Ma Su, 3, 5.5, UK Paid&#10;Ko Aung, 2, 4.0, COD&#10;Daw Hla, 5, 12.2, "></textarea>
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeModal('bulkModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
-        <button onclick="importBulk()" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg font-semibold">အားလုံးထည့်မည်</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Setup & Magic Share Link Modal -->
-  <div id="setupModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl max-w-lg w-full p-5 space-y-3">
-      <h3 class="font-bold text-lg">⚙️ GitHub Sync Setup (တစ်ကြိမ်သာ ထည့်ရန်)</h3>
-      <p class="text-xs text-slate-600">အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Staff / UK Share Link</b> ကို Copy ယူပြီး အောင်ကို၊ Page အစ်မ နဲ့ မက်ဆန်တာ ဆီ ပို့ပေးလိုက်ရုံပါပဲ (သူတို့ ဘာ token မှ ထည့်စရာ မလိုတော့ပါ)။</p>
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-xs font-semibold">GitHub Username</label>
-          <input type="text" id="cfgOwner" value="kyawyeaung989" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" />
+      <!-- Quick Paste / Box Count Adjuster -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-slate-600">ပုံးအရေအတွက်:</label>
+            <input id="boxCountInput" type="number" min="1" max="200" onchange="resizeBoxInputs()" class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-center" />
+          </div>
+          <span class="text-[11px] text-slate-400">တစ်ပုံးချင်းစီ ရိုက်ထည့်နိုင်သလို အောက်မှာ အမြန် Paste ထည့်လို့ရသည်</span>
         </div>
-        <div>
-          <label class="text-xs font-semibold">Repository Name</label>
-          <input type="text" id="cfgRepo" value="cargo-tracker" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" />
-        </div>
-      </div>
-      <div>
-        <label class="text-xs font-semibold">GitHub Fine-grained Token</label>
-        <input type="password" id="cfgToken" class="w-full border rounded-lg px-3 py-1.5 text-sm mt-1" placeholder="github_pat_..." />
-      </div>
-      <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
-        <div class="text-xs font-semibold text-slate-700">🔗 ဝန်ထမ်းနှင့် မက်ဆန်တာ ထံ ပို့ရမည့် Ready-to-Use Link များ:</div>
         <div class="flex gap-2">
-          <button onclick="copyMagicLink('AUNGKO')" class="flex-1 bg-blue-600 text-white text-xs py-2 rounded-lg font-medium">📋 အောင်ကို Link</button>
-          <button onclick="copyMagicLink('PAGE')" class="flex-1 bg-emerald-600 text-white text-xs py-2 rounded-lg font-medium">📋 Page အစ်မ Link</button>
-          <button onclick="copyMagicLink('UK')" class="flex-1 bg-purple-600 text-white text-xs py-2 rounded-lg font-medium">📋 UK မက်ဆန်တာ Link</button>
+          <input id="quickBoxPaste" type="text" placeholder="ဥပမာ: 5.2, 4.8, 6.0, 5.5 (comma သို့မဟုတ် space ခြားပြီး အများကြီးထည့်ရန်)" class="flex-1 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" />
+          <button onclick="applyQuickBoxPaste()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">ဖြည့်မည်</button>
         </div>
       </div>
+
+      <!-- Grid of Individual Box Inputs -->
+      <div id="boxInputsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 overflow-y-auto pr-1 flex-1 py-1"></div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button onclick="closeModal('boxModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
+        <button id="saveBoxBtn" onclick="saveBoxBreakdown()" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">✅ စုစုပေါင်း KG သိမ်းမည်</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Excel Copy-Paste & File Import Modal -->
+  <div id="bulkImportModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-xl space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">📋 Excel မှ Customer List အများကြီး တင်မည်</h2>
+          <p class="text-xs text-slate-500">Excel ထဲက row တွေကို <b>Ctrl + C</b> ကူးပြီး အောက်က အကွက်ထဲ <b>Ctrl + V</b> နှိပ်ချလိုက်ပါ (Column အစဉ်: Customer နာမည် | ပုံး/ထုပ် | KG | Notes)</p>
+        </div>
+        <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg">
+          📂 CSV ဖိုင်ရွေးတင်မည်
+          <input type="file" accept=".csv,.txt" onchange="handleCsvUpload(event)" class="hidden" />
+        </label>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ထည့်မည့် Shipment Batch</label>
+          <select id="bulkBatchSelect" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေရှင်းမှု Default</label>
+          <select id="bulkPaymentDefault" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+            <option value="Unpaid">Unpaid (မရှင်းရသေး)</option>
+            <option value="Paid">Paid (UK မှ ငွေရှင်းပြီး)</option>
+          </select>
+        </div>
+      </div>
+
+      <textarea id="bulkPasteArea" oninput="parseBulkPreview()" rows="4" placeholder="Excel ထဲမှ Copy ကူးထားသည်များကို ဒီနေရာတွင် Ctrl + V နှိပ်ပြီး Paste ချပါ..." class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+
+      <!-- Live Preview Table -->
+      <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+            <tr>
+              <th class="py-2 px-3">#</th>
+              <th class="py-2 px-3">Customer နာမည်</th>
+              <th class="py-2 px-3">ပုံ/ထုပ်</th>
+              <th class="py-2 px-3">Expected KG</th>
+              <th class="py-2 px-3">Notes</th>
+            </tr>
+          </thead>
+          <tbody id="bulkPreviewBody" class="divide-y divide-slate-100">
+            <tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်လိုက်သည်နှင့် အစမ်းကြည့်ရှုရန် (Preview) ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex items-center justify-between pt-2">
+        <span id="bulkCountLabel" class="text-xs font-semibold text-indigo-600">စုစုပေါင်း: 0 ဦး</span>
+        <div class="flex gap-2">
+          <button onclick="closeModal('bulkImportModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
+          <button onclick="confirmBulkImport()" class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg">✅ စာရင်းထဲ ထည့်မည်</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Single Customer Add Modal -->
+  <div id="addCustomerModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-3">
+      <h2 class="text-lg font-bold text-slate-800">+ Customer အသစ်ထည့်မည်</h2>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Batch</label>
+        <select id="addBatch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Customer နာမည်</label>
+        <input id="addName" type="text" placeholder="ဥပမာ: Ma Su" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ပုံ/ထုပ် အရေအတွက်</label>
+          <input id="addPhotos" type="number" value="1" min="1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">UK KG (Expected)</label>
+          <input id="addKg" type="number" step="0.01" placeholder="5.5" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေရှင်းမှု</label>
+        <select id="addPayment" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+          <option value="Unpaid">Unpaid</option>
+          <option value="Paid">Paid</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Notes</label>
+        <input id="addNotes" type="text" placeholder="မှတ်ချက်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      </div>
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeModal('setupModal')" class="px-4 py-2 text-sm text-slate-600">ပိတ်မည်</button>
-        <button onclick="saveConfig()" class="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg font-semibold">Save Settings</button>
+        <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
+        <button onclick="confirmAddCustomer()" class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg">ထည့်မည်</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. New Batch Modal -->
+  <div id="newBatchModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4">
+      <h2 class="text-lg font-bold text-slate-800">+ Shipment Batch အသစ်ဖွင့်မည်</h2>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Batch နာမည်</label>
+        <input id="newBatchName" type="text" placeholder="ဥပမာ: UK-MM-Batch-02" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <button onclick="closeModal('newBatchModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
+        <button onclick="confirmNewBatch()" class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg">ဖွင့်မည်</button>
       </div>
     </div>
   </div>
 
   <script>
-    let appData = { batches: [], items: [] };
-    let selectedBatches = new Set();
+    // ==================== STATE & CONFIG ====================
+    let appData = { batches: ["UK-MM-Batch-01"], items: [] };
+    let selectedBatches = new Set(["UK-MM-Batch-01"]);
     let fileSha = null;
+    let currentRole = "admin";
+    let isRoleLocked = false;
+    let activeBoxItemId = null;
+    let parsedBulkRows = [];
 
-    // Auto-read Magic Link parameters if opened by Staff/UK
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('t')) localStorage.setItem('gh_token', atob(params.get('t')));
-    if (params.get('o')) localStorage.setItem('gh_owner', params.get('o'));
-    if (params.get('r')) localStorage.setItem('gh_repo', params.get('r'));
-    if (params.get('role')) {
-      document.getElementById('roleSelect').value = params.get('role');
-      document.getElementById('setupBtn').style.display = 'none';
-    }
+    const ROLE_LABELS = {
+      admin: "👑 View All (Admin / Full)",
+      office: "⚖️ Office Staff (Locked)",
+      page: "💳 Page Admin (Locked)",
+      uk: "🇬🇧 UK Admin (Locked)"
+    };
 
-    function getCfg() {
+    function getConfig() {
       return {
-        owner: localStorage.getItem('gh_owner') || 'kyawyeaung989',
-        repo: localStorage.getItem('gh_repo') || 'cargo-tracker',
-        token: localStorage.getItem('gh_token') || ''
+        user: localStorage.getItem("gh_user") || "kyawyeaung989",
+        repo: localStorage.getItem("gh_repo") || "uk-mm-cargo-tracker",
+        token: localStorage.getItem("gh_token") || ""
       };
     }
 
-    function openSetupModal() {
-      const c = getCfg();
-      document.getElementById('cfgOwner').value = c.owner;
-      document.getElementById('cfgRepo').value = c.repo;
-      document.getElementById('cfgToken').value = c.token;
-      document.getElementById('setupModal').classList.replace('hidden', 'flex');
+    function initFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("u")) localStorage.setItem("gh_user", params.get("u"));
+      if (params.get("r")) localStorage.setItem("gh_repo", params.get("r"));
+      if (params.get("t")) {
+        try { localStorage.setItem("gh_token", atob(params.get("t"))); } catch (e) {}
+      }
+
+      const roleParam = params.get("role");
+      if (roleParam && ["office", "page", "uk"].includes(roleParam)) {
+        currentRole = roleParam;
+        isRoleLocked = true;
+      }
+      applyRolePermissions();
     }
 
-    function saveConfig() {
-      localStorage.setItem('gh_owner', document.getElementById('cfgOwner').value.trim());
-      localStorage.setItem('gh_repo', document.getElementById('cfgRepo').value.trim());
-      localStorage.setItem('gh_token', document.getElementById('cfgToken').value.trim());
-      closeModal('setupModal');
-      loadData();
+    function applyRolePermissions() {
+      const roleContainer = document.getElementById("roleContainer");
+      const lockedBadge = document.getElementById("lockedRoleBadge");
+      const setupBtn = document.getElementById("setupBtn");
+      const adminActionBtns = document.getElementById("adminActionBtns");
+      const deleteBatchBtn = document.getElementById("deleteBatchBtn");
+
+      if (isRoleLocked) {
+        roleContainer.classList.add("hidden");
+        lockedBadge.classList.remove("hidden");
+        lockedBadge.textContent = ROLE_LABELS[currentRole];
+        setupBtn.classList.add("hidden");
+        adminActionBtns.classList.add("hidden");
+        deleteBatchBtn.classList.add("hidden");
+      } else {
+        roleContainer.classList.remove("hidden");
+        lockedBadge.classList.add("hidden");
+        document.getElementById("roleSelect").value = currentRole;
+        const isAdmin = currentRole === "admin";
+        setupBtn.classList.toggle("hidden", !isAdmin);
+        adminActionBtns.classList.toggle("hidden", !isAdmin);
+        deleteBatchBtn.classList.toggle("hidden", !isAdmin);
+      }
     }
 
-    function copyMagicLink(role) {
-      const c = getCfg();
-      if (!c.token) return alert('အရင်ဆုံး GitHub Token ထည့်ပြီး Save Settings နှိပ်ပါ။');
-      const base = window.location.origin + window.location.pathname;
-      const link = `${base}?o=${encodeURIComponent(c.owner)}&r=${encodeURIComponent(c.repo)}&t=${btoa(c.token)}&role=${role}`;
-      navigator.clipboard.writeText(link);
-      alert(`${role} အတွက် Link ကို Copy ကူးပြီးပါပြီ — Viber မှာ တိုက်ရိုက် ပို့ပေးလိုက်ရုံပါပဲ!`);
+    function changeRole() {
+      if (isRoleLocked) return;
+      currentRole = document.getElementById("roleSelect").value;
+      applyRolePermissions();
+      renderTable();
     }
 
-    async function loadData() {
-      const c = getCfg();
-      const statusEl = document.getElementById('syncStatus');
-      statusEl.textContent = '⏳ Syncing from GitHub...';
+    // ==================== GITHUB SYNC ====================
+    async function loadFromGitHub() {
+      const { user, repo, token } = getConfig();
+      const statusEl = document.getElementById("syncStatus");
+      statusEl.textContent = "⏳ Data ဆွဲယူနေသည်...";
+
       try {
-        const headers = c.token ? { Authorization: `token ${c.token}` } : {};
-        const res = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json?t=${Date.now()}`, { headers });
-        if (!res.ok) throw new Error('Repo သို့မဟုတ် data.json မတွေ့ပါ');
+        const headers = { "Accept": "application/vnd.github.v3+json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/data.json?t=${Date.now()}`, { headers });
+        if (!res.ok) throw new Error("Repo သို့မဟုတ် data.json မတွေ့ပါ");
+
         const json = await res.json();
         fileSha = json.sha;
-        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
         appData = JSON.parse(decoded);
-        if (selectedBatches.size === 0) appData.batches.forEach(b => selectedBatches.add(b));
-        renderBatchPills();
-        renderTable();
-        statusEl.textContent = `✅ Live Synced (${new Date().toLocaleTimeString()})`;
-      } catch (e) {
-        statusEl.textContent = `⚠️ ${e.message} — Setup ခလုတ်ကို စစ်ဆေးပါ`;
+
+        if (!appData.batches || appData.batches.length === 0) {
+          appData.batches = ["UK-MM-Batch-01"];
+        }
+        // Keep valid selections or select latest
+        const validSelected = [...selectedBatches].filter(b => appData.batches.includes(b));
+        selectedBatches = new Set(validSelected.length ? validSelected : [appData.batches[appData.batches.length - 1]]);
+
+        const now = new Date().toLocaleTimeString();
+        statusEl.innerHTML = `<span class="text-emerald-400 font-semibold">✅ Live Synced (${now})</span>`;
+        renderAll();
+      } catch (err) {
+        statusEl.innerHTML = `<span class="text-amber-300">⚠️ ${err.message} — Setup ခလုတ်ကို စစ်ဆေးပါ</span>`;
+        renderAll();
       }
     }
 
-    async function saveData() {
-      const c = getCfg();
-      if (!c.token) return alert('Data ပြင်ဆင်သိမ်းဆည်းရန် Setup Link သို့မဟုတ် Token လိုအပ်ပါသည်။');
-      const statusEl = document.getElementById('syncStatus');
-      statusEl.textContent = '💾 Saving...';
+    async function saveToGitHub() {
+      const { user, repo, token } = getConfig();
+      const statusEl = document.getElementById("syncStatus");
+
+      if (!token) {
+        alert("GitHub Token မရှိသေးပါ။ Setup / Share Link တွင် Token ထည့်ပါ။");
+        return;
+      }
+
+      statusEl.textContent = "⏳ Saving to GitHub...";
       try {
-        // Fetch latest SHA first to avoid conflict
-        const getRes = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json?t=${Date.now()}`, {
-          headers: { Authorization: `token ${c.token}` }
-        });
-        const latest = await getRes.json();
-        const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const putRes = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/data.json`, {
-          method: 'PUT',
+        const contentStr = JSON.stringify(appData, null, 2);
+        const encoded = btoa(unescape(encodeURIComponent(contentStr)));
+
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/data.json`, {
+          method: "PUT",
           headers: {
-            Authorization: `token ${c.token}`,
-            'Content-Type': 'application/json'
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            message: `Update cargo data (${new Date().toISOString()})`,
-            content: contentB64,
-            sha: latest.sha
+            message: `Update cargo data (${currentRole})`,
+            content: encoded,
+            sha: fileSha
           })
         });
-        if (!putRes.ok) throw new Error('Save မအောင်မြင်ပါ (Token permission စစ်ပါ)');
-        const resJson = await putRes.json();
-        fileSha = resJson.content.sha;
-        renderBatchPills();
-        renderTable();
-        statusEl.textContent = `✅ Saved (${new Date().toLocaleTimeString()})`;
-      } catch (e) {
-        alert(e.message);
-        statusEl.textContent = '❌ Save Failed';
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.message || "Save failed");
+        }
+
+        const result = await res.json();
+        fileSha = result.content.sha;
+        const now = new Date().toLocaleTimeString();
+        statusEl.innerHTML = `<span class="text-emerald-400 font-semibold">✅ Live Synced (${now})</span>`;
+      } catch (err) {
+        statusEl.innerHTML = `<span class="text-rose-400">❌ Save Error: ${err.message}</span>`;
+        alert("Save မအောင်မြင်ပါ: " + err.message + "\nRefresh နှိပ်ပြီး ပြန်စမ်းကြည့်ပါ။");
       }
     }
 
-    function renderBatchPills() {
-      const container = document.getElementById('batchPills');
-      container.innerHTML = '';
-      appData.batches.forEach(b => {
-        const checked = selectedBatches.has(b);
-        const count = appData.items.filter(i => i.batch === b).length;
-        const label = document.createElement('label');
-        label.className = `flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer border transition ${checked ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-100 text-slate-700 border-slate-300'}`;
-        label.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} class="hidden" onchange="toggleBatch('${b}')" /> <span>${checked ? '✓' : '+'} ${b} (${count})</span>`;
-        container.appendChild(label);
-      });
+    // ==================== AUTO RELEASE CHECK ====================
+    function isReadyToRelease(item) {
+      const kgOk = item.kgMatch === "Match";
+      const paidOk = item.payment === "Paid";
+      const ukOk = item.ukApproved === true;
+      return kgOk && paidOk && ukOk;
     }
 
-    function toggleBatch(b) {
-      if (selectedBatches.has(b)) selectedBatches.delete(b);
-      else selectedBatches.add(b);
+    // ==================== RENDERING ====================
+    function renderAll() {
       renderBatchPills();
       renderTable();
     }
 
-    function changeRole() { renderTable(); }
+    function renderBatchPills() {
+      const container = document.getElementById("batchPills");
+      container.innerHTML = "";
+
+      appData.batches.forEach(batch => {
+        const count = appData.items.filter(i => i.batch === batch).length;
+        const active = selectedBatches.has(batch);
+        const btn = document.createElement("button");
+        btn.onclick = () => toggleBatch(batch);
+        btn.className = active
+          ? "badge-pill bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm"
+          : "badge-pill bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-300";
+        btn.textContent = `${active ? "✓ " : ""}${batch} (${count})`;
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleBatch(batch) {
+      if (selectedBatches.has(batch)) {
+        if (selectedBatches.size > 1) selectedBatches.delete(batch);
+      } else {
+        selectedBatches.add(batch);
+      }
+      renderAll();
+    }
 
     function renderTable() {
-      const role = document.getElementById('roleSelect').value;
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const filter = document.getElementById('statusFilter').value;
-      const hideRel = document.getElementById('hideReleased').checked;
+      const tbody = document.getElementById("tableBody");
+      const emptyState = document.getElementById("emptyState");
+      const search = document.getElementById("searchInput").value.trim().toLowerCase();
+      const filter = document.getElementById("statusFilter").value;
+      const hideReleased = document.getElementById("hideReleased").checked;
 
-      const activeItems = appData.items.filter(i => selectedBatches.has(i.batch));
+      const batchItems = appData.items.filter(i => selectedBatches.has(i.batch));
 
-      // Count duplicate customer names across selected batches
-      const nameCounts = {};
-      activeItems.forEach(i => {
-        const k = i.customer.trim().toLowerCase();
-        nameCounts[k] = (nameCounts[k] || 0) + 1;
-      });
+      // Update Summary Cards
+      document.getElementById("statTotal").textContent = batchItems.length;
+      document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
+      document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
+      document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
+      document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
+      document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
-      // Stats
-      document.getElementById('statTotal').textContent = activeItems.length;
-      document.getElementById('statKg').textContent = activeItems.filter(i => i.kgMatch === 'Match').length;
-      document.getElementById('statPaid').textContent = activeItems.filter(i => i.payment === 'Paid').length;
-      document.getElementById('statApproved').textContent = activeItems.filter(i => i.ukApproved).length;
-      document.getElementById('statReleased').textContent = activeItems.filter(i => i.released).length;
+      // Filter Rows
+      const filtered = batchItems.filter(item => {
+        if (hideReleased && item.released) return false;
+        if (search && !item.customer.toLowerCase().includes(search) && !(item.notes || "").toLowerCase().includes(search)) return false;
 
-      const filtered = activeItems.filter(i => {
-        if (hideRel && i.released) return false;
-        if (search && !i.customer.toLowerCase().includes(search) && !(i.notes || '').toLowerCase().includes(search)) return false;
-        if (filter === 'READY_UK') return i.kgMatch === 'Match' && i.payment === 'Paid' && !i.ukApproved;
-        if (filter === 'APPROVED') return i.ukApproved && !i.released;
-        if (filter === 'UNPAID') return i.payment !== 'Paid';
-        if (filter === 'KG_ISSUE') return i.kgMatch !== 'Match';
+        if (filter === "ready") return !item.released && isReadyToRelease(item);
+        if (filter === "pending_kg") return item.kgMatch !== "Match";
+        if (filter === "unpaid") return item.payment !== "Paid";
+        if (filter === "pending_uk") return !item.ukApproved;
+        if (filter === "released") return item.released;
         return true;
       });
 
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
+      tbody.innerHTML = "";
+      if (filtered.length === 0) {
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      const canEditOffice = currentRole === "admin" || currentRole === "office";
+      const canEditPage = currentRole === "admin" || currentRole === "page";
+      const canEditUk = currentRole === "admin" || currentRole === "uk";
+      const canEditNotes = currentRole === "admin" || currentRole === "page" || currentRole === "office";
 
       filtered.forEach(item => {
-        const isMulti = nameCounts[item.customer.trim().toLowerCase()] > 1;
-        const canEditKg = role === 'ALL' || role === 'AUNGKO';
-        const canEditPay = role === 'ALL' || role === 'PAGE';
-        const canApprove = role === 'ALL' || role === 'UK';
+        const ready = isReadyToRelease(item);
+        const boxCount = (item.boxWeights && item.boxWeights.length) ? item.boxWeights.length : (item.photos || 1);
+        const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
 
-        const tr = document.createElement('tr');
-        tr.className = item.released ? 'bg-slate-50 opacity-60' : (item.ukApproved ? 'bg-purple-50/40' : 'hover:bg-slate-50');
-        tr.innerHTML = `
-          <td class="px-3 py-2.5 text-xs font-mono text-slate-500 whitespace-nowrap">${item.batch}</td>
-          <td class="px-3 py-2.5 font-semibold">
-            ${item.customer}
-            ${isMulti ? '<span class="ml-1 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">တွဲပါရှိ</span>' : ''}
-          </td>
-          <td class="px-3 py-2.5 text-center font-medium">${item.photos}</td>
-          <td class="px-3 py-2.5 whitespace-nowrap">
-            <div class="flex items-center gap-1.5">
-              <span class="text-xs text-slate-400">UK:${item.expectedKg}</span>
-              <input type="number" step="0.01" value="${item.actualKg}" ${!canEditKg ? 'disabled' : ''}
-                onchange="updateItem('${item.id}', 'actualKg', parseFloat(this.value)||0)"
-                class="w-16 border rounded px-1.5 py-1 text-xs font-semibold ${!canEditKg ? 'bg-slate-100' : ''}" />
-              <select ${!canEditKg ? 'disabled' : ''} onchange="updateItem('${item.id}', 'kgMatch', this.value)"
-                class="text-xs rounded px-1.5 py-1 font-semibold border ${item.kgMatch === 'Match' ? 'bg-blue-100 text-blue-800 border-blue-200' : (item.kgMatch === 'Mismatch' ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-slate-100')}">
-                <option value="Pending" ${item.kgMatch === 'Pending' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
+        const tr = document.createElement("tr");
+        tr.className = item.released ? "bg-slate-50/70 opacity-75" : (ready ? "bg-teal-50/30 hover:bg-teal-50/60" : "hover:bg-slate-50");
+
+        // KG Column HTML
+        let kgHtml = "";
+        if (canEditOffice) {
+          kgHtml = `
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-xs text-slate-400">UK:${item.expectedKg ?? "-"}</span>
+              <input type="number" step="0.01" value="${item.actualKg ?? ""}" onchange="updateActualKg('${item.id}', this.value)" class="w-16 border border-slate-300 rounded px-2 py-1 text-xs font-semibold text-slate-800" />
+              <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-2 py-1 rounded border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                📦 ${hasBreakdown ? boxCount + 'ပုံးခွဲပြီး' : 'ပုံးခွဲ'}
+              </button>
+              <select onchange="updateKgMatch('${item.id}', this.value)" class="text-xs font-semibold rounded px-2 py-1 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+                <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
                 <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
-                <option value="Mismatch" ${item.kgMatch === 'Mismatch' ? 'selected' : ''}>⚠️ မကိုက်</option>
               </select>
             </div>
-          </td>
-          <td class="px-3 py-2.5 whitespace-nowrap">
-            <select ${!canEditPay ? 'disabled' : ''} onchange="updateItem('${item.id}', 'payment', this.value)"
-              class="text-xs rounded-lg px-2.5 py-1.5 font-bold border ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : (item.payment === 'Deposit' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-300')}">
-              <option value="Unpaid" ${item.payment === 'Unpaid' ? 'selected' : ''}>❌ Unpaid</option>
-              <option value="Deposit" ${item.payment === 'Deposit' ? 'selected' : ''}>🟡 Deposit</option>
+          `;
+        } else {
+          kgHtml = `
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-slate-500">UK:${item.expectedKg ?? "-"} / MM:<b>${item.actualKg ?? "-"}</b></span>
+              ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${boxCount}ပုံး)</button>` : ""}
+              <span class="text-xs font-semibold px-2 py-0.5 rounded ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
+              </span>
+            </div>
+          `;
+        }
+
+        // Payment Column HTML
+        let paymentHtml = "";
+        if (canEditPage) {
+          paymentHtml = `
+            <select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2.5 py-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+              <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
               <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
             </select>
-          </td>
-          <td class="px-3 py-2.5 text-center whitespace-nowrap">
-            <button ${!canApprove ? 'disabled' : ''} onclick="updateItem('${item.id}', 'ukApproved', ${!item.ukApproved})"
-              class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${item.ukApproved ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'} ${!canApprove ? 'opacity-70 cursor-not-allowed' : ''}">
-              ${item.ukApproved ? '🇬🇧 APPROVED' : 'Approve လုပ်ရန်'}
+          `;
+        } else {
+          paymentHtml = `
+            <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+              ${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}
+            </span>
+          `;
+        }
+
+        // UK Approve Column HTML
+        let ukHtml = "";
+        if (canEditUk) {
+          ukHtml = `
+            <button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
+              ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve လုပ်ရန်'}
             </button>
-          </td>
-          <td class="px-3 py-2.5">
-            <input type="text" value="${(item.notes || '').replace(/"/g, '&quot;')}"
-              onchange="updateItem('${item.id}', 'notes', this.value)"
-              placeholder="Note ရေးရန်..."
-              class="w-40 md:w-48 border border-slate-200 rounded px-2 py-1 text-xs" />
-          </td>
-          <td class="px-3 py-2.5 text-center whitespace-nowrap">
-            <button onclick="updateItem('${item.id}', 'released', ${!item.released})"
-              class="px-2.5 py-1 rounded text-xs font-semibold border ${item.released ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}">
-              ${item.released ? '✓ ထုတ်ပြီး' : 'ထုတ်ပေးမည်'}
-            </button>
-          </td>
+          `;
+        } else {
+          ukHtml = `
+            <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">
+              ${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆိုင်းဆဲ'}
+            </span>
+          `;
+        }
+
+        // Notes Column HTML
+        let notesHtml = canEditNotes
+          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-36 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
+          : `<span class="text-xs text-slate-600">${item.notes || "-"}</span>`;
+
+        // Auto Release / Status Column HTML
+        let releaseHtml = "";
+        if (item.released) {
+          releaseHtml = canEditOffice
+            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးပြီး ✓</button>`
+            : `<span class="text-xs font-semibold text-slate-500">🚚 ထုတ်ပေးပြီး ✓</span>`;
+        } else if (ready) {
+          releaseHtml = canEditOffice
+            ? `<div class="flex flex-col items-end gap-1">
+                 <span class="text-[11px] font-bold text-teal-700">✅ ထုတ်ပေးနိုင်ပြီ</span>
+                 <button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg shadow-sm">🚚 ထုတ်ပေးမည်</button>
+               </div>`
+            : `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 px-2.5 py-1 rounded-lg">✅ ထုတ်ပေးနိုင်ပြီ</span>`;
+        } else {
+          releaseHtml = `<span class="text-xs text-slate-400 font-medium">⏳ မပြည့်စုံသေးပါ</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-3 text-xs text-slate-500 whitespace-nowrap">${item.batch}</td>
+          <td class="py-3 px-3 font-semibold text-slate-800">${item.customer}</td>
+          <td class="py-3 px-3 text-center font-semibold text-slate-700">${boxCount}</td>
+          <td class="py-3 px-3">${kgHtml}</td>
+          <td class="py-3 px-3">${paymentHtml}</td>
+          <td class="py-3 px-3">${ukHtml}</td>
+          <td class="py-3 px-3">${notesHtml}</td>
+          <td class="py-3 px-3 text-right whitespace-nowrap">${releaseHtml}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function updateItem(id, field, val) {
-      const idx = appData.items.findIndex(i => i.id === id);
-      if (idx === -1) return;
-      appData.items[idx][field] = val;
-      saveData();
+    // ==================== ITEM UPDATES ====================
+    function findItem(id) {
+      return appData.items.find(i => i.id === id);
     }
 
-    function openAddBatchModal() {
-      const name = prompt('Shipment Batch နာမည်အသစ် ရိုက်ထည့်ပါ (ဥပမာ - UK-MM-Batch-02):');
-      if (!name || !name.trim()) return;
-      const b = name.trim();
-      if (!appData.batches.includes(b)) {
-        appData.batches.push(b);
-        selectedBatches.add(b);
-        saveData();
+    function updateActualKg(id, val) {
+      const item = findItem(id);
+      if (!item) return;
+      const num = parseFloat(val);
+      item.actualKg = isNaN(num) ? null : num;
+      if (item.expectedKg != null && item.actualKg != null && Math.abs(item.expectedKg - item.actualKg) < 0.05) {
+        item.kgMatch = "Match";
       }
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updateKgMatch(id, val) {
+      const item = findItem(id);
+      if (!item) return;
+      item.kgMatch = val;
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updatePayment(id, val) {
+      const item = findItem(id);
+      if (!item) return;
+      item.payment = val;
+      renderTable();
+      saveToGitHub();
+    }
+
+    function toggleUkApprove(id) {
+      const item = findItem(id);
+      if (!item) return;
+      item.ukApproved = !item.ukApproved;
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updateNotes(id, val) {
+      const item = findItem(id);
+      if (!item) return;
+      item.notes = val;
+      saveToGitHub();
+    }
+
+    function toggleRelease(id) {
+      const item = findItem(id);
+      if (!item) return;
+      if (!item.released && !isReadyToRelease(item)) {
+        if (!confirm("KG ကိုက်ညီမှု၊ Paid သို့မဟုတ် UK Approve တစ်ခုခု မပြည့်စုံသေးပါ။ ထုတ်ပေးပြီးဟု မှတ်မည်လား?")) return;
+      }
+      item.released = !item.released;
+      renderTable();
+      saveToGitHub();
+    }
+
+    // ==================== PER-BOX KG MODAL ====================
+    function openBoxModal(id) {
+      const item = findItem(id);
+      if (!item) return;
+      activeBoxItemId = id;
+
+      const canEdit = currentRole === "admin" || currentRole === "office";
+      document.getElementById("boxModalSubtitle").textContent = `${item.customer} (${item.batch}) — UK Expected: ${item.expectedKg ?? "-"} kg`;
+      document.getElementById("saveBoxBtn").classList.toggle("hidden", !canEdit);
+      document.getElementById("quickBoxPaste").value = "";
+
+      const count = (item.boxWeights && item.boxWeights.length) ? item.boxWeights.length : (item.photos || 1);
+      document.getElementById("boxCountInput").value = count;
+      document.getElementById("boxCountInput").disabled = !canEdit;
+
+      const weights = Array.isArray(item.boxWeights) ? [...item.boxWeights] : [];
+      while (weights.length < count) weights.push("");
+
+      renderBoxGrid(weights, canEdit);
+      document.getElementById("boxModal").classList.remove("hidden");
+    }
+
+    function renderBoxGrid(weights, canEdit) {
+      const grid = document.getElementById("boxInputsGrid");
+      grid.innerHTML = "";
+      weights.forEach((w, idx) => {
+        const div = document.createElement("div");
+        div.className = "flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5";
+        div.innerHTML = `
+          <span class="text-xs font-semibold text-slate-500 w-10">#${idx + 1}</span>
+          <input type="number" step="0.01" value="${w}" ${canEdit ? "" : "disabled"} oninput="recalcBoxModalTotal()" class="box-weight-input w-full bg-white border border-slate-300 rounded px-2 py-1 text-xs font-semibold text-right" placeholder="0.0" />
+        `;
+        grid.appendChild(div);
+      });
+      recalcBoxModalTotal();
+    }
+
+    function resizeBoxInputs() {
+      const count = Math.max(1, Math.min(200, parseInt(document.getElementById("boxCountInput").value) || 1));
+      const existing = [...document.querySelectorAll(".box-weight-input")].map(el => el.value);
+      while (existing.length < count) existing.push("");
+      renderBoxGrid(existing.slice(0, count), true);
+    }
+
+    function applyQuickBoxPaste() {
+      const raw = document.getElementById("quickBoxPaste").value.trim();
+      if (!raw) return;
+      const nums = raw.split(/[\s,;|\t\n]+/).map(s => parseFloat(s)).filter(n => !isNaN(n));
+      if (nums.length === 0) return;
+      document.getElementById("boxCountInput").value = nums.length;
+      renderBoxGrid(nums, true);
+    }
+
+    function recalcBoxModalTotal() {
+      const inputs = [...document.querySelectorAll(".box-weight-input")];
+      const sum = inputs.reduce((acc, el) => acc + (parseFloat(el.value) || 0), 0);
+      document.getElementById("boxModalTotal").textContent = `${sum.toFixed(2)} kg`;
+    }
+
+    function saveBoxBreakdown() {
+      const item = findItem(activeBoxItemId);
+      if (!item) return;
+      const inputs = [...document.querySelectorAll(".box-weight-input")];
+      const weights = inputs.map(el => parseFloat(el.value) || 0);
+      const total = parseFloat(weights.reduce((a, b) => a + b, 0).toFixed(2));
+
+      item.photos = weights.length;
+      item.boxWeights = weights;
+      item.actualKg = total;
+      if (item.expectedKg != null && Math.abs(item.expectedKg - total) < 0.05) {
+        item.kgMatch = "Match";
+      }
+
+      closeModal("boxModal");
+      renderTable();
+      saveToGitHub();
+    }
+
+    // ==================== EXCEL COPY-PASTE & CSV IMPORT ====================
+    function openBulkImportModal() {
+      populateBatchSelect("bulkBatchSelect");
+      document.getElementById("bulkPasteArea").value = "";
+      parsedBulkRows = [];
+      renderBulkPreview();
+      document.getElementById("bulkImportModal").classList.remove("hidden");
+    }
+
+    function handleCsvUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById("bulkPasteArea").value = e.target.result;
+        parseBulkPreview();
+      };
+      reader.readAsText(file);
+    }
+
+    function parseBulkPreview() {
+      const raw = document.getElementById("bulkPasteArea").value.trim();
+      parsedBulkRows = [];
+      if (!raw) {
+        renderBulkPreview();
+        return;
+      }
+
+      const lines = raw.split(/\r?\n/).filter(l => l.trim() !== "");
+      lines.forEach(line => {
+        // Support Tab (Excel Copy-Paste) or Comma (CSV)
+        const cols = line.includes("\t") ? line.split("\t") : line.split(",");
+        const name = (cols[0] || "").trim();
+        if (!name || ["name", "customer", "customer name", "နာမည်"].includes(name.toLowerCase())) return;
+
+        const photos = parseInt((cols[1] || "").trim()) || 1;
+        const kgVal = parseFloat((cols[2] || "").trim());
+        const expectedKg = isNaN(kgVal) ? null : kgVal;
+        const notes = (cols.slice(3).join(" ") || "").trim();
+
+        parsedBulkRows.push({ customer: name, photos, expectedKg, notes });
+      });
+
+      renderBulkPreview();
+    }
+
+    function renderBulkPreview() {
+      const tbody = document.getElementById("bulkPreviewBody");
+      document.getElementById("bulkCountLabel").textContent = `စုစုပေါင်း: ${parsedBulkRows.length} ဦး`;
+
+      if (parsedBulkRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်လိုက်သည်နှင့် အစမ်းကြည့်ရှုရန် (Preview) ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = parsedBulkRows.map((r, idx) => `
+        <tr>
+          <td class="py-1.5 px-3 text-slate-400">${idx + 1}</td>
+          <td class="py-1.5 px-3 font-semibold text-slate-800">${r.customer}</td>
+          <td class="py-1.5 px-3">${r.photos}</td>
+          <td class="py-1.5 px-3">${r.expectedKg ?? "-"}</td>
+          <td class="py-1.5 px-3 text-slate-500">${r.notes || "-"}</td>
+        </tr>
+      `).join("");
+    }
+
+    function confirmBulkImport() {
+      if (parsedBulkRows.length === 0) {
+        alert("ထည့်သွင်းရန် စာရင်းမရှိသေးပါ။ Excel ထဲမှ Copy ကူးပြီး Paste ထည့်ပါ။");
+        return;
+      }
+      const batch = document.getElementById("bulkBatchSelect").value;
+      const payment = document.getElementById("bulkPaymentDefault").value;
+
+      parsedBulkRows.forEach((r, idx) => {
+        appData.items.push({
+          id: `item-${Date.now()}-${idx}`,
+          batch,
+          customer: r.customer,
+          photos: r.photos,
+          boxWeights: [],
+          expectedKg: r.expectedKg,
+          actualKg: null,
+          kgMatch: "Pending",
+          payment,
+          ukApproved: false,
+          released: false,
+          notes: r.notes
+        });
+      });
+
+      selectedBatches.add(batch);
+      closeModal("bulkImportModal");
+      renderAll();
+      saveToGitHub();
+    }
+
+    // ==================== SINGLE ADD & BATCH MANAGEMENT ====================
+    function populateBatchSelect(selectId) {
+      const sel = document.getElementById(selectId);
+      const currentSelected = [...selectedBatches][0];
+      sel.innerHTML = appData.batches.map(b => `<option value="${b}" ${b === currentSelected ? "selected" : ""}>${b}</option>`).join("");
     }
 
     function openAddCustomerModal() {
-      const sel = document.getElementById('newCustBatch');
-      sel.innerHTML = appData.batches.map(b => `<option value="${b}">${b}</option>`).join('');
-      document.getElementById('addCustomerModal').classList.replace('hidden', 'flex');
+      populateBatchSelect("addBatch");
+      document.getElementById("addName").value = "";
+      document.getElementById("addPhotos").value = "1";
+      document.getElementById("addKg").value = "";
+      document.getElementById("addNotes").value = "";
+      document.getElementById("addCustomerModal").classList.remove("hidden");
     }
 
-    function addCustomer() {
-      const batch = document.getElementById('newCustBatch').value;
-      const customer = document.getElementById('newCustName').value.trim();
-      if (!customer) return alert('Customer နာမည် ထည့်ပါ');
+    function confirmAddCustomer() {
+      const customer = document.getElementById("addName").value.trim();
+      if (!customer) return alert("Customer နာမည် ထည့်ပါ။");
+
+      const batch = document.getElementById("addBatch").value;
+      const photos = parseInt(document.getElementById("addPhotos").value) || 1;
+      const kgVal = parseFloat(document.getElementById("addKg").value);
+      const payment = document.getElementById("addPayment").value;
+      const notes = document.getElementById("addNotes").value.trim();
+
       appData.items.push({
-        id: 'id-' + Date.now(),
+        id: `item-${Date.now()}`,
         batch,
         customer,
-        photos: parseInt(document.getElementById('newCustPhotos').value) || 1,
-        expectedKg: parseFloat(document.getElementById('newCustKg').value) || 0,
-        actualKg: 0,
-        kgMatch: 'Pending',
-        payment: 'Unpaid',
+        photos,
+        boxWeights: [],
+        expectedKg: isNaN(kgVal) ? null : kgVal,
+        actualKg: null,
+        kgMatch: "Pending",
+        payment,
         ukApproved: false,
         released: false,
-        notes: document.getElementById('newCustNotes').value.trim()
+        notes
       });
-      closeModal('addCustomerModal');
-      document.getElementById('newCustName').value = '';
-      document.getElementById('newCustNotes').value = '';
-      saveData();
+
+      selectedBatches.add(batch);
+      closeModal("addCustomerModal");
+      renderAll();
+      saveToGitHub();
     }
 
-    function openBulkModal() {
-      const sel = document.getElementById('bulkBatch');
-      sel.innerHTML = appData.batches.map(b => `<option value="${b}">${b}</option>`).join('');
-      document.getElementById('bulkModal').classList.replace('hidden', 'flex');
+    function openNewBatchModal() {
+      document.getElementById("newBatchName").value = "";
+      document.getElementById("newBatchModal").classList.remove("hidden");
     }
 
-    function importBulk() {
-      const batch = document.getElementById('bulkBatch').value;
-      const lines = document.getElementById('bulkText').value.split('\n').map(l => l.trim()).filter(Boolean);
-      if (!lines.length) return;
-      lines.forEach((line, i) => {
-        const parts = line.split(/,|\t/);
-        appData.items.push({
-          id: 'id-' + Date.now() + '-' + i,
-          batch,
-          customer: (parts[0] || 'Unknown').trim(),
-          photos: parseInt(parts[1]) || 1,
-          expectedKg: parseFloat(parts[2]) || 0,
-          actualKg: 0,
-          kgMatch: 'Pending',
-          payment: 'Unpaid',
-          ukApproved: false,
-          released: false,
-          notes: (parts[3] || '').trim()
-        });
+    function confirmNewBatch() {
+      const name = document.getElementById("newBatchName").value.trim();
+      if (!name) return alert("Batch နာမည် ထည့်ပါ။");
+      if (!appData.batches.includes(name)) appData.batches.push(name);
+      selectedBatches = new Set([name]);
+      closeModal("newBatchModal");
+      renderAll();
+      saveToGitHub();
+    }
+
+    function deleteSelectedBatches() {
+      const toDelete = [...selectedBatches];
+      if (!confirm(`ရွေးထားသော Batch (${toDelete.join(", ")}) နှင့် အထဲရှိ စာရင်းအားလုံးကို ဖျက်မည်မှာ သေချာပါသလား?`)) return;
+
+      appData.batches = appData.batches.filter(b => !selectedBatches.has(b));
+      appData.items = appData.items.filter(i => !selectedBatches.has(i.batch));
+      if (appData.batches.length === 0) appData.batches = ["UK-MM-Batch-01"];
+      selectedBatches = new Set([appData.batches[0]]);
+      renderAll();
+      saveToGitHub();
+    }
+
+    // ==================== SETUP & SHARE LINKS ====================
+    function openSetupModal() {
+      const { user, repo, token } = getConfig();
+      document.getElementById("cfgUser").value = user;
+      document.getElementById("cfgRepo").value = repo;
+      document.getElementById("cfgToken").value = token;
+      document.getElementById("copyFeedback").classList.add("hidden");
+      document.getElementById("setupModal").classList.remove("hidden");
+    }
+
+    function saveSetup() {
+      const user = document.getElementById("cfgUser").value.trim();
+      const repo = document.getElementById("cfgRepo").value.trim();
+      const token = document.getElementById("cfgToken").value.trim();
+      localStorage.setItem("gh_user", user);
+      localStorage.setItem("gh_repo", repo);
+      if (token) localStorage.setItem("gh_token", token);
+      closeModal("setupModal");
+      loadFromGitHub();
+    }
+
+    function copyShareLink(role) {
+      const { user, repo, token } = getConfig();
+      if (!token) {
+        alert("Token အရင်ထည့်ပြီး Save Settings နှိပ်ပါ။");
+        return;
+      }
+      const baseUrl = window.location.origin + window.location.pathname;
+      const shareUrl = `${baseUrl}?u=${encodeURIComponent(user)}&r=${encodeURIComponent(repo)}&t=${encodeURIComponent(btoa(token))}&role=${role}`;
+
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const fb = document.getElementById("copyFeedback");
+        fb.textContent = `✅ ${ROLE_LABELS[role]} Link ကို Copy ကူးပြီးပါပြီ — Viber မှ ပို့ပေးနိုင်ပါပြီ။`;
+        fb.classList.remove("hidden");
       });
-      closeModal('bulkModal');
-      document.getElementById('bulkText').value = '';
-      saveData();
-    }
-
-    function deleteSelectedBatch() {
-      const target = prompt(`အပြီးဖျက်ပစ်မည့် Batch နာမည် အတိအကျ ရိုက်ထည့်ပါ:\n(${appData.batches.join(', ')})`);
-      if (!target || !appData.batches.includes(target.trim())) return alert('Batch နာမည် မမှန်ပါ');
-      const b = target.trim();
-      const count = appData.items.filter(i => i.batch === b).length;
-      if (!confirm(`⚠️ "${b}" ထဲက Customer စာရင်း (${count}) ခုလုံးကို အပြီးဖျက်မှာ သေချာပါသလား?`)) return;
-      appData.batches = appData.batches.filter(x => x !== b);
-      appData.items = appData.items.filter(i => i.batch !== b);
-      selectedBatches.delete(b);
-      saveData();
     }
 
     function exportCSV() {
-      const rows = [['Batch', 'Customer', 'Photos', 'ExpectedKG', 'ActualKG', 'KG_Match', 'Payment', 'UK_Approved', 'Released', 'Notes']];
-      appData.items.filter(i => selectedBatches.has(i.batch)).forEach(i => {
-        rows.push([i.batch, i.customer, i.photos, i.expectedKg, i.actualKg, i.kgMatch, i.payment, i.ukApproved, i.released, `"${(i.notes||'').replace(/"/g,'""')}"`]);
+      const batchItems = appData.items.filter(i => selectedBatches.has(i.batch));
+      const rows = [["Batch", "Customer", "Boxes", "Expected_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Released", "Notes"]];
+      batchItems.forEach(i => {
+        rows.push([i.batch, i.customer, i.photos, i.expectedKg ?? "", i.actualKg ?? "", i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || ""]);
       });
-      const csv = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const a = document.createElement('a');
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `cargo-backup-${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `cargo-export-${Date.now()}.csv`;
       a.click();
     }
 
-    function closeModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); }
+    function closeModal(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
 
-    loadData();
+    // Boot
+    initFromUrl();
+    loadFromGitHub();
   </script>
 </body>
 </html>
