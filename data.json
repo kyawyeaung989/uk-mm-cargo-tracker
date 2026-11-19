@@ -38,7 +38,7 @@
       "kgMatch": "Pending",
       "payment": "Paid",
       "ukApproved": true,
-      "released": false,
+      "released": true,
       "notes": "Brand"
     },
     {
