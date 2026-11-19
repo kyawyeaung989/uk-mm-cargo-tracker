@@ -8,9 +8,15 @@
       "batch": "UK-MM-Batch-01",
       "customer": "Ma Su",
       "photos": 5,
-      "boxWeights": [],
+      "boxWeights": [
+        45,
+        6,
+        2,
+        1,
+        1
+      ],
       "expectedKg": 67,
-      "actualKg": null,
+      "actualKg": 55,
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
