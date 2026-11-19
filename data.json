@@ -9,12 +9,17 @@
       "customer": "Ma Su (Sample)",
       "photos": 3,
       "expectedKg": 5.5,
-      "actualKg": 5.5,
+      "actualKg": 42,
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
       "released": false,
-      "notes": "UK မှ ငွေရှင်းပြီး"
+      "notes": "UK မှ ငွေရှင်းပြီး",
+      "boxWeights": [
+        4,
+        6,
+        32
+      ]
     }
   ]
 }
