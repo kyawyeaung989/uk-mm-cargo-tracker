@@ -24,7 +24,7 @@
       "photos": 1,
       "boxWeights": [],
       "expectedKg": 3.7,
-      "actualKg": 9,
+      "actualKg": null,
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
