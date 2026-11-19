@@ -14,7 +14,7 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": ""
     }
   ]
