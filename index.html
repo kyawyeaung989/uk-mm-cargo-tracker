@@ -47,31 +47,31 @@
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 mt-5 space-y-5">
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-5 space-y-5">
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-2 sm:grid-cols-6 gap-3">
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">စုစုပေါင်း Customer</p>
         <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">⚖️ KG ကိုက်ပြီး</p>
         <p id="statKg" class="text-2xl font-bold text-blue-600 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">💳 Paid (ငွေဝင်ပြီး)</p>
         <p id="statPaid" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">🇬🇧 UK Approved</p>
         <p id="statUk" class="text-2xl font-bold text-purple-600 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">✅ ထုတ်ပေးနိုင်ပြီ</p>
         <p id="statReady" class="text-2xl font-bold text-teal-600 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">🚚 ထုတ်ပေးလိုက်ပြီ</p>
         <p id="statReleased" class="text-2xl font-bold text-slate-700 mt-1">0</p>
       </div>
@@ -120,32 +120,31 @@
           </label>
         </div>
         <div class="sm:col-span-2 flex gap-2">
-          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300">
+          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2.5 py-2 rounded-lg border border-slate-300">
             ⬇️ CSV
           </button>
-          <button id="deleteBatchBtn" onclick="deleteSelectedBatches()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-3 py-2 rounded-lg border border-rose-200">
+          <button id="deleteBatchBtn" onclick="deleteSelectedBatches()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2.5 py-2 rounded-lg border border-rose-200">
             🗑️ Batch ဖျက်မည်
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Main Data Table -->
+    <!-- Main Data Table (BATCH column removed for clean right-side visibility) -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-sm">
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
-              <th class="py-3 px-3">Batch</th>
-              <th class="py-3 px-3">Customer နာမည်</th>
-              <th class="py-3 px-3 text-center">ပုံး/ထုပ်</th>
-              <th class="py-3 px-3">⚖️ KG</th>
-              <th class="py-3 px-3">💳 ငွေရှင်းမှု (Page Admin)</th>
-              <th class="py-3 px-3">🇬🇧 UK Approve (UK Admin)</th>
-              <th class="py-3 px-3">Notes</th>
-              <th class="py-3 px-3">📌 ကျန်ရှိမှတ်တမ်း (ပုံး/KG ကျန်)</th>
-              <th class="py-3 px-3 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
-              <th class="py-3 px-3 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
+              <th class="py-2.5 px-2">Customer နာမည်</th>
+              <th class="py-2.5 px-2 text-center">ပုံး/ထုပ်</th>
+              <th class="py-2.5 px-2">⚖️ KG</th>
+              <th class="py-2.5 px-2">💳 ငွေရှင်းမှု</th>
+              <th class="py-2.5 px-2">🇬🇧 UK Approve</th>
+              <th class="py-2.5 px-2">Notes</th>
+              <th class="py-2.5 px-2">📌 ကျန်ရှိမှတ်တမ်း</th>
+              <th class="py-2.5 px-2 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
+              <th class="py-2.5 px-2 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
@@ -286,7 +285,6 @@
         </div>
       </div>
 
-      <!-- Editable Preview Table -->
       <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl">
         <table class="w-full text-left text-xs">
           <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
@@ -570,6 +568,7 @@
       const hideReleased = document.getElementById("hideReleased").checked;
 
       const batchItems = appData.items.filter(i => selectedBatches.has(i.batch));
+      const showMultiBatchTag = selectedBatches.size > 1;
 
       document.getElementById("statTotal").textContent = batchItems.length;
       document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
@@ -616,26 +615,33 @@
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/30 hover:bg-teal-50/60" : "hover:bg-slate-50");
 
-        // Customer Name (Admin can easy-edit)
-        const customerHtml = isAdmin
-          ? `<input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="w-36 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded px-1.5 py-1 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
-          : `<span class="font-semibold text-slate-800">${item.customer}</span>`;
+        const batchSubTag = showMultiBatchTag
+          ? `<div class="text-[10px] text-indigo-600 font-medium mt-0.5">${item.batch}</div>`
+          : "";
 
-        // Box Count (Editable for Admin & Office Staff)
+        const customerHtml = isAdmin
+          ? `<div>
+               <input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded px-1 py-0.5 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />
+               ${batchSubTag}
+             </div>`
+          : `<div>
+               <span class="font-semibold text-slate-800">${item.customer}</span>
+               ${batchSubTag}
+             </div>`;
+
         const boxHtml = canEditOffice
-          ? `<input type="number" min="1" value="${boxCount}" onchange="updateBoxCount('${item.id}', this.value)" class="w-14 border border-slate-300 rounded px-1.5 py-1 text-xs font-semibold text-center text-slate-800" />`
+          ? `<input type="number" min="1" value="${boxCount}" onchange="updateBoxCount('${item.id}', this.value)" class="w-12 border border-slate-300 rounded px-1 py-1 text-xs font-semibold text-center text-slate-800" />`
           : `<span class="font-semibold text-slate-700">${boxCount}</span>`;
 
-        // Single Clean KG Input + Per-Box Modal + Match Status
         let kgHtml = "";
         if (canEditOffice) {
           kgHtml = `
-            <div class="flex flex-wrap items-center gap-1.5">
-              <input type="number" step="0.01" value="${displayKg}" placeholder="KG" onchange="updateKgSingle('${item.id}', this.value)" class="w-20 border border-slate-300 rounded px-2 py-1 text-xs font-semibold text-slate-800" />
-              <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-2 py-1 rounded border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                📦 ${hasBreakdown ? boxCount + 'ပုံးခွဲပြီး' : 'ပုံးခွဲ'}
+            <div class="flex flex-wrap items-center gap-1">
+              <input type="number" step="0.01" value="${displayKg}" placeholder="KG" onchange="updateKgSingle('${item.id}', this.value)" class="w-16 border border-slate-300 rounded px-1.5 py-1 text-xs font-semibold text-slate-800" />
+              <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-1.5 py-1 rounded border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                📦 ${hasBreakdown ? boxCount + 'ပုံး' : 'ခွဲ'}
               </button>
-              <select onchange="updateKgMatch('${item.id}', this.value)" class="text-xs font-semibold rounded px-2 py-1 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+              <select onchange="updateKgMatch('${item.id}', this.value)" class="text-xs font-semibold rounded px-1.5 py-1 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
                 <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
                 <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
               </select>
@@ -643,73 +649,66 @@
           `;
         } else {
           kgHtml = `
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1">
               <span class="text-xs font-semibold text-slate-700">${displayKg !== "" ? displayKg + " kg" : "-"}</span>
               ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${boxCount}ပုံး)</button>` : ""}
-              <span class="text-xs font-semibold px-2 py-0.5 rounded ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+              <span class="text-xs font-semibold px-1.5 py-0.5 rounded ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
                 ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
               </span>
             </div>
           `;
         }
 
-        // Payment Column
         let paymentHtml = canEditPage
-          ? `<select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2.5 py-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+          ? `<select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
                <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
                <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
              </select>`
-          : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
+          : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
 
-        // UK Approve Column
         let ukHtml = canEditUk
-          ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
-               ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve လုပ်ရန်'}
+          ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-2.5 py-1 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
+               ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve'}
              </button>`
-          : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆိုင်းဆဲ'}</span>`;
+          : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span>`;
 
-        // Notes Column
         let notesHtml = canEditNotes
-          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-36 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
+          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-28 border border-slate-200 rounded px-1.5 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
           : `<span class="text-xs text-slate-600">${item.notes || "-"}</span>`;
 
-        // Remaining / ကျန်ရှိမှတ်တမ်း Column (Separate from Notes)
         let remainingHtml = canEditRemaining
-          ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="ဥပမာ: 1 ပုံး ကျန် / 20 kg ကျန်" class="w-40 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/60 text-amber-900 font-medium' : 'border-slate-200'} rounded px-2 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
+          ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="1 ပုံးကျန် / 20kg ကျန်" class="w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/60 text-amber-900 font-medium' : 'border-slate-200'} rounded px-1.5 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
           : `<span class="inline-block text-xs ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded' : 'text-slate-400'}">${item.remainingNote || "-"}</span>`;
 
-        // ထုတ်ပေးနိုင်ပြီ (Auto Ready Status Column)
         let readyHtml = ready
-          ? `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg">✅ ထုတ်ပေးနိုင်ပြီ</span>`
-          : `<span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg">⏳ မပြည့်စုံသေး</span>`;
+          ? `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-1 rounded-lg">✅ ရပြီ</span>`
+          : `<span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">⏳ စောင့်ဆဲ</span>`;
 
-        // ထုတ်ပေးလိုက်ပြီ (Released Action Column)
         let releasedHtml = "";
         if (item.released) {
           releasedHtml = canEditOffice
-            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ ✓</button>`
-            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ ✓</span>`;
+            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-lg">🚚 ထုတ်ပြီး ✓</button>`
+            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg">🚚 ထုတ်ပြီး ✓</span>`;
         } else if (canEditOffice) {
-          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ</button>`;
+          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2.5 py-1 rounded-lg">🚚 ထုတ်ပေးမည်</button>`;
         } else {
           releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
         }
 
         const deleteRowBtn = isAdmin
-          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="ml-1.5 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
+          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="ml-1 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
           : "";
 
         tr.innerHTML = `
-          <td class="py-3 px-3 text-xs text-slate-500 whitespace-nowrap">${item.batch}</td>
-          <td class="py-3 px-3">${customerHtml}</td>
-          <td class="py-3 px-3 text-center whitespace-nowrap">${boxHtml}</td>
-          <td class="py-3 px-3">${kgHtml}</td>
-          <td class="py-3 px-3">${paymentHtml}</td>
-          <td class="py-3 px-3">${ukHtml}</td>
-          <td class="py-3 px-3">${notesHtml}</td>
-          <td class="py-3 px-3">${remainingHtml}</td>
-          <td class="py-3 px-3 text-center whitespace-nowrap">${readyHtml}</td>
-          <td class="py-3 px-3 text-right whitespace-nowrap">${releasedHtml}${deleteRowBtn}</td>
+          <td class="py-2.5 px-2">${customerHtml}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap">${boxHtml}</td>
+          <td class="py-2.5 px-2">${kgHtml}</td>
+          <td class="py-2.5 px-2 whitespace-nowrap">${paymentHtml}</td>
+          <td class="py-2.5 px-2 whitespace-nowrap">${ukHtml}</td>
+          <td class="py-2.5 px-2">${notesHtml}</td>
+          <td class="py-2.5 px-2">${remainingHtml}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap">${readyHtml}</td>
+          <td class="py-2.5 px-2 text-right whitespace-nowrap">${releasedHtml}${deleteRowBtn}</td>
         `;
         tbody.appendChild(tr);
       });
