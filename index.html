@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UK → MM Cargo Approval Board</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', 'Noto Sans Myanmar', sans-serif; background-color: #f1f5f9; }
@@ -25,7 +26,6 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <!-- Role Selector (Locked when opened via Staff/UK Share Link) -->
         <div id="roleContainer">
           <select id="roleSelect" onchange="changeRole()" class="bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-1.5 font-medium focus:outline-none">
             <option value="admin">👑 View All (Admin / Full)</option>
@@ -50,7 +50,7 @@
   <main class="max-w-7xl mx-auto px-4 mt-5 space-y-5">
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-6 gap-3">
       <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">စုစုပေါင်း Customer</p>
         <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
@@ -67,9 +67,13 @@
         <p class="text-xs text-slate-500 font-medium">🇬🇧 UK Approved</p>
         <p id="statUk" class="text-2xl font-bold text-purple-600 mt-1">0</p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 col-span-2 sm:col-span-1">
-        <p class="text-xs text-slate-500 font-medium">✅ ထုတ်ပေးနိုင်ပြီ / ပြီး</p>
-        <p class="text-2xl font-bold text-teal-600 mt-1"><span id="statReady">0</span> <span class="text-sm font-normal text-slate-400">/ <span id="statReleased">0</span></span></p>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">✅ ထုတ်ပေးနိုင်ပြီ</p>
+        <p id="statReady" class="text-2xl font-bold text-teal-600 mt-1">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs text-slate-500 font-medium">🚚 ထုတ်ပေးလိုက်ပြီ</p>
+        <p id="statReleased" class="text-2xl font-bold text-slate-700 mt-1">0</p>
       </div>
     </div>
 
@@ -81,7 +85,6 @@
           <div id="batchPills" class="flex flex-wrap gap-2"></div>
         </div>
 
-        <!-- Admin Only Buttons -->
         <div id="adminActionBtns" class="flex flex-wrap gap-2">
           <button onclick="openNewBatchModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-semibold shadow-sm">
             + Batch အသစ်ဖွင့်မည်
@@ -90,7 +93,7 @@
             + Customer ထည့်မည်
           </button>
           <button onclick="openBulkImportModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-semibold shadow-sm">
-            📋 Excel Copy-Paste တင်မည်
+            📋 Excel Copy-Paste / File တင်မည်
           </button>
         </div>
       </div>
@@ -104,16 +107,16 @@
           <select id="statusFilter" onchange="renderTable()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
             <option value="all">အားလုံးပြမည် (All Status)</option>
             <option value="ready">✅ ထုတ်ပေးနိုင်ပြီ (Ready)</option>
+            <option value="released">🚚 ထုတ်ပေးလိုက်ပြီ (Released)</option>
             <option value="pending_kg">⚖️ KG မကိုက်/မစစ်ရသေး</option>
             <option value="unpaid">💳 Unpaid (ငွေမရှင်းရသေး)</option>
             <option value="pending_uk">🇬🇧 UK Approve စောင့်ဆိုင်းဆဲ</option>
-            <option value="released">🚚 ထုတ်ပေးပြီး (Released)</option>
           </select>
         </div>
         <div class="sm:col-span-3 flex items-center">
           <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-600 cursor-pointer select-none border border-slate-200 rounded-lg px-3 py-2 w-full bg-slate-50">
             <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600" />
-            <span>ထုတ်ပေးပြီးသား ဖျောက်ထားမည်</span>
+            <span>ထုတ်ပေးလိုက်ပြီးသား ဖျောက်မည်</span>
           </label>
         </div>
         <div class="sm:col-span-2 flex gap-2">
@@ -121,7 +124,7 @@
             ⬇️ CSV
           </button>
           <button id="deleteBatchBtn" onclick="deleteSelectedBatches()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-3 py-2 rounded-lg border border-rose-200">
-            🗑️ ဖျက်မည်
+            🗑️ Batch ဖျက်မည်
           </button>
         </div>
       </div>
@@ -140,7 +143,8 @@
               <th class="py-3 px-3">💳 ငွေရှင်းမှု (Page Admin)</th>
               <th class="py-3 px-3">🇬🇧 UK Approve (UK Admin)</th>
               <th class="py-3 px-3">Notes</th>
-              <th class="py-3 px-3 text-right">ထုတ်ပေးမှု (Auto Status)</th>
+              <th class="py-3 px-3 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
+              <th class="py-3 px-3 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
@@ -159,7 +163,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
       <h2 class="text-lg font-bold text-slate-800">⚙️ GitHub Sync Setup (တစ်ကြိမ်သာ ထည့်ရန်)</h2>
       <p class="text-xs text-slate-500 leading-relaxed">
-        အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Share Link</b> တွေကို Copy ယူပြီး <b>Office Staff</b>၊ <b>Page Admin</b> နဲ့ <b>UK Admin</b> ဆီ ပို့ပေးလိုက်ရုံပါပဲ (သူတို့ဆီမှာ တခြား Role ပြောင်းလို့မရအောင် Lock လုပ်ထားပြီးသား ဖြစ်ပါမယ်)။
+        အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Share Link</b> တွေကို Copy ယူပြီး <b>Office Staff</b>၊ <b>Page Admin</b> နဲ့ <b>UK Admin</b> ဆီ ပို့ပေးလိုက်ရုံပါပဲ။
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -215,7 +219,6 @@
         </div>
       </div>
 
-      <!-- Quick Paste / Box Count Adjuster -->
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
@@ -230,7 +233,6 @@
         </div>
       </div>
 
-      <!-- Grid of Individual Box Inputs -->
       <div id="boxInputsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 overflow-y-auto pr-1 flex-1 py-1"></div>
 
       <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -246,11 +248,11 @@
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 class="text-lg font-bold text-slate-800">📋 Excel မှ Customer List အများကြီး တင်မည်</h2>
-          <p class="text-xs text-slate-500">Excel ထဲက row တွေကို <b>Ctrl + C</b> ကူးပြီး အောက်က အကွက်ထဲ <b>Ctrl + V</b> နှိပ်ချလိုက်ပါ (Column အစဉ်: Customer နာမည် | ပုံး/ထုပ် | KG | Notes)</p>
+          <p class="text-xs text-slate-500">Excel ထဲက row တွေကို <b>Ctrl + C</b> ကူးပြီး အောက်က အကွက်ထဲ <b>Ctrl + V</b> နှိပ်ချပါ (သို့မဟုတ် <b>.xlsx / .csv</b> ဖိုင်ရွေးတင်ပါ)</p>
         </div>
-        <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg">
-          📂 CSV ဖိုင်ရွေးတင်မည်
-          <input type="file" accept=".csv,.txt" onchange="handleCsvUpload(event)" class="hidden" />
+        <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold px-3 py-2 rounded-lg">
+          📂 Excel (.xlsx) / CSV ဖိုင်ရွေးတင်မည်
+          <input type="file" accept=".xlsx,.xls,.csv,.txt" onchange="handleExcelFileUpload(event)" class="hidden" />
         </label>
       </div>
 
@@ -268,7 +270,7 @@
         </div>
       </div>
 
-      <textarea id="bulkPasteArea" oninput="parseBulkPreview()" rows="4" placeholder="Excel ထဲမှ Copy ကူးထားသည်များကို ဒီနေရာတွင် Ctrl + V နှိပ်ပြီး Paste ချပါ..." class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+      <textarea id="bulkPasteArea" oninput="parseBulkPreview()" rows="4" placeholder="Excel ထဲမှ Copy ကူးထားသည်များကို ဒီနေရာတွင် Ctrl + V နှိပ်ပြီး Paste ချပါ... (Column အစဉ်: Customer နာမည် | ပုံ/ထုပ် | KG | Notes)" class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
 
       <!-- Live Preview Table -->
       <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl">
@@ -283,7 +285,7 @@
             </tr>
           </thead>
           <tbody id="bulkPreviewBody" class="divide-y divide-slate-100">
-            <tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်လိုက်သည်နှင့် အစမ်းကြည့်ရှုရန် (Preview) ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>
+            <tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်ခြင်း သို့မဟုတ် Excel ဖိုင်ရွေးတင်ခြင်း ပြုလုပ်သည်နှင့် Preview ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>
           </tbody>
         </table>
       </div>
@@ -354,7 +356,6 @@
   </div>
 
   <script>
-    // ==================== STATE & CONFIG ====================
     let appData = { batches: ["UK-MM-Batch-01"], items: [] };
     let selectedBatches = new Set(["UK-MM-Batch-01"]);
     let fileSha = null;
@@ -426,7 +427,6 @@
       renderTable();
     }
 
-    // ==================== GITHUB SYNC ====================
     async function loadFromGitHub() {
       const { user, repo, token } = getConfig();
       const statusEl = document.getElementById("syncStatus");
@@ -447,7 +447,6 @@
         if (!appData.batches || appData.batches.length === 0) {
           appData.batches = ["UK-MM-Batch-01"];
         }
-        // Keep valid selections or select latest
         const validSelected = [...selectedBatches].filter(b => appData.batches.includes(b));
         selectedBatches = new Set(validSelected.length ? validSelected : [appData.batches[appData.batches.length - 1]]);
 
@@ -503,15 +502,10 @@
       }
     }
 
-    // ==================== AUTO RELEASE CHECK ====================
     function isReadyToRelease(item) {
-      const kgOk = item.kgMatch === "Match";
-      const paidOk = item.payment === "Paid";
-      const ukOk = item.ukApproved === true;
-      return kgOk && paidOk && ukOk;
+      return item.kgMatch === "Match" && item.payment === "Paid" && item.ukApproved === true;
     }
 
-    // ==================== RENDERING ====================
     function renderAll() {
       renderBatchPills();
       renderTable();
@@ -552,7 +546,6 @@
 
       const batchItems = appData.items.filter(i => selectedBatches.has(i.batch));
 
-      // Update Summary Cards
       document.getElementById("statTotal").textContent = batchItems.length;
       document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
       document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
@@ -560,16 +553,15 @@
       document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
       document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
-      // Filter Rows
       const filtered = batchItems.filter(item => {
         if (hideReleased && item.released) return false;
         if (search && !item.customer.toLowerCase().includes(search) && !(item.notes || "").toLowerCase().includes(search)) return false;
 
         if (filter === "ready") return !item.released && isReadyToRelease(item);
+        if (filter === "released") return item.released;
         if (filter === "pending_kg") return item.kgMatch !== "Match";
         if (filter === "unpaid") return item.payment !== "Paid";
         if (filter === "pending_uk") return !item.ukApproved;
-        if (filter === "released") return item.released;
         return true;
       });
 
@@ -580,10 +572,11 @@
       }
       emptyState.classList.add("hidden");
 
-      const canEditOffice = currentRole === "admin" || currentRole === "office";
-      const canEditPage = currentRole === "admin" || currentRole === "page";
-      const canEditUk = currentRole === "admin" || currentRole === "uk";
-      const canEditNotes = currentRole === "admin" || currentRole === "page" || currentRole === "office";
+      const isAdmin = currentRole === "admin";
+      const canEditOffice = isAdmin || currentRole === "office";
+      const canEditPage = isAdmin || currentRole === "page";
+      const canEditUk = isAdmin || currentRole === "uk";
+      const canEditNotes = isAdmin || currentRole === "page" || currentRole === "office";
 
       filtered.forEach(item => {
         const ready = isReadyToRelease(item);
@@ -591,9 +584,9 @@
         const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
 
         const tr = document.createElement("tr");
-        tr.className = item.released ? "bg-slate-50/70 opacity-75" : (ready ? "bg-teal-50/30 hover:bg-teal-50/60" : "hover:bg-slate-50");
+        tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/30 hover:bg-teal-50/60" : "hover:bg-slate-50");
 
-        // KG Column HTML
+        // 1. KG Column
         let kgHtml = "";
         if (canEditOffice) {
           kgHtml = `
@@ -621,60 +614,46 @@
           `;
         }
 
-        // Payment Column HTML
-        let paymentHtml = "";
-        if (canEditPage) {
-          paymentHtml = `
-            <select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2.5 py-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
-              <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
-              <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
-            </select>
-          `;
-        } else {
-          paymentHtml = `
-            <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-              ${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}
-            </span>
-          `;
-        }
+        // 2. Payment Column
+        let paymentHtml = canEditPage
+          ? `<select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2.5 py-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+               <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
+               <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
+             </select>`
+          : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
 
-        // UK Approve Column HTML
-        let ukHtml = "";
-        if (canEditUk) {
-          ukHtml = `
-            <button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
-              ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve လုပ်ရန်'}
-            </button>
-          `;
-        } else {
-          ukHtml = `
-            <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">
-              ${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆိုင်းဆဲ'}
-            </span>
-          `;
-        }
+        // 3. UK Approve Column
+        let ukHtml = canEditUk
+          ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
+               ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve လုပ်ရန်'}
+             </button>`
+          : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆိုင်းဆဲ'}</span>`;
 
-        // Notes Column HTML
+        // 4. Notes Column
         let notesHtml = canEditNotes
-          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-36 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
+          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-32 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
           : `<span class="text-xs text-slate-600">${item.notes || "-"}</span>`;
 
-        // Auto Release / Status Column HTML
-        let releaseHtml = "";
+        // 5. ထုတ်ပေးနိုင်ပြီ (Auto Ready Status Column)
+        let readyHtml = ready
+          ? `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg">✅ ထုတ်ပေးနိုင်ပြီ</span>`
+          : `<span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg">⏳ မပြည့်စုံသေး</span>`;
+
+        // 6. ထုတ်ပေးလိုက်ပြီ (Released Action Column)
+        let releasedHtml = "";
         if (item.released) {
-          releaseHtml = canEditOffice
-            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးပြီး ✓</button>`
-            : `<span class="text-xs font-semibold text-slate-500">🚚 ထုတ်ပေးပြီး ✓</span>`;
-        } else if (ready) {
-          releaseHtml = canEditOffice
-            ? `<div class="flex flex-col items-end gap-1">
-                 <span class="text-[11px] font-bold text-teal-700">✅ ထုတ်ပေးနိုင်ပြီ</span>
-                 <button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg shadow-sm">🚚 ထုတ်ပေးမည်</button>
-               </div>`
-            : `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 px-2.5 py-1 rounded-lg">✅ ထုတ်ပေးနိုင်ပြီ</span>`;
+          releasedHtml = canEditOffice
+            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ ✓</button>`
+            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ ✓</span>`;
+        } else if (canEditOffice) {
+          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-3 py-1.5 rounded-lg">🚚 ထုတ်ပေးလိုက်ပြီ</button>`;
         } else {
-          releaseHtml = `<span class="text-xs text-slate-400 font-medium">⏳ မပြည့်စုံသေးပါ</span>`;
+          releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
         }
+
+        const deleteRowBtn = isAdmin
+          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="ml-1.5 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
+          : "";
 
         tr.innerHTML = `
           <td class="py-3 px-3 text-xs text-slate-500 whitespace-nowrap">${item.batch}</td>
@@ -684,15 +663,24 @@
           <td class="py-3 px-3">${paymentHtml}</td>
           <td class="py-3 px-3">${ukHtml}</td>
           <td class="py-3 px-3">${notesHtml}</td>
-          <td class="py-3 px-3 text-right whitespace-nowrap">${releaseHtml}</td>
+          <td class="py-3 px-3 text-center whitespace-nowrap">${readyHtml}</td>
+          <td class="py-3 px-3 text-right whitespace-nowrap">${releasedHtml}${deleteRowBtn}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // ==================== ITEM UPDATES ====================
     function findItem(id) {
       return appData.items.find(i => i.id === id);
+    }
+
+    function deleteSingleItem(id) {
+      const item = findItem(id);
+      if (!item) return;
+      if (!confirm(`"${item.customer}" ကို စာရင်းမှ ဖျက်မည်မှာ သေချာပါသလား?`)) return;
+      appData.items = appData.items.filter(i => i.id !== id);
+      renderAll();
+      saveToGitHub();
     }
 
     function updateActualKg(id, val) {
@@ -742,7 +730,7 @@
       const item = findItem(id);
       if (!item) return;
       if (!item.released && !isReadyToRelease(item)) {
-        if (!confirm("KG ကိုက်ညီမှု၊ Paid သို့မဟုတ် UK Approve တစ်ခုခု မပြည့်စုံသေးပါ။ ထုတ်ပေးပြီးဟု မှတ်မည်လား?")) return;
+        if (!confirm("KG ကိုက်ညီမှု၊ Paid သို့မဟုတ် UK Approve တစ်ခုခု မပြည့်စုံသေးပါ။ ပစ္စည်းထုတ်ပေးလိုက်ပြီဟု မှတ်မည်လား?")) return;
       }
       item.released = !item.released;
       renderTable();
@@ -827,7 +815,7 @@
       saveToGitHub();
     }
 
-    // ==================== EXCEL COPY-PASTE & CSV IMPORT ====================
+    // ==================== EXCEL (.XLSX / .CSV) & COPY-PASTE IMPORT ====================
     function openBulkImportModal() {
       populateBatchSelect("bulkBatchSelect");
       document.getElementById("bulkPasteArea").value = "";
@@ -836,15 +824,44 @@
       document.getElementById("bulkImportModal").classList.remove("hidden");
     }
 
-    function handleCsvUpload(event) {
+    function handleExcelFileUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
-      reader.onload = e => {
-        document.getElementById("bulkPasteArea").value = e.target.result;
-        parseBulkPreview();
+      reader.onload = function (e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+          parsedBulkRows = [];
+          rows.forEach(cols => {
+            if (!Array.isArray(cols)) return;
+            const name = String(cols[0] ?? "").trim();
+            if (!name || ["name", "customer", "customer name", "နာမည်", "customer နာမည်"].includes(name.toLowerCase())) return;
+
+            const photos = parseInt(String(cols[1] ?? "").trim()) || 1;
+            const kgVal = parseFloat(String(cols[2] ?? "").trim());
+            const expectedKg = isNaN(kgVal) ? null : kgVal;
+            const notes = cols.slice(3).map(c => String(c ?? "").trim()).filter(Boolean).join(" ");
+
+            parsedBulkRows.push({ customer: name, photos, expectedKg, notes });
+          });
+
+          document.getElementById("bulkPasteArea").value = parsedBulkRows
+            .map(r => `${r.customer}\t${r.photos}\t${r.expectedKg ?? ""}\t${r.notes}`)
+            .join("\n");
+
+          renderBulkPreview();
+        } catch (err) {
+          alert("Excel ဖိုင်ဖတ်ရာတွင် အမှားဖြစ်သွားသည်: " + err.message);
+        }
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
+      event.target.value = "";
     }
 
     function parseBulkPreview() {
@@ -857,10 +874,9 @@
 
       const lines = raw.split(/\r?\n/).filter(l => l.trim() !== "");
       lines.forEach(line => {
-        // Support Tab (Excel Copy-Paste) or Comma (CSV)
         const cols = line.includes("\t") ? line.split("\t") : line.split(",");
         const name = (cols[0] || "").trim();
-        if (!name || ["name", "customer", "customer name", "နာမည်"].includes(name.toLowerCase())) return;
+        if (!name || ["name", "customer", "customer name", "နာမည်", "customer နာမည်"].includes(name.toLowerCase())) return;
 
         const photos = parseInt((cols[1] || "").trim()) || 1;
         const kgVal = parseFloat((cols[2] || "").trim());
@@ -878,7 +894,7 @@
       document.getElementById("bulkCountLabel").textContent = `စုစုပေါင်း: ${parsedBulkRows.length} ဦး`;
 
       if (parsedBulkRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်လိုက်သည်နှင့် အစမ်းကြည့်ရှုရန် (Preview) ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Paste ထည့်ခြင်း သို့မဟုတ် Excel ဖိုင်ရွေးတင်ခြင်း ပြုလုပ်သည်နှင့် Preview ဤနေရာတွင် ပေါ်လာပါမည်။</td></tr>`;
         return;
       }
 
@@ -895,7 +911,7 @@
 
     function confirmBulkImport() {
       if (parsedBulkRows.length === 0) {
-        alert("ထည့်သွင်းရန် စာရင်းမရှိသေးပါ။ Excel ထဲမှ Copy ကူးပြီး Paste ထည့်ပါ။");
+        alert("ထည့်သွင်းရန် စာရင်းမရှိသေးပါ။ Excel ထဲမှ Copy ကူးပြီး Paste ထည့်ပါ သို့မဟုတ် ဖိုင်ရွေးတင်ပါ။");
         return;
       }
       const batch = document.getElementById("bulkBatchSelect").value;
@@ -1037,9 +1053,9 @@
 
     function exportCSV() {
       const batchItems = appData.items.filter(i => selectedBatches.has(i.batch));
-      const rows = [["Batch", "Customer", "Boxes", "Expected_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Released", "Notes"]];
+      const rows = [["Batch", "Customer", "Boxes", "Expected_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Notes"]];
       batchItems.forEach(i => {
-        rows.push([i.batch, i.customer, i.photos, i.expectedKg ?? "", i.actualKg ?? "", i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || ""]);
+        rows.push([i.batch, i.customer, i.photos, i.expectedKg ?? "", i.actualKg ?? "", i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || ""]);
       });
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
@@ -1053,7 +1069,6 @@
       document.getElementById(id).classList.add("hidden");
     }
 
-    // Boot
     initFromUrl();
     loadFromGitHub();
   </script>
