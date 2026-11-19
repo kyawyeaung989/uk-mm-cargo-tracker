@@ -27,10 +27,14 @@
       "id": "item-1795102170158-0",
       "batch": "UK-MM-Batch-01",
       "customer": "Su Yee Nandar",
-      "photos": 1,
-      "boxWeights": [],
+      "photos": 3,
+      "boxWeights": [
+        5,
+        10,
+        12
+      ],
       "expectedKg": 3.7,
-      "actualKg": null,
+      "actualKg": 27,
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
