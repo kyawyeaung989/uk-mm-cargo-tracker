@@ -101,7 +101,7 @@
       <!-- Filter & Search Bar -->
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-2 border-t border-slate-100">
         <div class="sm:col-span-4">
-          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes ရှာရန်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" />
+          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / ဖုန်း ရှာရန်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" />
         </div>
         <div class="sm:col-span-3">
           <select id="statusFilter" onchange="renderTable()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
@@ -138,11 +138,11 @@
             <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
               <th class="py-3 px-3">Batch</th>
               <th class="py-3 px-3">Customer နာမည်</th>
-              <th class="py-3 px-3 text-center">ပုံ/ထုပ်</th>
+              <th class="py-3 px-3 text-center">ပုံး/ထုပ်</th>
               <th class="py-3 px-3">⚖️ KG (Office Staff)</th>
               <th class="py-3 px-3">💳 ငွေရှင်းမှု (Page Admin)</th>
               <th class="py-3 px-3">🇬🇧 UK Approve (UK Admin)</th>
-              <th class="py-3 px-3">Notes</th>
+              <th class="py-3 px-3">Notes &amp; Phone</th>
               <th class="py-3 px-3 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
               <th class="py-3 px-3 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
             </tr>
@@ -244,11 +244,11 @@
 
   <!-- 3. Excel Copy-Paste & File Import Modal -->
   <div id="bulkImportModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-xl space-y-4 max-h-[90vh] flex flex-col">
+    <div class="bg-white rounded-2xl max-w-4xl w-full p-6 shadow-xl space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 class="text-lg font-bold text-slate-800">📋 Excel မှ Customer List အများကြီး တင်မည်</h2>
-          <p class="text-xs text-slate-500">Excel ထဲက row တွေကို <b>Ctrl + C</b> ကူးပြီး အောက်က အကွက်ထဲ <b>Ctrl + V</b> နှိပ်ချပါ (သို့မဟုတ် <b>.xlsx / .csv</b> ဖိုင်ရွေးတင်ပါ)</p>
+          <p class="text-xs text-slate-500">Excel ထဲက row တွေကို <b>Ctrl + C</b> ကူးပြီး <b>Ctrl + V</b> နှိပ်ချပါ (သို့မဟုတ် <b>.xlsx / .csv</b> ဖိုင်ရွေးတင်ပါ) — Name, KG, Phone, Notes ကို Smart ခွဲထုတ်ပေးပါမည်</p>
         </div>
         <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold px-3 py-2 rounded-lg">
           📂 Excel (.xlsx) / CSV ဖိုင်ရွေးတင်မည်
@@ -270,7 +270,7 @@
         </div>
       </div>
 
-      <textarea id="bulkPasteArea" oninput="parseBulkPreview()" rows="4" placeholder="Excel ထဲမှ Copy ကူးထားသည်များကို ဒီနေရာတွင် Ctrl + V နှိပ်ပြီး Paste ချပါ... (Column အစဉ်: Customer နာမည် | ပုံ/ထုပ် | KG | Notes)" class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+      <textarea id="bulkPasteArea" oninput="parseBulkPreview()" rows="3" placeholder="Excel ထဲမှ Copy ကူးထားသည်များကို ဒီနေရာတွင် Ctrl + V နှိပ်ပြီး Paste ချပါ..." class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
 
       <!-- Live Preview Table -->
       <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl">
@@ -279,9 +279,9 @@
             <tr>
               <th class="py-2 px-3">#</th>
               <th class="py-2 px-3">Customer နာမည်</th>
-              <th class="py-2 px-3">ပုံ/ထုပ်</th>
+              <th class="py-2 px-3 text-center">ပုံး/ထုပ်</th>
               <th class="py-2 px-3">Expected KG</th>
-              <th class="py-2 px-3">Notes</th>
+              <th class="py-2 px-3">Notes &amp; Phone</th>
             </tr>
           </thead>
           <tbody id="bulkPreviewBody" class="divide-y divide-slate-100">
@@ -314,7 +314,7 @@
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">ပုံ/ထုပ် အရေအတွက်</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ပုံး/ထုပ် အရေအတွက်</label>
           <input id="addPhotos" type="number" value="1" min="1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
         </div>
         <div>
@@ -330,8 +330,8 @@
         </select>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Notes</label>
-        <input id="addNotes" type="text" placeholder="မှတ်ချက်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Notes &amp; Phone</label>
+        <input id="addNotes" type="text" placeholder="မှတ်ချက် / ဖုန်းနံပါတ်..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
       </div>
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ပိတ်မည်</button>
@@ -586,7 +586,6 @@
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/30 hover:bg-teal-50/60" : "hover:bg-slate-50");
 
-        // 1. KG Column
         let kgHtml = "";
         if (canEditOffice) {
           kgHtml = `
@@ -614,7 +613,6 @@
           `;
         }
 
-        // 2. Payment Column
         let paymentHtml = canEditPage
           ? `<select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2.5 py-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
                <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
@@ -622,24 +620,20 @@
              </select>`
           : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
 
-        // 3. UK Approve Column
         let ukHtml = canEditUk
           ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
                ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve လုပ်ရန်'}
              </button>`
           : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆိုင်းဆဲ'}</span>`;
 
-        // 4. Notes Column
         let notesHtml = canEditNotes
-          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက်..." class="w-32 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
+          ? `<input type="text" value="${(item.notes || "").replace(/"/g, '&quot;')}" onchange="updateNotes('${item.id}', this.value)" placeholder="မှတ်ချက် / ဖုန်း..." class="w-44 border border-slate-200 rounded px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none" />`
           : `<span class="text-xs text-slate-600">${item.notes || "-"}</span>`;
 
-        // 5. ထုတ်ပေးနိုင်ပြီ (Auto Ready Status Column)
         let readyHtml = ready
           ? `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg">✅ ထုတ်ပေးနိုင်ပြီ</span>`
           : `<span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg">⏳ မပြည့်စုံသေး</span>`;
 
-        // 6. ထုတ်ပေးလိုက်ပြီ (Released Action Column)
         let releasedHtml = "";
         if (item.released) {
           releasedHtml = canEditOffice
@@ -815,6 +809,92 @@
       saveToGitHub();
     }
 
+    // ==================== SMART EXCEL / CONSIGNMENT PARSER ====================
+    function isHeaderOrTitleRow(text) {
+      const t = text.trim().toLowerCase();
+      if (!t) return true;
+      const skipPatterns = [
+        "october 2026", "cargo consignment log", "customer & shipment information",
+        "box / parcel weights", "total weight", "receiver name", "receiver phone",
+        "notes & contents remark", "customer နာမည်", "ပုံး/ထုပ်", "expected kg"
+      ];
+      if (t === "no." || t === "no" || t === "#") return true;
+      return skipPatterns.some(p => t.includes(p));
+    }
+
+    function smartExtractFromLine(rawLine) {
+      // Clean tabs/commas/multiple spaces into clean text
+      const cleaned = rawLine.replace(/[\t,]+/g, " ").replace(/\s+/g, " ").trim();
+      if (!cleaned || isHeaderOrTitleRow(cleaned)) return null;
+
+      // Remove leading row number like "1 " or "5 "
+      let work = cleaned.replace(/^\d{1,3}\s+/, "").trim();
+      if (!work) return null;
+
+      // Extract phone numbers (7+ digits or 09... patterns)
+      const phones = [];
+      work = work.replace(/(?:\+?\d[\d\s\-]{6,14}\d)/g, match => {
+        const digitsOnly = match.replace(/[^\d+]/g, "");
+        if (digitsOnly.length >= 7) {
+          phones.push(digitsOnly);
+          return " ";
+        }
+        return match;
+      }).replace(/\s+/g, " ").trim();
+
+      // Extract decimal weights / kg candidates (e.g., 3.70, 15.60, 21.3)
+      const kgCandidates = [];
+      work = work.replace(/\b(\d{1,3}\.\d{1,2})\b/g, (_, numStr) => {
+        const val = parseFloat(numStr);
+        if (!isNaN(val) && val > 0 && val < 500) {
+          kgCandidates.push(val);
+        }
+        return " ";
+      }).replace(/\s+/g, " ").trim();
+
+      // Also check standalone small numbers at the start (e.g., "5.5 Daw Su")
+      work = work.replace(/^\d{1,2}\)\s*/g, "").trim();
+
+      // Extract customer name (Myanmar names or English names like Daw / Ma / Ko / U / Mg + words)
+      let customerName = "";
+      const myanmarMatch = work.match(/((?:ဒေါ်|မ|ကို|ဦး|မောင်|အစ်ကို|အစ်မ)\s*[\u1000-\u109F\s]{2,40})/);
+      const engHonorificMatch = work.match(/\b((?:Daw|Ma|Ko|U|Mg|Mr\.?|Ms\.?|Mrs\.?)\s+[A-Za-z]+(?:\s+[A-Za-z]+){0,3})\b/i);
+
+      if (myanmarMatch) {
+        customerName = myanmarMatch[1].trim();
+        work = work.replace(myanmarMatch[0], " ").trim();
+      } else if (engHonorificMatch) {
+        customerName = engHonorificMatch[1].trim();
+        work = work.replace(engHonorificMatch[0], " ").trim();
+      } else {
+        // Fallback: take first 2-3 word tokens that aren't pure numbers or dimensions
+        const tokens = work.split(" ").filter(t => t && !/^\d+[x×*]\d+/i.test(t) && !/^\d+$/.test(t));
+        customerName = tokens.slice(0, 3).join(" ").trim() || "Unknown Customer";
+        if (tokens.length <= 3) {
+          work = "";
+        } else {
+          work = tokens.slice(3).join(" ").trim();
+        }
+      }
+
+      // Clean leftover symbols/extra spaces in notes
+      const extraNotes = work.replace(/^[\-\*\/\|\:\s]+|[\-\*\/\|\:\s]+$/g, "").replace(/\s+/g, " ").trim();
+      const noteParts = [];
+      if (phones.length) noteParts.push(`📞 ${phones.join(" / ")}`);
+      if (extraNotes) noteParts.push(extraNotes);
+
+      const expectedKg = kgCandidates.length ? kgCandidates[kgCandidates.length - 1] : null;
+      const boxCountMatch = rawLine.match(/(\d+)\s*(?:ပုံး|ထုပ်|ခု|box|boxes)/i);
+      const photos = boxCountMatch ? parseInt(boxCountMatch[1]) : 1;
+
+      return {
+        customer: customerName,
+        photos,
+        expectedKg,
+        notes: noteParts.join(" — ")
+      };
+    }
+
     // ==================== EXCEL (.XLSX / .CSV) & COPY-PASTE IMPORT ====================
     function openBulkImportModal() {
       populateBatchSelect("bulkBatchSelect");
@@ -837,25 +917,12 @@
           const worksheet = workbook.Sheets[firstSheetName];
           const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
-          parsedBulkRows = [];
-          rows.forEach(cols => {
-            if (!Array.isArray(cols)) return;
-            const name = String(cols[0] ?? "").trim();
-            if (!name || ["name", "customer", "customer name", "နာမည်", "customer နာမည်"].includes(name.toLowerCase())) return;
+          const lines = rows
+            .filter(cols => Array.isArray(cols) && cols.some(c => String(c ?? "").trim() !== ""))
+            .map(cols => cols.map(c => String(c ?? "").trim()).filter(Boolean).join(" "));
 
-            const photos = parseInt(String(cols[1] ?? "").trim()) || 1;
-            const kgVal = parseFloat(String(cols[2] ?? "").trim());
-            const expectedKg = isNaN(kgVal) ? null : kgVal;
-            const notes = cols.slice(3).map(c => String(c ?? "").trim()).filter(Boolean).join(" ");
-
-            parsedBulkRows.push({ customer: name, photos, expectedKg, notes });
-          });
-
-          document.getElementById("bulkPasteArea").value = parsedBulkRows
-            .map(r => `${r.customer}\t${r.photos}\t${r.expectedKg ?? ""}\t${r.notes}`)
-            .join("\n");
-
-          renderBulkPreview();
+          document.getElementById("bulkPasteArea").value = lines.join("\n");
+          parseBulkPreview();
         } catch (err) {
           alert("Excel ဖိုင်ဖတ်ရာတွင် အမှားဖြစ်သွားသည်: " + err.message);
         }
@@ -874,16 +941,8 @@
 
       const lines = raw.split(/\r?\n/).filter(l => l.trim() !== "");
       lines.forEach(line => {
-        const cols = line.includes("\t") ? line.split("\t") : line.split(",");
-        const name = (cols[0] || "").trim();
-        if (!name || ["name", "customer", "customer name", "နာမည်", "customer နာမည်"].includes(name.toLowerCase())) return;
-
-        const photos = parseInt((cols[1] || "").trim()) || 1;
-        const kgVal = parseFloat((cols[2] || "").trim());
-        const expectedKg = isNaN(kgVal) ? null : kgVal;
-        const notes = (cols.slice(3).join(" ") || "").trim();
-
-        parsedBulkRows.push({ customer: name, photos, expectedKg, notes });
+        const parsed = smartExtractFromLine(line);
+        if (parsed) parsedBulkRows.push(parsed);
       });
 
       renderBulkPreview();
@@ -902,9 +961,9 @@
         <tr>
           <td class="py-1.5 px-3 text-slate-400">${idx + 1}</td>
           <td class="py-1.5 px-3 font-semibold text-slate-800">${r.customer}</td>
-          <td class="py-1.5 px-3">${r.photos}</td>
+          <td class="py-1.5 px-3 text-center">${r.photos}</td>
           <td class="py-1.5 px-3">${r.expectedKg ?? "-"}</td>
-          <td class="py-1.5 px-3 text-slate-500">${r.notes || "-"}</td>
+          <td class="py-1.5 px-3 text-slate-600">${r.notes || "-"}</td>
         </tr>
       `).join("");
     }
