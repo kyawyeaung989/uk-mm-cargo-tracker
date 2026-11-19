@@ -7,13 +7,14 @@
       "id": "item-1795096978260",
       "batch": "UK-MM-Batch-01",
       "customer": "Ma Su",
-      "photos": 5,
+      "photos": 6,
       "boxWeights": [
         45,
         6,
         2,
         1,
-        1
+        1,
+        0
       ],
       "expectedKg": 67,
       "actualKg": 55,
