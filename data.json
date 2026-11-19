@@ -2,5 +2,20 @@
   "batches": [
     "UK-MM-Batch-01"
   ],
-  "items": []
+  "items": [
+    {
+      "id": "item-1795096978260",
+      "batch": "UK-MM-Batch-01",
+      "customer": "Ma Su",
+      "photos": 5,
+      "boxWeights": [],
+      "expectedKg": 67,
+      "actualKg": null,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "ukApproved": false,
+      "released": false,
+      "notes": ""
+    }
+  ]
 }
