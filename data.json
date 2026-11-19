@@ -37,7 +37,7 @@
       "actualKg": 27,
       "kgMatch": "Pending",
       "payment": "Unpaid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "Brand"
     },
