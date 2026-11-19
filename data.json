@@ -1,0 +1,20 @@
+{
+  "batches": [
+    "UK-MM-Batch-01"
+  ],
+  "items": [
+    {
+      "id": "demo-1",
+      "batch": "UK-MM-Batch-01",
+      "customer": "Ma Su (Sample)",
+      "photos": 3,
+      "expectedKg": 5.5,
+      "actualKg": 5.5,
+      "kgMatch": "Match",
+      "payment": "Paid",
+      "ukApproved": false,
+      "released": false,
+      "notes": "UK မှ ငွေရှင်းပြီး"
+    }
+  ]
+}
