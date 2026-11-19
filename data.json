@@ -13,7 +13,7 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": false,
-      "released": false,
+      "released": true,
       "notes": "UK မှ ငွေရှင်းပြီး"
     }
   ]
