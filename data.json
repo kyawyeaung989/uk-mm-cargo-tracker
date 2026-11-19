@@ -12,7 +12,7 @@
       "actualKg": 5.5,
       "kgMatch": "Match",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "UK မှ ငွေရှင်းပြီး"
     }
