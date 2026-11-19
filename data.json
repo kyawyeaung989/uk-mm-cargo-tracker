@@ -9,10 +9,10 @@
       "customer": "Ma Su",
       "photos": 1,
       "boxWeights": [
-        55
+        44
       ],
-      "expectedKg": 55,
-      "actualKg": 55,
+      "expectedKg": 44,
+      "actualKg": 44,
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
