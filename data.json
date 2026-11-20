@@ -29,8 +29,7 @@
       "photos": 3,
       "boxWeights": [
         5,
-        10,
-        12
+        10
       ],
       "expectedKg": 3.7,
       "actualKg": 27,
@@ -38,7 +37,8 @@
       "payment": "Paid",
       "ukApproved": true,
       "released": true,
-      "notes": "Brand"
+      "notes": "Brand",
+      "receivedBoxes": 2
     },
     {
       "id": "item-1795102170158-1",
