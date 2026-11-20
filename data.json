@@ -75,7 +75,7 @@
       "expectedKg": 21.3,
       "actualKg": null,
       "kgMatch": "Match",
-      "payment": "Unpaid",
+      "payment": "Paid",
       "ukApproved": false,
       "released": false,
       "notes": "Brand"
