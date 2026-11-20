@@ -89,7 +89,7 @@
     </div>
   </header>
 
-  <!-- Wide-Screen Left & Right Side Cartoon Companions (Visible on 2xl screens so layout never crowds) -->
+  <!-- Wide-Screen Left & Right Side Cartoon Companions -->
   <aside class="hidden 2xl:flex fixed left-4 top-32 w-48 flex-col gap-3 z-20 pointer-events-none">
     <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3.5 shadow-md text-center">
       <div class="gentle-wave inline-block mb-1.5">
@@ -131,7 +131,7 @@
   <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-5 space-y-5">
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-2 sm:grid-cols-6 gap-3">
+    <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-3">
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-indigo-100">
         <p class="text-xs text-slate-500 font-medium">စုစုပေါင်း Customer</p>
         <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
@@ -155,6 +155,31 @@
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-amber-100">
         <p class="text-xs text-slate-500 font-medium">🚚 ထုတ်ပေးလိုက်ပြီ</p>
         <p id="statReleased" class="text-2xl font-bold text-amber-700 mt-1">0</p>
+      </div>
+    </div>
+
+    <!-- Admin-Only Financial Totals Bar (Strictly Hidden from Payment Admin & Office Staff) -->
+    <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between bg-gradient-to-r from-indigo-50/90 to-white">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl">🇬🇧</span>
+          <div>
+            <p class="text-xs font-bold text-indigo-950">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
+            <p class="text-[11px] text-slate-500">Main Admin / UK Owner သာ မြင်ရသည်</p>
+          </div>
+        </div>
+        <p id="statTotalGbp" class="text-xl sm:text-2xl font-extrabold text-indigo-700">£ 0.00</p>
+      </div>
+
+      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between bg-gradient-to-r from-emerald-50/90 to-white">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl">🇲🇲</span>
+          <div>
+            <p class="text-xs font-bold text-emerald-950">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
+            <p class="text-[11px] text-slate-500">Main Admin / UK Owner သာ မြင်ရသည်</p>
+          </div>
+        </div>
+        <p id="statTotalMmk" class="text-xl sm:text-2xl font-extrabold text-emerald-700">0 Ks</p>
       </div>
     </div>
 
@@ -487,12 +512,25 @@
           <input id="addKg" type="number" step="0.01" placeholder="ဥပမာ: 55" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
         </div>
       </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေရှင်းမှု</label>
-        <select id="addPayment" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
-          <option value="Unpaid">Unpaid</option>
-          <option value="Paid">Paid</option>
-        </select>
+      <div class="grid grid-cols-3 gap-2">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေရှင်းမှု</label>
+          <select id="addPayment" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm">
+            <option value="Unpaid">Unpaid</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေကြေး</label>
+          <select id="addCurrency" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm">
+            <option value="GBP">£ GBP</option>
+            <option value="MMK">Ks MMK</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ပမာဏ (Optional)</label>
+          <input id="addAmount" type="number" step="0.01" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm" />
+        </div>
       </div>
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">Original Notes (Optional)</label>
@@ -525,7 +563,7 @@
     </div>
   </div>
 
-  <!-- 6. Rename Batch Modal (Works for ANY batch including first/auto batch) -->
+  <!-- 6. Rename Batch Modal -->
   <div id="renameBatchModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
       <h2 class="text-lg font-bold text-slate-800">✏️ Batch နာမည် ပြင်ဆင်မည်</h2>
@@ -598,6 +636,7 @@
       const adminActionBtns = document.getElementById("adminActionBtns");
       const renameBatchBtn = document.getElementById("renameBatchBtn");
       const deleteBatchBtn = document.getElementById("deleteBatchBtn");
+      const adminFinanceBar = document.getElementById("adminFinanceBar");
 
       document.getElementById("roleGreeting").textContent = ROLE_GREETINGS[currentRole] || ROLE_GREETINGS.admin;
 
@@ -609,6 +648,7 @@
         adminActionBtns.classList.add("hidden");
         renameBatchBtn.classList.add("hidden");
         deleteBatchBtn.classList.add("hidden");
+        adminFinanceBar.classList.add("hidden");
       } else {
         roleContainer.classList.remove("hidden");
         lockedBadge.classList.add("hidden");
@@ -618,6 +658,7 @@
         adminActionBtns.classList.toggle("hidden", !isAdmin);
         renameBatchBtn.classList.toggle("hidden", !isAdmin);
         deleteBatchBtn.classList.toggle("hidden", !isAdmin);
+        adminFinanceBar.classList.toggle("hidden", !isAdmin);
       }
     }
 
@@ -756,6 +797,22 @@
       document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
       document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
+      // Calculate Batch Totals in GBP and MMK (Only displayed to Main Admin / UK Owner)
+      let totalGbp = 0;
+      let totalMmk = 0;
+      batchItems.forEach(item => {
+        const amt = parseFloat(item.paidAmount);
+        if (!isNaN(amt) && amt > 0) {
+          if ((item.paidCurrency || "GBP") === "MMK") {
+            totalMmk += amt;
+          } else {
+            totalGbp += amt;
+          }
+        }
+      });
+      document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
+
       const filtered = batchItems.filter(item => {
         if (hideReleased && item.released) return false;
         if (search) {
@@ -828,12 +885,31 @@
           `;
         }
 
-        let paymentHtml = canEditPage
-          ? `<select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-xl px-2 py-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
-               <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
-               <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
-             </select>`
-          : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
+        // Payment column:
+        // - Admin & Payment Admin: Paid/Unpaid + Currency (£ / Ks) & Amount input
+        // - Office Staff: Strictly Paid/Unpaid status badge ONLY (amounts completely hidden)
+        const cur = item.paidCurrency || "GBP";
+        const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
+        let paymentHtml = "";
+        if (canEditPage) {
+          paymentHtml = `
+            <div class="flex flex-col gap-1 min-w-[116px]">
+              <select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
+                <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
+              </select>
+              <div class="flex items-center gap-1">
+                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="text-[11px] font-bold rounded-lg px-1 py-0.5 border border-slate-300 bg-slate-50 text-slate-700">
+                  <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
+                  <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
+                </select>
+                <input type="number" step="0.01" value="${amtVal}" placeholder="ပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="w-20 border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+              </div>
+            </div>
+          `;
+        } else {
+          paymentHtml = `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
+        }
 
         let ukHtml = canEditUk
           ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-2.5 py-1 rounded-xl border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
@@ -1024,9 +1100,35 @@
     }
 
     function updatePayment(id, val) {
+      if (currentRole !== "admin" && currentRole !== "page") return;
       const item = findItem(id);
       if (!item) return;
       item.payment = val;
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updatePaidCurrency(id, val) {
+      if (currentRole !== "admin" && currentRole !== "page") return;
+      const item = findItem(id);
+      if (!item) return;
+      item.paidCurrency = val === "MMK" ? "MMK" : "GBP";
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updatePaidAmount(id, val) {
+      if (currentRole !== "admin" && currentRole !== "page") return;
+      const item = findItem(id);
+      if (!item) return;
+      const trimmed = String(val ?? "").trim();
+      if (trimmed === "") {
+        item.paidAmount = null;
+      } else {
+        const num = parseFloat(trimmed);
+        item.paidAmount = !isNaN(num) ? num : null;
+      }
+      if (!item.paidCurrency) item.paidCurrency = "GBP";
       renderTable();
       saveToGitHub();
     }
@@ -1254,6 +1356,8 @@
           actualKg: r.kg,
           kgMatch: "Pending",
           payment,
+          paidCurrency: "GBP",
+          paidAmount: null,
           ukApproved: false,
           released: false,
           notes: r.notes,
@@ -1278,6 +1382,9 @@
       document.getElementById("addName").value = "";
       document.getElementById("addPhotos").value = "1";
       document.getElementById("addKg").value = "";
+      document.getElementById("addPayment").value = "Unpaid";
+      document.getElementById("addCurrency").value = "GBP";
+      document.getElementById("addAmount").value = "";
       document.getElementById("addNotes").value = "";
       document.getElementById("addRemaining").value = "";
       document.getElementById("addCustomerModal").classList.remove("hidden");
@@ -1294,6 +1401,10 @@
       const kgVal = kgRaw === "" ? null : parseFloat(kgRaw);
       const cleanKg = (kgVal != null && !isNaN(kgVal)) ? kgVal : null;
       const payment = document.getElementById("addPayment").value;
+      const paidCurrency = document.getElementById("addCurrency").value;
+      const amtRaw = document.getElementById("addAmount").value.trim();
+      const amtVal = amtRaw === "" ? null : parseFloat(amtRaw);
+      const cleanAmt = (amtVal != null && !isNaN(amtVal)) ? amtVal : null;
       const notes = document.getElementById("addNotes").value.trim();
       const remainingNote = document.getElementById("addRemaining").value.trim();
 
@@ -1307,6 +1418,8 @@
         actualKg: cleanKg,
         kgMatch: "Pending",
         payment,
+        paidCurrency,
+        paidAmount: cleanAmt,
         ukApproved: false,
         released: false,
         notes,
@@ -1423,9 +1536,17 @@
 
     function exportCSV() {
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
-      const rows = [["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]];
+      const isAdmin = currentRole === "admin";
+      const headers = isAdmin
+        ? ["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
+        : ["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"];
+      const rows = [headers];
       batchItems.forEach(i => {
-        rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+        if (isAdmin) {
+          rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+        } else {
+          rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+        }
       });
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
