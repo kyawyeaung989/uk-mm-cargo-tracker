@@ -512,10 +512,10 @@
     };
 
     const ROLE_GREETINGS = {
-      admin: "✨ အစ်ကို့ Cargo Board လေး အဆင်သင့်ပါ — အလုပ်တွေ အဆင်ပြေချောမွေ့ပါစေ!",
-      office: "⚖️ ပုံးတွေနဲ့ KG တွေကို သေချာဂရုစိုက်ပေးနေတဲ့ Office Staff အဖွဲ့ — ကျေးဇူးတင်ပါတယ်!",
-      page: "💳 ငွေစာရင်းလေးတွေကို သေချာစစ်ဆေးပေးနေတဲ့ Page Admin အဖွဲ့ — အဆင်ပြေပါစေ!",
-      uk: "🇬🇧 UK ဘက်က Approve လေးတွေကို မြန်မြန်ဆန်ဆန် လုပ်ပေးနေတဲ့ UK Admin အဖွဲ့ — ကျေးဇူးပါ!"
+      admin: "✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!",
+      office: "⚖️ KG နဲ့ ပုံး/ထုပ်ကို သေချာဂရုစိုက်စစ်ပေးနေတဲ့ Office Staff Team Member များ — ကျေးဇူးတင်ပါတယ်နော်!",
+      page: "💳 Payment တွေကို သေချာစစ်ဆေးပေးနေတဲ့ Team Member / Staff များ — ကျေးဇူးတင်ပါတယ်နော်!",
+      uk: "🇬🇧 UK Admin Approve လုပ်ပြီးမှသာ ထုတ်ပေးနိုင်ပြီ (✅ ရပြီ) အဖြစ် သတ်မှတ်ပါမယ် — ကျေးဇူးပါ!"
     };
 
     function getConfig() {
@@ -659,6 +659,7 @@
       }
     }
 
+    // UK Admin approval is strictly required to mark as Ready (✅ ရပြီ)
     function isReadyToRelease(item) {
       return item.kgMatch === "Match" && item.payment === "Paid" && item.ukApproved === true;
     }
@@ -697,7 +698,6 @@
       const filter = document.getElementById("statusFilter").value;
       const hideReleased = document.getElementById("hideReleased").checked;
 
-      // Strictly isolated to activeBatch only
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
 
       document.getElementById("statTotal").textContent = batchItems.length;
@@ -792,7 +792,6 @@
              </button>`
           : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span>`;
 
-        // Regular Notes: Single-click = View Pop-up, Double-click = Edit Modal
         const noteText = item.notes || "";
         const notePreview = noteText
           ? `<span class="line-clamp-2 text-xs text-slate-700">${escapeHtml(noteText)}</span>`
@@ -994,7 +993,7 @@
       const item = findItem(id);
       if (!item) return;
       if (!item.released && !isReadyToRelease(item)) {
-        if (!confirm("KG ကိုက်ညီမှု၊ Paid သို့မဟုတ် UK Approve တစ်ခုခု မပြည့်စုံသေးပါ။ ပစ္စည်းထုတ်ပေးလိုက်ပြီဟု မှတ်မည်လား?")) return;
+        if (!confirm("UK Approve၊ KG ကိုက်ညီမှု သို့မဟုတ် Paid တစ်ခုခု မပြည့်စုံသေးပါ။ ပစ္စည်းထုတ်ပေးလိုက်ပြီဟု မှတ်မည်လား?")) return;
       }
       item.released = !item.released;
       renderTable();
@@ -1272,7 +1271,6 @@
         renderAll();
         return;
       }
-      // Strictly clean new batch: no old items copied or mixed
       appData.batches.push(name);
       activeBatch = name;
       closeModal("newBatchModal");
