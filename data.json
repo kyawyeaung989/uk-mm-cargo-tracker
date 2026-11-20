@@ -94,7 +94,21 @@
       "photos": 2,
       "boxWeights": [
         10,
-        15
+        15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
       ],
       "expectedKg": 25,
       "actualKg": 25,
@@ -102,7 +116,8 @@
       "payment": "Paid",
       "ukApproved": false,
       "released": false,
-      "notes": "Brand, 620 g နဲ့ ဖိနပ်"
+      "notes": "Brand, 620 g နဲ့ ဖိနပ်",
+      "receivedBoxes": 16
     },
     {
       "id": "item-1795102170158-5",
