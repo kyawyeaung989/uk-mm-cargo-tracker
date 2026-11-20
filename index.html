@@ -252,11 +252,11 @@
           <thead>
             <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
               <th class="py-2.5 px-2">Customer နာမည်</th>
-              <th class="py-2.5 px-2 text-center">ပုံး/ထုပ်</th>
-              <th class="py-2.5 px-2">⚖️ KG</th>
+              <th class="py-2.5 px-2">📦 ပုံး (UK vs ရုံး)</th>
+              <th class="py-2.5 px-2">⚖️ KG (UK vs ရုံး)</th>
               <th class="py-2.5 px-2">💳 ငွေရှင်းမှု</th>
               <th class="py-2.5 px-2">🇬🇧 UK Approve</th>
-              <th class="py-2.5 px-2">Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
+              <th class="py-2.5 px-2">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
               <th class="py-2.5 px-2">📌 ကျန်ရှိမှတ်တမ်း</th>
               <th class="py-2.5 px-2 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
               <th class="py-2.5 px-2 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
@@ -293,7 +293,7 @@
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h2 class="text-base font-bold text-slate-800 flex items-center gap-1.5">📝 Original Notes</h2>
+          <h2 class="text-base font-bold text-slate-800 flex items-center gap-1.5">📝 UK / Original Notes</h2>
           <p id="noteViewCustomer" class="text-xs text-indigo-600 font-semibold mt-0.5"></p>
         </div>
         <button onclick="closeModal('noteViewModal')" class="text-slate-400 hover:text-slate-700 text-lg font-bold px-2">✕</button>
@@ -320,11 +320,11 @@
   <div id="noteEditModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div>
-        <h2 class="text-base font-bold text-slate-800">✏️ Original Notes ပြင်ဆင်ရန် (Admin / UK)</h2>
+        <h2 class="text-base font-bold text-slate-800">✏️ UK / Original Notes ပြင်ဆင်ရန် (Admin / UK)</h2>
         <p id="noteEditCustomer" class="text-xs text-indigo-600 font-semibold mt-0.5"></p>
       </div>
 
-      <textarea id="noteEditTextarea" rows="6" placeholder="မှတ်ချက်၊ ဖုန်းနံပါတ် သို့မဟုတ် ပစ္စည်းအသေးစိတ် ရေးပါ..." class="w-full border border-slate-300 rounded-2xl p-3.5 text-sm focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+      <textarea id="noteEditTextarea" rows="6" placeholder="UK မှတ်ချက်၊ ဖုန်းနံပါတ် သို့မဟုတ် ပစ္စည်းအသေးစိတ် ရေးပါ..." class="w-full border border-slate-300 rounded-2xl p-3.5 text-sm focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
 
       <div class="flex justify-end gap-2">
         <button onclick="closeModal('noteEditModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl">မလုပ်တော့ပါ</button>
@@ -387,11 +387,11 @@
     <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex items-start justify-between">
         <div>
-          <h2 class="text-lg font-bold text-slate-800">📦 ပုံးအလိုက် KG ခွဲထည့်ရန်</h2>
+          <h2 class="text-lg font-bold text-slate-800">📦 ပုံးအလိုက် KG ခွဲထည့်ရန် (ရုံးစစ်)</h2>
           <p id="boxModalSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
         </div>
         <div class="text-right bg-blue-50 border border-blue-200 rounded-xl px-3 py-1.5">
-          <span class="text-[11px] text-blue-600 block font-medium">စုစုပေါင်း (Total KG)</span>
+          <span class="text-[11px] text-blue-600 block font-medium">ရုံးစစ် စုစုပေါင်း KG</span>
           <span id="boxModalTotal" class="text-lg font-bold text-blue-800">0.00 kg</span>
         </div>
       </div>
@@ -414,18 +414,18 @@
 
       <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
         <button onclick="closeModal('boxModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl">ပိတ်မည်</button>
-        <button id="saveBoxBtn" onclick="saveBoxBreakdown()" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl">✅ စုစုပေါင်း KG သိမ်းမည်</button>
+        <button id="saveBoxBtn" onclick="saveBoxBreakdown()" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl">✅ ရုံးစစ် KG သိမ်းမည်</button>
       </div>
     </div>
   </div>
 
-  <!-- 3. Column-by-Column Ordered Paste Modal -->
+  <!-- 3. Column-by-Column Ordered Paste Modal (UK Cargo Note Import) -->
   <div id="bulkImportModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
+    <div class="bg-white rounded-3xl max-w-5xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
       <div>
-        <h2 class="text-lg font-bold text-slate-800">📋 Column အလိုက် အစဉ်လိုက် Paste တင်မည်</h2>
+        <h2 class="text-lg font-bold text-slate-800">📋 UK Cargo Note — Column အလိုက် အစဉ်လိုက် Paste တင်မည်</h2>
         <p class="text-xs text-slate-500 mt-0.5">
-          Excel ထဲမှ ကိုယ်ထည့်ချင်သော Column ကို ရွေးကူးပြီး သက်ဆိုင်ရာအကွက်ထဲ အစဉ်လိုက် (Line 1, Line 2, Line 3...) Paste ချပါ။ <b>Notes သို့မဟုတ် KG သို့မဟုတ် ပုံး</b> မပါလည်း <b>OK / ထည့်မည်</b> နှိပ်၍ ရပါသည်။
+          UK Cargo Note ထဲမှ Column များကို အစဉ်လိုက် (Line 1, Line 2...) Paste ချပါ။ <b>UK ပုံး</b> နှင့် <b>UK KG</b> တို့ကို UK ဘက်အချက်အလက်အဖြစ် မှတ်ထားပြီး၊ ရုံးဘက်မှာ ဖြည့်ရမည့် အကွက်များကို သီးသန့် ချန်ထားပေးပါမည်။
         </p>
       </div>
 
@@ -449,16 +449,16 @@
           <textarea id="pasteNames" oninput="parseOrderedColumns()" rows="4" placeholder="နာမည် #1&#10;နာမည် #2&#10;နာမည် #3" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">2. ပုံး/ထုပ် (Optional)</label>
-          <textarea id="pasteBoxes" oninput="parseOrderedColumns()" rows="4" placeholder="ထည့်လိုရင် ၁ ကြောင်း ၁ ခု&#10;(မထည့်ရင် 1 ဖြစ်မည်)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+          <label class="block text-xs font-bold text-indigo-800 mb-1">2. UK ပုံးအရေအတွက် (Optional)</label>
+          <textarea id="pasteBoxes" oninput="parseOrderedColumns()" rows="4" placeholder="6&#10;5&#10;(မထည့်ရင် 1 ဖြစ်မည်)" class="w-full border border-indigo-200 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">3. KG / Weight (Optional)</label>
-          <textarea id="pasteKg" oninput="parseOrderedColumns()" rows="4" placeholder="55&#10;27&#10;(မထည့်လည်း OK)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+          <label class="block text-xs font-bold text-indigo-800 mb-1">3. UK KG (Optional)</label>
+          <textarea id="pasteKg" oninput="parseOrderedColumns()" rows="4" placeholder="55&#10;27&#10;(မထည့်လည်း OK)" class="w-full border border-indigo-200 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">4. Original Notes (Optional)</label>
-          <textarea id="pasteNotes" oninput="parseOrderedColumns()" rows="4" placeholder="ဖုန်း / မှတ်ချက်&#10;(မပါလည်း OK)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1">4. UK / Original Notes (Optional)</label>
+          <textarea id="pasteNotes" oninput="parseOrderedColumns()" rows="4" placeholder="UK မှတ်ချက် / ဖုန်း&#10;(မပါလည်း OK)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
       </div>
 
@@ -468,9 +468,9 @@
             <tr>
               <th class="py-2 px-3">#</th>
               <th class="py-2 px-3">Customer နာမည်</th>
-              <th class="py-2 px-3 text-center">ပုံး/ထုပ်</th>
-              <th class="py-2 px-3">KG</th>
-              <th class="py-2 px-3">Original Notes</th>
+              <th class="py-2 px-3 text-center">UK ပုံး</th>
+              <th class="py-2 px-3">UK KG</th>
+              <th class="py-2 px-3">UK / Original Notes</th>
               <th class="py-2 px-3">ကျန်ရှိမှတ်တမ်း</th>
             </tr>
           </thead>
@@ -493,7 +493,7 @@
   <!-- 4. Single Customer Add Modal -->
   <div id="addCustomerModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3">
-      <h2 class="text-lg font-bold text-slate-800">+ Customer အသစ်ထည့်မည်</h2>
+      <h2 class="text-lg font-bold text-slate-800">+ Customer အသစ်ထည့်မည် (UK Cargo Note)</h2>
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">Batch</label>
         <select id="addBatch" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></select>
@@ -504,12 +504,12 @@
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">ပုံး/ထုပ် အရေအတွက် (Optional)</label>
-          <input id="addPhotos" type="number" value="1" min="1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+          <label class="block text-xs font-semibold text-indigo-800 mb-1">UK ပုံးအရေအတွက် (Expected)</label>
+          <input id="addPhotos" type="number" value="1" min="1" class="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">KG (Optional)</label>
-          <input id="addKg" type="number" step="0.01" placeholder="ဥပမာ: 55" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+          <label class="block text-xs font-semibold text-indigo-800 mb-1">UK KG (Expected - Optional)</label>
+          <input id="addKg" type="number" step="0.01" placeholder="ဥပမာ: 55" class="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm" />
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2">
@@ -533,12 +533,12 @@
         </div>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Original Notes (Optional)</label>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">UK / Original Notes (Optional)</label>
         <input id="addNotes" type="text" placeholder="မထည့်လည်း ရသည်..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">ကျန်ရှိမှတ်တမ်း (ပုံးကျန် / KG ကျန် - Optional)</label>
-        <input id="addRemaining" type="text" placeholder="ဥပမာ: 1 ပုံး ကျန် / 20 kg ကျန်" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+        <input id="addRemaining" type="text" placeholder="ဥပမာ: 2 ပုံး ကျန် (4/6 ရောက်)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl">ပိတ်မည်</button>
@@ -749,7 +749,6 @@
       }
     }
 
-    // UK Admin approval is strictly required to mark as Ready (✅ ရပြီ)
     function isReadyToRelease(item) {
       return item.kgMatch === "Match" && item.payment === "Paid" && item.ukApproved === true;
     }
@@ -775,9 +774,30 @@
       renderAll();
     }
 
-    function getDisplayKg(item) {
-      if (item.actualKg != null && item.actualKg !== "") return item.actualKg;
+    function getUkBoxes(item) {
+      if (item.ukBoxes != null && item.ukBoxes !== "" && !isNaN(parseInt(item.ukBoxes))) {
+        return Math.max(1, parseInt(item.ukBoxes));
+      }
+      return Math.max(1, parseInt(item.photos) || 1);
+    }
+
+    function getReceivedBoxes(item) {
+      if (Array.isArray(item.boxWeights) && item.boxWeights.length > 0) {
+        return item.boxWeights.length;
+      }
+      if (item.receivedBoxes != null && item.receivedBoxes !== "" && !isNaN(parseInt(item.receivedBoxes))) {
+        return Math.max(0, parseInt(item.receivedBoxes));
+      }
+      return "";
+    }
+
+    function getUkKg(item) {
       if (item.expectedKg != null && item.expectedKg !== "") return item.expectedKg;
+      return "";
+    }
+
+    function getActualKg(item) {
+      if (item.actualKg != null && item.actualKg !== "") return item.actualKg;
       return "";
     }
 
@@ -797,7 +817,6 @@
       document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
       document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
-      // Calculate Batch Totals in GBP and MMK (Only displayed to Main Admin / UK Owner)
       let totalGbp = 0;
       let totalMmk = 0;
       batchItems.forEach(item => {
@@ -844,50 +863,86 @@
 
       filtered.forEach(item => {
         const ready = isReadyToRelease(item);
-        const boxCount = (item.boxWeights && item.boxWeights.length) ? item.boxWeights.length : (item.photos || 1);
+        const ukBox = getUkBoxes(item);
+        const rcvBox = getReceivedBoxes(item);
+        const ukKg = getUkKg(item);
+        const actKg = getActualKg(item);
         const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
-        const displayKg = getDisplayKg(item);
 
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
         const customerHtml = isAdmin
           ? `<input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 py-1 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
-          : `<span class="font-semibold text-slate-800">${item.customer}</span>`;
+          : `<span class="font-semibold text-slate-800">${escapeHtml(item.customer)}</span>`;
 
-        const boxHtml = canEditOffice
-          ? `<input type="number" min="1" value="${boxCount}" onchange="updateBoxCount('${item.id}', this.value)" class="w-12 border border-slate-300 rounded-lg px-1 py-1 text-xs font-semibold text-center text-slate-800 bg-white" />`
-          : `<span class="font-semibold text-slate-700">${boxCount}</span>`;
+        // Boxes Column: Top = UK Expected Boxes, Bottom = Office Received Boxes + Shortfall hint
+        const ukBoxTopHtml = isAdmin
+          ? `<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700">UK: <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="w-11 border border-indigo-200 bg-indigo-50/70 rounded px-1 py-0.5 text-center text-[11px] font-bold text-indigo-900" /></span>`
+          : `<span class="text-[11px] font-semibold text-indigo-700">UK: ${ukBox} ပုံး</span>`;
+
+        let boxShortfallHint = "";
+        if (rcvBox !== "" && rcvBox < ukBox) {
+          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600">⚠️ ${ukBox - rcvBox} လို</span>`;
+        } else if (rcvBox !== "" && rcvBox > ukBox) {
+          boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700">+${rcvBox - ukBox} ပို</span>`;
+        }
+
+        const rcvBoxBottomHtml = canEditOffice
+          ? `<div class="flex items-center gap-1 mt-1">
+               <span class="text-[11px] text-slate-500">ရုံး:</span>
+               <input type="number" min="0" value="${rcvBox}" placeholder="ပုံး" onchange="updateReceivedBoxes('${item.id}', this.value)" class="w-12 border border-slate-300 rounded-lg px-1 py-0.5 text-xs font-semibold text-center text-slate-800 bg-white" />
+               ${boxShortfallHint}
+             </div>`
+          : `<div class="flex items-center gap-1 mt-1">
+               <span class="text-xs font-semibold text-slate-700">${rcvBox !== "" ? "ရုံး: " + rcvBox + " ပုံး" : "ရုံး: -"}</span>
+               ${boxShortfallHint}
+             </div>`;
+
+        const boxHtml = `<div class="flex flex-col justify-center min-w-[92px]">${ukBoxTopHtml}${rcvBoxBottomHtml}</div>`;
+
+        // KG Column: Top = UK Expected KG, Bottom = Office Actual KG + Breakdown + Match status
+        const ukKgTopHtml = isAdmin
+          ? `<div class="flex items-center gap-1 text-[11px] font-semibold text-indigo-700">
+               <span>UK:</span>
+               <input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="w-14 border border-indigo-200 bg-indigo-50/70 rounded px-1 py-0.5 text-[11px] font-bold text-indigo-900" />
+               <span>kg</span>
+             </div>`
+          : `<span class="text-[11px] font-semibold text-indigo-700">UK: ${ukKg !== "" ? ukKg + " kg" : "-"}</span>`;
 
         let kgHtml = "";
         if (canEditOffice) {
           kgHtml = `
-            <div class="flex flex-wrap items-center gap-1">
-              <input type="number" step="0.01" value="${displayKg}" placeholder="KG" onchange="updateKgSingle('${item.id}', this.value)" class="w-16 border border-slate-300 rounded-lg px-1.5 py-1 text-xs font-semibold text-slate-800 bg-white" />
-              <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-1.5 py-1 rounded-lg border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                📦 ${hasBreakdown ? boxCount + 'ပုံး' : 'ခွဲ'}
-              </button>
-              <select onchange="updateKgMatch('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-1.5 py-1 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
-                <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
-                <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
-              </select>
+            <div class="flex flex-col gap-1 min-w-[148px]">
+              ${ukKgTopHtml}
+              <div class="flex flex-wrap items-center gap-1">
+                <span class="text-[11px] text-slate-500">ရုံး:</span>
+                <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="w-14 border border-slate-300 rounded-lg px-1.5 py-0.5 text-xs font-semibold text-slate-800 bg-white" />
+                <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-1.5 py-0.5 rounded-lg border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                  📦 ${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
+                </button>
+                <select onchange="updateKgMatch('${item.id}', this.value)" class="text-[11px] font-semibold rounded-lg px-1.5 py-0.5 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+                  <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
+                  <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
+                </select>
+              </div>
             </div>
           `;
         } else {
           kgHtml = `
-            <div class="flex items-center gap-1">
-              <span class="text-xs font-semibold text-slate-700">${displayKg !== "" ? displayKg + " kg" : "-"}</span>
-              ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${boxCount}ပုံး)</button>` : ""}
-              <span class="text-xs font-semibold px-1.5 py-0.5 rounded-lg ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-                ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
-              </span>
+            <div class="flex flex-col gap-1 min-w-[125px]">
+              ${ukKgTopHtml}
+              <div class="flex items-center gap-1">
+                <span class="text-xs font-semibold text-slate-700">${actKg !== "" ? "ရုံး: " + actKg + " kg" : "ရုံး: -"}</span>
+                ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
+                <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-lg ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                  ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
+                </span>
+              </div>
             </div>
           `;
         }
 
-        // Payment column:
-        // - Admin & Payment Admin: Paid/Unpaid + Currency (£ / Ks) & Amount input
-        // - Office Staff: Strictly Paid/Unpaid status badge ONLY (amounts completely hidden)
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
@@ -917,7 +972,6 @@
              </button>`
           : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span>`;
 
-        // Original Notes: Single-click = View Pop-up (All), Double-click = Edit (Admin/UK only)
         const noteText = item.notes || "";
         const notePreview = noteText
           ? `<span class="line-clamp-2 text-xs text-slate-700">${escapeHtml(noteText)}</span>`
@@ -934,9 +988,8 @@
           </div>
         `;
 
-        // Remaining / ကျန်ရှိမှတ်တမ်း: Editable by Admin & Office Staff, View-only for Payment Admin
         let remainingHtml = canEditRemaining
-          ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="1 ပုံးကျန် / 20kg ကျန်" class="w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
+          ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="2 ပုံးကျန် / 20kg ကျန်" class="w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
           : `<span class="inline-block text-xs ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span>`;
 
         let readyHtml = ready
@@ -960,7 +1013,7 @@
 
         tr.innerHTML = `
           <td class="py-2.5 px-2">${customerHtml}</td>
-          <td class="py-2.5 px-2 text-center whitespace-nowrap">${boxHtml}</td>
+          <td class="py-2.5 px-2">${boxHtml}</td>
           <td class="py-2.5 px-2">${kgHtml}</td>
           <td class="py-2.5 px-2 whitespace-nowrap">${paymentHtml}</td>
           <td class="py-2.5 px-2 whitespace-nowrap">${ukHtml}</td>
@@ -1008,7 +1061,7 @@
       activeNoteItemId = id;
       const canEdit = currentRole === "admin";
       document.getElementById("noteViewCustomer").textContent = `${item.customer} (${item.batch})`;
-      document.getElementById("noteViewBody").textContent = item.notes && item.notes.trim() ? item.notes : "Original Notes ရေးထားခြင်း မရှိသေးပါ။";
+      document.getElementById("noteViewBody").textContent = item.notes && item.notes.trim() ? item.notes : "UK / Original Notes ရေးထားခြင်း မရှိသေးပါ။";
       document.getElementById("noteViewEditBtn").classList.toggle("hidden", !canEdit);
       document.getElementById("noteViewHint").textContent = canEdit
         ? "💡 ၂ ချက်နှိပ်ရင် တိုက်ရိုက် Edit လုပ်နိုင်ပါတယ်"
@@ -1059,33 +1112,60 @@
       saveToGitHub();
     }
 
-    function updateBoxCount(id, val) {
+    function updateUkBox(id, val) {
+      if (currentRole !== "admin") return;
       const item = findItem(id);
       if (!item) return;
       const count = Math.max(1, parseInt(val) || 1);
+      item.ukBoxes = count;
       item.photos = count;
-      if (Array.isArray(item.boxWeights) && item.boxWeights.length > 0) {
-        const nextWeights = [...item.boxWeights];
-        while (nextWeights.length < count) nextWeights.push(0);
-        item.boxWeights = nextWeights.slice(0, count);
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updateReceivedBoxes(id, val) {
+      const item = findItem(id);
+      if (!item) return;
+      const trimmed = String(val ?? "").trim();
+      if (trimmed === "") {
+        item.receivedBoxes = null;
+      } else {
+        const count = Math.max(0, parseInt(trimmed) || 0);
+        item.receivedBoxes = count;
+        if (Array.isArray(item.boxWeights) && item.boxWeights.length > 0 && count > 0) {
+          const nextWeights = [...item.boxWeights];
+          while (nextWeights.length < count) nextWeights.push(0);
+          item.boxWeights = nextWeights.slice(0, count);
+        }
       }
       renderTable();
       saveToGitHub();
     }
 
-    function updateKgSingle(id, val) {
+    function updateUkKg(id, val) {
+      if (currentRole !== "admin") return;
+      const item = findItem(id);
+      if (!item) return;
+      const trimmed = String(val ?? "").trim();
+      if (trimmed === "") {
+        item.expectedKg = null;
+      } else {
+        const num = parseFloat(trimmed);
+        if (!isNaN(num)) item.expectedKg = num;
+      }
+      renderTable();
+      saveToGitHub();
+    }
+
+    function updateActualKg(id, val) {
       const item = findItem(id);
       if (!item) return;
       const trimmed = String(val ?? "").trim();
       if (trimmed === "") {
         item.actualKg = null;
-        item.expectedKg = null;
       } else {
         const num = parseFloat(trimmed);
-        if (!isNaN(num)) {
-          item.actualKg = num;
-          item.expectedKg = num;
-        }
+        if (!isNaN(num)) item.actualKg = num;
       }
       renderTable();
       saveToGitHub();
@@ -1178,12 +1258,15 @@
       activeBoxItemId = id;
 
       const canEdit = currentRole === "admin" || currentRole === "office";
-      const currentKg = getDisplayKg(item);
-      document.getElementById("boxModalSubtitle").textContent = `${item.customer} (${item.batch})${currentKg !== "" ? " — လက်ရှိ KG: " + currentKg + " kg" : ""}`;
+      const ukKg = getUkKg(item);
+      const actKg = getActualKg(item);
+      document.getElementById("boxModalSubtitle").textContent =
+        `${item.customer} (${item.batch}) | UK: ${getUkBoxes(item)} ပုံး${ukKg !== "" ? " / " + ukKg + " kg" : ""}${actKg !== "" ? " | ရုံးစစ်: " + actKg + " kg" : ""}`;
       document.getElementById("saveBoxBtn").classList.toggle("hidden", !canEdit);
       document.getElementById("quickBoxPaste").value = "";
 
-      const count = (item.boxWeights && item.boxWeights.length) ? item.boxWeights.length : (item.photos || 1);
+      const rcv = getReceivedBoxes(item);
+      const count = (item.boxWeights && item.boxWeights.length) ? item.boxWeights.length : (rcv !== "" && rcv > 0 ? rcv : getUkBoxes(item));
       document.getElementById("boxCountInput").value = count;
       document.getElementById("boxCountInput").disabled = !canEdit;
 
@@ -1238,10 +1321,9 @@
       const weights = inputs.map(el => parseFloat(el.value) || 0);
       const total = parseFloat(weights.reduce((a, b) => a + b, 0).toFixed(2));
 
-      item.photos = weights.length;
+      item.receivedBoxes = weights.length;
       item.boxWeights = weights;
       item.actualKg = total;
-      item.expectedKg = total;
 
       closeModal("boxModal");
       renderTable();
@@ -1284,15 +1366,15 @@
         if (!nameVal && !boxVal && !kgRaw && !noteVal) continue;
 
         const parsedBox = parseInt(boxVal);
-        const photos = (!isNaN(parsedBox) && parsedBox > 0) ? parsedBox : 1;
+        const ukBoxes = (!isNaN(parsedBox) && parsedBox > 0) ? parsedBox : 1;
 
         const parsedKg = parseFloat(kgRaw);
-        const kgVal = (!kgRaw || isNaN(parsedKg)) ? null : parsedKg;
+        const ukKgVal = (!kgRaw || isNaN(parsedKg)) ? null : parsedKg;
 
         parsedBulkRows.push({
           customer: nameVal || `Customer #${i + 1}`,
-          photos,
-          kg: kgVal,
+          ukBoxes,
+          ukKg: ukKgVal,
           notes: noteVal,
           remainingNote: ""
         });
@@ -1303,12 +1385,12 @@
 
     function editPreviewRow(idx, field, val) {
       if (!parsedBulkRows[idx]) return;
-      if (field === "photos") {
-        parsedBulkRows[idx].photos = Math.max(1, parseInt(val) || 1);
-      } else if (field === "kg") {
+      if (field === "ukBoxes") {
+        parsedBulkRows[idx].ukBoxes = Math.max(1, parseInt(val) || 1);
+      } else if (field === "ukKg") {
         const trimmed = String(val ?? "").trim();
         const n = parseFloat(trimmed);
-        parsedBulkRows[idx].kg = (trimmed === "" || isNaN(n)) ? null : n;
+        parsedBulkRows[idx].ukKg = (trimmed === "" || isNaN(n)) ? null : n;
       } else {
         parsedBulkRows[idx][field] = val;
       }
@@ -1328,8 +1410,8 @@
         <tr>
           <td class="py-1.5 px-3 text-slate-400 font-semibold">#${idx + 1}</td>
           <td class="py-1.5 px-2"><input type="text" value="${(r.customer || "").replace(/"/g, '&quot;')}" onchange="editPreviewRow(${idx}, 'customer', this.value)" class="w-36 border border-slate-200 rounded-lg px-2 py-1 font-semibold text-slate-800" /></td>
-          <td class="py-1.5 px-2 text-center"><input type="number" min="1" value="${r.photos}" onchange="editPreviewRow(${idx}, 'photos', this.value)" class="w-14 border border-slate-200 rounded-lg px-1.5 py-1 text-center" /></td>
-          <td class="py-1.5 px-2"><input type="number" step="0.01" value="${r.kg ?? ""}" placeholder="-" onchange="editPreviewRow(${idx}, 'kg', this.value)" class="w-20 border border-slate-200 rounded-lg px-2 py-1" /></td>
+          <td class="py-1.5 px-2 text-center"><input type="number" min="1" value="${r.ukBoxes}" onchange="editPreviewRow(${idx}, 'ukBoxes', this.value)" class="w-14 border border-slate-200 rounded-lg px-1.5 py-1 text-center" /></td>
+          <td class="py-1.5 px-2"><input type="number" step="0.01" value="${r.ukKg ?? ""}" placeholder="-" onchange="editPreviewRow(${idx}, 'ukKg', this.value)" class="w-20 border border-slate-200 rounded-lg px-2 py-1" /></td>
           <td class="py-1.5 px-2"><input type="text" value="${(r.notes || "").replace(/"/g, '&quot;')}" placeholder="-" onchange="editPreviewRow(${idx}, 'notes', this.value)" class="w-32 border border-slate-200 rounded-lg px-2 py-1 text-slate-600" /></td>
           <td class="py-1.5 px-2"><input type="text" value="${(r.remainingNote || "").replace(/"/g, '&quot;')}" placeholder="ပုံး/KG ကျန်" onchange="editPreviewRow(${idx}, 'remainingNote', this.value)" class="w-32 border border-slate-200 rounded-lg px-2 py-1 text-amber-800" /></td>
         </tr>
@@ -1350,10 +1432,12 @@
           id: `item-${Date.now()}-${idx}`,
           batch,
           customer: r.customer,
-          photos: r.photos,
+          photos: r.ukBoxes,
+          ukBoxes: r.ukBoxes,
+          receivedBoxes: null,
           boxWeights: [],
-          expectedKg: r.kg,
-          actualKg: r.kg,
+          expectedKg: r.ukKg,
+          actualKg: null,
           kgMatch: "Pending",
           payment,
           paidCurrency: "GBP",
@@ -1396,10 +1480,10 @@
       if (!customer) return alert("Customer နာမည် ထည့်ပါ။");
 
       const batch = document.getElementById("addBatch").value;
-      const photos = parseInt(document.getElementById("addPhotos").value) || 1;
+      const ukBoxes = Math.max(1, parseInt(document.getElementById("addPhotos").value) || 1);
       const kgRaw = document.getElementById("addKg").value.trim();
       const kgVal = kgRaw === "" ? null : parseFloat(kgRaw);
-      const cleanKg = (kgVal != null && !isNaN(kgVal)) ? kgVal : null;
+      const cleanUkKg = (kgVal != null && !isNaN(kgVal)) ? kgVal : null;
       const payment = document.getElementById("addPayment").value;
       const paidCurrency = document.getElementById("addCurrency").value;
       const amtRaw = document.getElementById("addAmount").value.trim();
@@ -1412,10 +1496,12 @@
         id: `item-${Date.now()}`,
         batch,
         customer,
-        photos,
+        photos: ukBoxes,
+        ukBoxes,
+        receivedBoxes: null,
         boxWeights: [],
-        expectedKg: cleanKg,
-        actualKg: cleanKg,
+        expectedKg: cleanUkKg,
+        actualKg: null,
         kgMatch: "Pending",
         payment,
         paidCurrency,
@@ -1538,14 +1624,14 @@
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
       const isAdmin = currentRole === "admin";
       const headers = isAdmin
-        ? ["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
-        : ["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"];
+        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
+        : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"];
       const rows = [headers];
       batchItems.forEach(i => {
         if (isAdmin) {
-          rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
         } else {
-          rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
         }
       });
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
