@@ -18,7 +18,9 @@
       "payment": "Paid",
       "ukApproved": true,
       "released": true,
-      "notes": ""
+      "notes": "",
+      "paidAmount": 5000,
+      "paidCurrency": "GBP"
     },
     {
       "id": "item-1795102170158-0",
