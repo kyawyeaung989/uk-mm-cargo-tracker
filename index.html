@@ -39,13 +39,12 @@
 </head>
 <body class="text-slate-800 pb-16">
 
-  <!-- Top Navbar with Cute Cartoon Mascot -->
+  <!-- Top Navbar -->
   <header class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-white shadow-md sticky top-0 z-30 border-b border-indigo-800/40">
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <!-- Cute Cargo Bunny Mascot SVG -->
-        <div class="mascot-float bg-amber-100/95 border-2 border-amber-300 rounded-2xl p-1.5 shadow-sm shrink-0">
-          <svg width="42" height="42" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="mascot-float bg-amber-100/95 border-2 border-amber-300 rounded-2xl p-1 shadow-sm shrink-0">
+          <svg width="36" height="36" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <ellipse cx="23" cy="15" rx="5" ry="12" transform="rotate(-10 23 15)" fill="#FFFBEB" stroke="#78350F" stroke-width="2.5"/>
             <ellipse cx="23" cy="15" rx="2.2" ry="7.5" transform="rotate(-10 23 15)" fill="#FDA4AF"/>
             <ellipse cx="41" cy="15" rx="5" ry="12" transform="rotate(10 41 15)" fill="#FFFBEB" stroke="#78350F" stroke-width="2.5"/>
@@ -62,38 +61,41 @@
         </div>
 
         <div class="min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="font-bold text-base sm:text-lg leading-tight tracking-tight whitespace-nowrap">UK → MM Cargo Approval Board</h1>
-            <span class="hidden md:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full whitespace-nowrap">✨ Happy Cargo Team</span>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-sm sm:text-lg leading-tight tracking-tight truncate">UK → MM Cargo Approval Board</h1>
+            <span class="hidden lg:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full whitespace-nowrap">✨ Happy Cargo Team</span>
           </div>
-          <p id="roleGreeting" class="text-xs text-amber-200/90 mt-0.5 truncate">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
-          <p id="syncStatus" class="text-[11px] text-slate-300 mt-0.5 whitespace-nowrap">⏳ ချိတ်ဆက်နေသည်...</p>
+          <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+            <p id="syncStatus" class="text-[11px] text-slate-300 whitespace-nowrap">⏳ ချိတ်ဆက်နေသည်...</p>
+            <span class="hidden sm:inline text-slate-500 text-[11px]">•</span>
+            <p id="roleGreeting" class="hidden sm:block text-[11px] text-amber-200/90 truncate max-w-xl">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <div id="roleContainer">
-          <select id="roleSelect" onchange="changeRole()" class="h-9 bg-slate-800/90 border border-slate-600 text-white text-xs sm:text-sm rounded-xl px-3 font-medium focus:outline-none focus:border-amber-400 whitespace-nowrap">
+          <select id="roleSelect" onchange="changeRole()" class="h-8 sm:h-9 bg-slate-800/90 border border-slate-600 text-white text-xs sm:text-sm rounded-xl px-2.5 font-medium focus:outline-none focus:border-amber-400 whitespace-nowrap">
             <option value="admin">👑 View All (Admin / Full)</option>
             <option value="office">⚖️ Office Staff (KG &amp; ထုတ်ပေးမှု)</option>
             <option value="page">💳 Page Admin (Paid / Unpaid)</option>
           </select>
         </div>
-        <div id="lockedRoleBadge" class="hidden h-9 bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-3 font-semibold flex items-center whitespace-nowrap"></div>
+        <div id="lockedRoleBadge" class="hidden h-8 sm:h-9 bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-2.5 font-semibold flex items-center whitespace-nowrap"></div>
 
-        <button onclick="loadFromGitHub()" class="h-9 bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-3 rounded-xl font-medium flex items-center gap-1 transition whitespace-nowrap">
+        <button onclick="loadFromGitHub()" class="h-8 sm:h-9 bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-medium flex items-center gap-1 transition whitespace-nowrap">
           🔄 Refresh
         </button>
 
-        <button id="setupBtn" onclick="openSetupModal()" class="h-9 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-3 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition whitespace-nowrap">
-          ⚙️ Setup / Share Link
+        <button id="setupBtn" onclick="openSetupModal()" class="h-8 sm:h-9 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition whitespace-nowrap">
+          ⚙️ Setup
         </button>
       </div>
     </div>
   </header>
 
   <!-- Wide-Screen Left & Right Side Cartoon Companions -->
-  <aside class="hidden 2xl:flex fixed left-4 top-32 w-48 flex-col gap-3 z-20 pointer-events-none">
+  <aside class="hidden 2xl:flex fixed left-4 top-28 w-48 flex-col gap-3 z-20 pointer-events-none">
     <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3.5 shadow-md text-center">
       <div class="gentle-wave inline-block mb-1.5">
         <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -114,7 +116,7 @@
     </div>
   </aside>
 
-  <aside class="hidden 2xl:flex fixed right-4 top-32 w-48 flex-col gap-3 z-20 pointer-events-none">
+  <aside class="hidden 2xl:flex fixed right-4 top-28 w-48 flex-col gap-3 z-20 pointer-events-none">
     <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3.5 shadow-md text-center">
       <div class="mascot-float inline-block mb-1.5">
         <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -131,33 +133,33 @@
     </div>
   </aside>
 
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-5 space-y-5">
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-3.5 space-y-4">
 
     <!-- Summary Cards -->
-    <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-3">
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-indigo-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
-        <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
+    <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 sm:gap-3">
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-indigo-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
+        <p id="statTotal" class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">0</p>
       </div>
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-sky-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
-        <p id="statKg" class="text-2xl font-bold text-sky-600 mt-1">0</p>
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-sky-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
+        <p id="statKg" class="text-xl sm:text-2xl font-bold text-sky-600 mt-0.5">0</p>
       </div>
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-emerald-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
-        <p id="statPaid" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-emerald-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
+        <p id="statPaid" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-0.5">0</p>
       </div>
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-purple-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
-        <p id="statUk" class="text-2xl font-bold text-purple-600 mt-1">0</p>
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-purple-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
+        <p id="statUk" class="text-xl sm:text-2xl font-bold text-purple-600 mt-0.5">0</p>
       </div>
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-teal-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
-        <p id="statReady" class="text-2xl font-bold text-teal-600 mt-1">0</p>
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-teal-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
+        <p id="statReady" class="text-xl sm:text-2xl font-bold text-teal-600 mt-0.5">0</p>
       </div>
-      <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-amber-100">
-        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
-        <p id="statReleased" class="text-2xl font-bold text-amber-700 mt-1">0</p>
+      <div class="soft-card rounded-2xl p-3 shadow-sm border border-amber-100">
+        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
+        <p id="statReleased" class="text-xl sm:text-2xl font-bold text-amber-700 mt-0.5">0</p>
       </div>
     </div>
 
@@ -187,38 +189,38 @@
     </div>
 
     <!-- Batch Dropdown Bar & Action Bar -->
-    <div class="soft-card rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="soft-card rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200/80 space-y-3.5">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex flex-wrap items-center gap-2">
-          <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5 whitespace-nowrap">
-            <span>🚢 Batch ရွေးရန်:</span>
+          <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1 whitespace-nowrap">
+            <span>🚢 Batch:</span>
           </label>
-          <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-3 focus:outline-none focus:border-indigo-500 min-w-[200px]">
+          <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-2.5 focus:outline-none focus:border-indigo-500 min-w-[180px]">
           </select>
           <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full whitespace-nowrap">0 ဦး</span>
 
           <button id="renameBatchBtn" onclick="openRenameBatchModal()" class="h-9 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold px-3 rounded-xl transition whitespace-nowrap">
-            ✏️ Batch နာမည်ပြင်မည်
+            ✏️ နာမည်ပြင်မည်
           </button>
         </div>
 
         <div id="adminActionBtns" class="flex flex-wrap items-center gap-2">
-          <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
-            + Batch အသစ်ဖွင့်မည်
+          <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+            + Batch အသစ်
           </button>
-          <button onclick="openAddCustomerModal()" class="h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+          <button onclick="openAddCustomerModal()" class="h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
             + Customer ထည့်မည်
           </button>
-          <button onclick="openBulkImportModal()" class="h-9 bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
-            📋 Column လိုက် Paste တင်မည်
+          <button onclick="openBulkImportModal()" class="h-9 bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+            📋 Column Paste
           </button>
         </div>
       </div>
 
       <!-- Filter & Search Bar -->
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-3 border-t border-slate-100 items-center">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-3 border-t border-slate-100 items-center">
         <div class="sm:col-span-4">
-          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / ကျန်ရှိမှတ်တမ်း ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
+          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / မှတ်စု ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
         </div>
         <div class="sm:col-span-3">
           <select id="statusFilter" onchange="renderTable()" class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white">
@@ -259,7 +261,7 @@
               <th class="py-2.5 px-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">📌 ကျန်ရှိမှတ်တမ်း</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">📝 မှတ်စု</th>
               <th class="py-2.5 px-2.5 text-center whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</th>
               <th class="py-2.5 px-2.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</th>
             </tr>
@@ -473,7 +475,7 @@
               <th class="py-2 px-3 text-center">UK ပုံး</th>
               <th class="py-2 px-3">UK KG</th>
               <th class="py-2 px-3">UK / Original Notes</th>
-              <th class="py-2 px-3">ကျန်ရှိမှတ်တမ်း</th>
+              <th class="py-2 px-3">📝 မှတ်စု</th>
             </tr>
           </thead>
           <tbody id="bulkPreviewBody" class="divide-y divide-slate-100">
@@ -543,8 +545,8 @@
         <input id="addNotes" type="text" placeholder="မထည့်လည်း ရသည်..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">ကျန်ရှိမှတ်တမ်း (ပုံးကျန် / KG ကျန် - Optional)</label>
-        <input id="addRemaining" type="text" placeholder="ဥပမာ: 2 ပုံး ကျန် (4/6 ရောက်)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+        <label class="block text-xs font-semibold text-slate-600 mb-1">📝 မှတ်စု (ပုံးကျန် / ဖုန်းဆက် / မှတ်စု - Optional)</label>
+        <input id="addRemaining" type="text" placeholder="ဥပမာ: 2 ပုံးကျန် / ဖုန်းဆက်ထားသည်" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl">ပိတ်မည်</button>
@@ -707,7 +709,7 @@
         statusEl.innerHTML = `<span class="text-emerald-300 font-semibold">✅ Live Synced (${now})</span>`;
         renderAll();
       } catch (err) {
-        statusEl.innerHTML = `<span class="text-amber-300">⚠️ ${err.message} — Setup ခလုတ်ကို စစ်ဆေးပါ</span>`;
+        statusEl.innerHTML = `<span class="text-amber-300">⚠️ ${err.message} — Setup ကို စစ်ဆေးပါ</span>`;
         renderAll();
       }
     }
@@ -717,7 +719,7 @@
       const statusEl = document.getElementById("syncStatus");
 
       if (!token) {
-        alert("GitHub Token မရှိသေးပါ။ Setup / Share Link တွင် Token ထည့်ပါ။");
+        alert("GitHub Token မရှိသေးပါ။ Setup တွင် Token ထည့်ပါ။");
         return;
       }
 
@@ -898,45 +900,45 @@
         }
 
         const ukBoxRow = isAdmin
-          ? `<div class="h-6 flex items-center justify-between gap-1.5 text-[11px] font-semibold text-indigo-800">
-               <span class="w-8 shrink-0">UK:</span>
+          ? `<div class="h-6 flex items-center gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-7 shrink-0">UK:</span>
                <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
-               <span class="text-[10px] text-indigo-600 w-7 shrink-0">ပုံး</span>
+               <span class="text-[10px] text-indigo-600">ပုံး</span>
              </div>`
           : `<div class="h-6 flex items-center gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-8 shrink-0">UK:</span>
+               <span class="w-7 shrink-0">UK:</span>
                <span>${ukBox} ပုံး</span>
              </div>`;
 
         const rcvBoxRow = canEditOffice
-          ? `<div class="h-6 flex items-center justify-between gap-1.5 text-[11px]">
-               <span class="w-8 text-slate-500 font-medium shrink-0">ရုံး:</span>
+          ? `<div class="h-6 flex items-center gap-1 text-[11px] whitespace-nowrap">
+               <span class="w-7 text-slate-500 font-medium shrink-0">ရုံး:</span>
                <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-xs font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
-               <span class="w-7 shrink-0">${boxShortfallHint}</span>
+               ${boxShortfallHint}
              </div>`
           : `<div class="h-6 flex items-center gap-1 text-xs whitespace-nowrap">
-               <span class="w-8 text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="w-7 text-slate-500 font-medium shrink-0">ရုံး:</span>
                <span class="font-semibold text-slate-700">${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}</span>
                ${boxShortfallHint}
              </div>`;
 
-        const boxHtml = `<div class="flex flex-col gap-1 w-[112px]">${ukBoxRow}${rcvBoxRow}</div>`;
+        const boxHtml = `<div class="flex flex-col gap-1 w-[116px]">${ukBoxRow}${rcvBoxRow}</div>`;
 
         // 3. KG Column: Aligned 2-row grid (UK vs ရုံး + Split + Match)
         const ukKgRow = isAdmin
           ? `<div class="h-6 flex items-center gap-1.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-8 shrink-0">UK:</span>
+               <span class="w-7 shrink-0">UK:</span>
                <input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-16 border border-indigo-200 bg-indigo-50/70 rounded px-1.5 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
                <span class="text-[10px] text-indigo-600">kg</span>
              </div>`
           : `<div class="h-6 flex items-center gap-1.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-8 shrink-0">UK:</span>
+               <span class="w-7 shrink-0">UK:</span>
                <span>${ukKg !== "" ? ukKg + " kg" : "-"}</span>
              </div>`;
 
         const rcvKgRow = canEditOffice
           ? `<div class="h-6 flex items-center gap-1.5 whitespace-nowrap">
-               <span class="w-8 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="w-7 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
                <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-16 border border-slate-300 rounded px-1.5 text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
                <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-2 rounded text-[11px] border whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
                  📦 ${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
@@ -947,7 +949,7 @@
                </select>
              </div>`
           : `<div class="h-6 flex items-center gap-1.5 whitespace-nowrap">
-               <span class="w-8 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="w-7 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
                <span class="text-xs font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
                ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
                <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
@@ -957,21 +959,21 @@
 
         const kgHtml = `<div class="flex flex-col gap-1">${ukKgRow}${rcvKgRow}</div>`;
 
-        // 4. Payment Column: Aligned grid with Paid/Unpaid, Currency + Amount, and Paid KG
+        // 4. Payment Column: Clean spacing so "Unpaid" never clips into "X Unp"
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
         if (canEditPage) {
           paymentHtml = `
-            <div class="flex flex-col gap-1 w-[142px]">
+            <div class="flex flex-col gap-1 w-[154px]">
               <div class="h-6 flex items-center gap-1">
-                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-full text-xs font-semibold rounded px-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[86px] shrink-0 text-[11px] font-semibold rounded px-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
                   <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
                   <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
                 </select>
-                <div class="h-6 flex items-center gap-0.5 shrink-0">
-                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-12 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
-                  <span class="text-[10px] font-semibold text-emerald-800">kg</span>
+                <div class="h-6 flex items-center gap-0.5 min-w-0 flex-1">
+                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-11 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
+                  <span class="text-[10px] font-semibold text-emerald-800 shrink-0">kg</span>
                 </div>
               </div>
               <div class="h-6 flex items-center gap-1">
@@ -1009,9 +1011,9 @@
           </div>
         `;
 
-        // 7. Remaining Note Column
+        // 7. General Note / မှတ်စု Column
         let remainingHtml = canEditRemaining
-          ? `<div class="h-7 flex items-center"><input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="2 ပုံးကျန် / 20kg" class="h-7 w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-2 text-xs focus:border-amber-500 focus:outline-none" /></div>`
+          ? `<div class="h-7 flex items-center"><input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="ပုံးကျန် / ဖုန်းဆက် / မှတ်စု..." class="h-7 w-36 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-2 text-xs focus:border-amber-500 focus:outline-none" /></div>`
           : `<div class="h-7 flex items-center"><span class="inline-block text-xs whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
 
         // 8. Ready Status Column
@@ -1452,7 +1454,7 @@
           <td class="py-1.5 px-2 text-center"><input type="number" min="1" value="${r.ukBoxes}" onchange="editPreviewRow(${idx}, 'ukBoxes', this.value)" class="w-14 border border-slate-200 rounded-lg px-1.5 py-1 text-center" /></td>
           <td class="py-1.5 px-2"><input type="number" step="0.01" value="${r.ukKg ?? ""}" placeholder="-" onchange="editPreviewRow(${idx}, 'ukKg', this.value)" class="w-20 border border-slate-200 rounded-lg px-2 py-1" /></td>
           <td class="py-1.5 px-2"><input type="text" value="${(r.notes || "").replace(/"/g, '&quot;')}" placeholder="-" onchange="editPreviewRow(${idx}, 'notes', this.value)" class="w-32 border border-slate-200 rounded-lg px-2 py-1 text-slate-600" /></td>
-          <td class="py-1.5 px-2"><input type="text" value="${(r.remainingNote || "").replace(/"/g, '&quot;')}" placeholder="ပုံး/KG ကျန်" onchange="editPreviewRow(${idx}, 'remainingNote', this.value)" class="w-32 border border-slate-200 rounded-lg px-2 py-1 text-amber-800" /></td>
+          <td class="py-1.5 px-2"><input type="text" value="${(r.remainingNote || "").replace(/"/g, '&quot;')}" placeholder="မှတ်စု..." onchange="editPreviewRow(${idx}, 'remainingNote', this.value)" class="w-32 border border-slate-200 rounded-lg px-2 py-1 text-amber-800" /></td>
         </tr>
       `).join("");
     }
@@ -1669,8 +1671,8 @@
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
       const canSeeFinance = currentRole === "admin" || currentRole === "page";
       const headers = canSeeFinance
-        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "Paid_KG", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
-        : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"];
+        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "Paid_KG", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note"]
+        : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note"];
       const rows = [headers];
       batchItems.forEach(i => {
         if (canSeeFinance) {
