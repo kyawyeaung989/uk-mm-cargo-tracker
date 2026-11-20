@@ -60,7 +60,7 @@
       "boxWeights": [],
       "expectedKg": 0.75,
       "actualKg": null,
-      "kgMatch": "Pending",
+      "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": false,
       "released": false,
