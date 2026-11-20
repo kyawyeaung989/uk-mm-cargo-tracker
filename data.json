@@ -62,7 +62,7 @@
       "actualKg": null,
       "kgMatch": "Match",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "ကော်ဖီတစ်ချောင်း"
     },
