@@ -26,7 +26,7 @@
       "id": "item-1795102170158-0",
       "batch": "UK-MM-Batch-01",
       "customer": "Su Yee Nandar",
-      "photos": 3,
+      "photos": 16,
       "boxWeights": [
         5,
         10
@@ -38,7 +38,8 @@
       "ukApproved": true,
       "released": true,
       "notes": "Brand",
-      "receivedBoxes": 2
+      "receivedBoxes": 2,
+      "ukBoxes": 16
     },
     {
       "id": "item-1795102170158-1",
