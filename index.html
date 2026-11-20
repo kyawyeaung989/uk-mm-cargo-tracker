@@ -17,11 +17,19 @@
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-4px); }
     }
+    @keyframes gentleWave {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2.5deg); }
+    }
     .mascot-float {
       animation: floatSlow 3.2s ease-in-out infinite;
     }
+    .gentle-wave {
+      transform-origin: bottom center;
+      animation: gentleWave 3.8s ease-in-out infinite;
+    }
     .soft-card {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
     }
   </style>
@@ -55,7 +63,7 @@
             <h1 class="font-bold text-base sm:text-lg leading-tight tracking-tight">UK → MM Cargo Approval Board</h1>
             <span class="hidden md:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full">✨ Happy Cargo Team</span>
           </div>
-          <p id="roleGreeting" class="text-xs text-amber-200/90 mt-0.5">✨ ပျော်ပျော်ရွှင်ရွှင်နဲ့ တိတိကျကျ စစ်ဆေးကြမယ်နော်!</p>
+          <p id="roleGreeting" class="text-xs text-amber-200/90 mt-0.5">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
           <p id="syncStatus" class="text-[11px] text-slate-300 mt-0.5">⏳ ချိတ်ဆက်နေသည်...</p>
         </div>
       </div>
@@ -66,7 +74,6 @@
             <option value="admin">👑 View All (Admin / Full)</option>
             <option value="office">⚖️ Office Staff (KG &amp; ထုတ်ပေးမှု)</option>
             <option value="page">💳 Page Admin (Paid / Unpaid)</option>
-            <option value="uk">🇬🇧 UK Admin (UK Approve)</option>
           </select>
         </div>
         <div id="lockedRoleBadge" class="hidden bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-3 py-1.5 font-semibold"></div>
@@ -81,6 +88,45 @@
       </div>
     </div>
   </header>
+
+  <!-- Wide-Screen Left & Right Side Cartoon Companions (Visible on 2xl screens so layout never crowds) -->
+  <aside class="hidden 2xl:flex fixed left-4 top-32 w-48 flex-col gap-3 z-20 pointer-events-none">
+    <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3.5 shadow-md text-center">
+      <div class="gentle-wave inline-block mb-1.5">
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="30" fill="#FCE7F3"/>
+          <circle cx="24" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
+          <circle cx="48" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
+          <circle cx="36" cy="36" r="15" fill="#FFFBEB" stroke="#831843" stroke-width="2.2"/>
+          <circle cx="31" cy="34" r="2" fill="#1E293B"/>
+          <circle cx="41" cy="34" r="2" fill="#1E293B"/>
+          <circle cx="27.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
+          <circle cx="44.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
+          <path d="M33.5 38.5C34.8 40.5 37.2 40.5 38.5 38.5" stroke="#831843" stroke-width="2" stroke-linecap="round"/>
+          <rect x="24" y="49" width="24" height="12" rx="3" fill="#34D399" stroke="#065F46" stroke-width="2.2"/>
+        </svg>
+      </div>
+      <p class="text-[11px] font-bold text-pink-900">🌸 စိတ်ရှည်ရှည် ကြိုးစားမှုအတွက်</p>
+      <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">တစ်ပုံးပြီးတစ်ပုံး သေချာစစ်ဆေးပေးနေတဲ့ အတွက် အရမ်းကျေးဇူးတင်ပါတယ် ✨</p>
+    </div>
+  </aside>
+
+  <aside class="hidden 2xl:flex fixed right-4 top-32 w-48 flex-col gap-3 z-20 pointer-events-none">
+    <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3.5 shadow-md text-center">
+      <div class="mascot-float inline-block mb-1.5">
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="30" fill="#CCFBF1"/>
+          <path d="M36 14L39.5 22.5L48.5 23.5L41.5 29.5L43.5 38.5L36 33.8L28.5 38.5L30.5 29.5L23.5 23.5L32.5 22.5L36 14Z" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
+          <circle cx="36" cy="46" r="12" fill="#FFFBEB" stroke="#115E59" stroke-width="2.2"/>
+          <circle cx="32" cy="45" r="1.8" fill="#1E293B"/>
+          <circle cx="40" cy="45" r="1.8" fill="#1E293B"/>
+          <path d="M33.5 48.5C34.8 50.2 37.2 50.2 38.5 48.5" stroke="#115E59" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="text-[11px] font-bold text-teal-900">🍀 အားလုံး အဆင်ပြေပါစေ</p>
+      <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">Team Member အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးအထူးတင်ပါတယ် 💕</p>
+    </div>
+  </aside>
 
   <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-5 space-y-5">
 
@@ -185,7 +231,7 @@
               <th class="py-2.5 px-2">⚖️ KG</th>
               <th class="py-2.5 px-2">💳 ငွေရှင်းမှု</th>
               <th class="py-2.5 px-2">🇬🇧 UK Approve</th>
-              <th class="py-2.5 px-2">Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ် / 2x ပြင်)</span></th>
+              <th class="py-2.5 px-2">Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
               <th class="py-2.5 px-2">📌 ကျန်ရှိမှတ်တမ်း</th>
               <th class="py-2.5 px-2 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
               <th class="py-2.5 px-2 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
@@ -209,7 +255,7 @@
             <circle cx="55" cy="24" r="3.5" fill="#34D399"/>
           </svg>
           <p class="font-bold text-slate-800 text-sm">✨ ဒီ Batch လေး သန့်ရှင်းနေပါပြီ!</p>
-          <p class="text-xs text-slate-500 mt-1">Customer စာရင်းလေး စထည့်လိုက်ရအောင် (သို့မဟုတ်) တခြား Batch ပြောင်းကြည့်ပါ။</p>
+          <p class="text-xs text-slate-500 mt-1">အလုပ်တွေ အမြဲအဆင်ပြေပါစေ — စာရင်းထည့်လိုပါက အပေါ်မှ ထည့်နိုင်ပါသည်။</p>
         </div>
       </div>
     </div>
@@ -217,12 +263,12 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 0. Note View Pop-up Modal (Single Click) -->
+  <!-- 0. Original Note View Pop-up Modal (Single Click) -->
   <div id="noteViewModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h2 class="text-base font-bold text-slate-800 flex items-center gap-1.5">📝 Notes အပြည့်အစုံ</h2>
+          <h2 class="text-base font-bold text-slate-800 flex items-center gap-1.5">📝 Original Notes</h2>
           <p id="noteViewCustomer" class="text-xs text-indigo-600 font-semibold mt-0.5"></p>
         </div>
         <button onclick="closeModal('noteViewModal')" class="text-slate-400 hover:text-slate-700 text-lg font-bold px-2">✕</button>
@@ -232,7 +278,7 @@
       </div>
 
       <div class="flex justify-between items-center pt-1">
-        <span class="text-[11px] text-slate-400">💡 နှစ်ချက်နှိပ်ရင် တိုက်ရိုက် Edit လုပ်နိုင်ပါတယ်</span>
+        <span id="noteViewHint" class="text-[11px] text-slate-400"></span>
         <div class="flex gap-2">
           <button id="noteViewEditBtn" onclick="switchViewToEditNote()" class="px-3.5 py-2 text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold rounded-xl transition">
             ✏️ Edit လုပ်မည်
@@ -245,11 +291,11 @@
     </div>
   </div>
 
-  <!-- 0b. Note Edit Modal (Double Click) -->
+  <!-- 0b. Original Note Edit Modal (Admin / UK Only via Double Click) -->
   <div id="noteEditModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div>
-        <h2 class="text-base font-bold text-slate-800">✏️ Notes ပြင်ဆင်ရန်</h2>
+        <h2 class="text-base font-bold text-slate-800">✏️ Original Notes ပြင်ဆင်ရန် (Admin / UK)</h2>
         <p id="noteEditCustomer" class="text-xs text-indigo-600 font-semibold mt-0.5"></p>
       </div>
 
@@ -267,7 +313,7 @@
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
       <h2 class="text-lg font-bold text-slate-800">⚙️ GitHub Sync Setup (တစ်ကြိမ်သာ ထည့်ရန်)</h2>
       <p class="text-xs text-slate-500 leading-relaxed">
-        အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး အောက်က <b>Share Link</b> တွေကို Copy ယူပြီး <b>Office Staff</b>၊ <b>Page Admin</b> နဲ့ <b>UK Admin</b> ဆီ ပို့ပေးလိုက်ရုံပါပဲ။
+        အစ်ကို့ GitHub Token ကို တစ်ခါထည့်ပြီး UK ပိုင်ရှင်အတွက် <b>Full Admin Link</b> နှင့် ဝန်ထမ်းများအတွက် <b>Locked Link</b> များကို Copy ယူပို့ပေးနိုင်ပါသည်။
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -286,17 +332,19 @@
         <input id="cfgToken" type="password" placeholder="github_pat_..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
 
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
-        <p class="text-xs font-semibold text-slate-600">🔗 ဝန်ထမ်းနှင့် UK Admin ထံ ပို့ရမည့် Locked Share Links:</p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2.5">
+        <p class="text-xs font-semibold text-slate-600">👑 UK ပိုင်ရှင် / Admin အတွက် Full Access Link:</p>
+        <button onclick="copyShareLink('admin')" class="w-full bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold py-2 px-3 rounded-xl">
+          👑 Copy UK Owner / Full Admin Link
+        </button>
+
+        <p class="text-xs font-semibold text-slate-600 pt-1">🔒 ဝန်ထမ်းများအတွက် ကန့်သတ် Locked Share Links:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button onclick="copyShareLink('office')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-3 rounded-xl">
             📋 Office Staff Link
           </button>
           <button onclick="copyShareLink('page')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 px-3 rounded-xl">
-            📋 Page Admin Link
-          </button>
-          <button onclick="copyShareLink('uk')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold py-2 px-3 rounded-xl">
-            📋 UK Admin Link
+            📋 Payment Admin Link
           </button>
         </div>
         <p id="copyFeedback" class="text-xs text-emerald-600 font-medium hidden"></p>
@@ -384,7 +432,7 @@
           <textarea id="pasteKg" oninput="parseOrderedColumns()" rows="4" placeholder="55&#10;27&#10;(မထည့်လည်း OK)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">4. Notes (Optional)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">4. Original Notes (Optional)</label>
           <textarea id="pasteNotes" oninput="parseOrderedColumns()" rows="4" placeholder="ဖုန်း / မှတ်ချက်&#10;(မပါလည်း OK)" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:outline-none focus:border-indigo-500"></textarea>
         </div>
       </div>
@@ -397,7 +445,7 @@
               <th class="py-2 px-3">Customer နာမည်</th>
               <th class="py-2 px-3 text-center">ပုံး/ထုပ်</th>
               <th class="py-2 px-3">KG</th>
-              <th class="py-2 px-3">Notes</th>
+              <th class="py-2 px-3">Original Notes</th>
               <th class="py-2 px-3">ကျန်ရှိမှတ်တမ်း</th>
             </tr>
           </thead>
@@ -447,7 +495,7 @@
         </select>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Notes (Optional)</label>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Original Notes (Optional)</label>
         <input id="addNotes" type="text" placeholder="မထည့်လည်း ရသည်..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
       </div>
       <div>
@@ -505,17 +553,15 @@
     let clickTimer = null;
 
     const ROLE_LABELS = {
-      admin: "👑 View All (Admin / Full)",
+      admin: "👑 UK Owner / Admin",
       office: "⚖️ Office Staff (Locked)",
-      page: "💳 Page Admin (Locked)",
-      uk: "🇬🇧 UK Admin (Locked)"
+      page: "💳 Payment Admin (Locked)"
     };
 
     const ROLE_GREETINGS = {
       admin: "✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!",
       office: "⚖️ KG နဲ့ ပုံး/ထုပ်ကို သေချာဂရုစိုက်စစ်ပေးနေတဲ့ Office Staff Team Member များ — ကျေးဇူးတင်ပါတယ်နော်!",
-      page: "💳 Payment တွေကို သေချာစစ်ဆေးပေးနေတဲ့ Team Member / Staff များ — ကျေးဇူးတင်ပါတယ်နော်!",
-      uk: "🇬🇧 UK Admin Approve လုပ်ပြီးမှသာ ထုတ်ပေးနိုင်ပြီ (✅ ရပြီ) အဖြစ် သတ်မှတ်ပါမယ် — ကျေးဇူးပါ!"
+      page: "💳 Payment တွေကို သေချာစစ်ဆေးပေးနေတဲ့ Team Member / Staff များ — ကျေးဇူးတင်ပါတယ်နော်!"
     };
 
     function getConfig() {
@@ -535,9 +581,12 @@
       }
 
       const roleParam = params.get("role");
-      if (roleParam && ["office", "page", "uk"].includes(roleParam)) {
+      if (roleParam && ["office", "page"].includes(roleParam)) {
         currentRole = roleParam;
         isRoleLocked = true;
+      } else {
+        currentRole = "admin";
+        isRoleLocked = false;
       }
       applyRolePermissions();
     }
@@ -732,8 +781,8 @@
       const isAdmin = currentRole === "admin";
       const canEditOffice = isAdmin || currentRole === "office";
       const canEditPage = isAdmin || currentRole === "page";
-      const canEditUk = isAdmin || currentRole === "uk";
-      const canEditNotes = isAdmin || currentRole === "page" || currentRole === "office";
+      const canEditUk = isAdmin;
+      const canEditOriginalNotes = isAdmin;
       const canEditRemaining = isAdmin || currentRole === "office";
 
       filtered.forEach(item => {
@@ -792,22 +841,24 @@
              </button>`
           : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span>`;
 
+        // Original Notes: Single-click = View Pop-up (All), Double-click = Edit (Admin/UK only)
         const noteText = item.notes || "";
         const notePreview = noteText
           ? `<span class="line-clamp-2 text-xs text-slate-700">${escapeHtml(noteText)}</span>`
-          : `<span class="text-xs text-slate-400 italic">မှတ်ချက်မရှိ (နှိပ်ကြည့်ရန်)</span>`;
+          : `<span class="text-xs text-slate-400 italic">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန် နှိပ်ပါ'}</span>`;
 
         const notesHtml = `
           <div
             onclick="handleNoteSingleClick('${item.id}')"
-            ondblclick="handleNoteDoubleClick('${item.id}', ${canEditNotes})"
-            title="၁ ချက်နှိပ် = အပြည့်ကြည့်ရန်${canEditNotes ? ' | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : ''}"
+            ondblclick="handleNoteDoubleClick('${item.id}', ${canEditOriginalNotes})"
+            title="${canEditOriginalNotes ? '၁ ချက်နှိပ် = ဖတ်ရန် | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : '၁ ချက်နှိပ် = Pop-up ဖြင့် ဖတ်ရန် (View Only)'}"
             class="w-32 sm:w-36 min-h-[34px] px-2 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center transition"
           >
             ${notePreview}
           </div>
         `;
 
+        // Remaining / ကျန်ရှိမှတ်တမ်း: Editable by Admin & Office Staff, View-only for Payment Admin
         let remainingHtml = canEditRemaining
           ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="1 ပုံးကျန် / 20kg ကျန်" class="w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
           : `<span class="inline-block text-xs ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span>`;
@@ -854,7 +905,7 @@
         .replace(/"/g, "&quot;");
     }
 
-    // ==================== SINGLE CLICK VIEW / DOUBLE CLICK EDIT FOR NOTES ====================
+    // ==================== SINGLE CLICK VIEW / DOUBLE CLICK EDIT FOR ORIGINAL NOTES ====================
     function handleNoteSingleClick(id) {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
@@ -879,20 +930,25 @@
       const item = findItem(id);
       if (!item) return;
       activeNoteItemId = id;
-      const canEdit = currentRole === "admin" || currentRole === "page" || currentRole === "office";
+      const canEdit = currentRole === "admin";
       document.getElementById("noteViewCustomer").textContent = `${item.customer} (${item.batch})`;
-      document.getElementById("noteViewBody").textContent = item.notes && item.notes.trim() ? item.notes : "မှတ်ချက် ရေးထားခြင်း မရှိသေးပါ။";
+      document.getElementById("noteViewBody").textContent = item.notes && item.notes.trim() ? item.notes : "Original Notes ရေးထားခြင်း မရှိသေးပါ။";
       document.getElementById("noteViewEditBtn").classList.toggle("hidden", !canEdit);
+      document.getElementById("noteViewHint").textContent = canEdit
+        ? "💡 ၂ ချက်နှိပ်ရင် တိုက်ရိုက် Edit လုပ်နိုင်ပါတယ်"
+        : "🔒 ဖတ်ရှုရန်သက်သက် (View Only)";
       document.getElementById("noteViewModal").classList.remove("hidden");
     }
 
     function switchViewToEditNote() {
+      if (currentRole !== "admin") return;
       const id = activeNoteItemId;
       closeModal("noteViewModal");
       if (id) openNoteEditModal(id);
     }
 
     function openNoteEditModal(id) {
+      if (currentRole !== "admin") return;
       const item = findItem(id);
       if (!item) return;
       activeNoteItemId = id;
@@ -903,6 +959,7 @@
     }
 
     function saveNoteEditModal() {
+      if (currentRole !== "admin") return;
       const item = findItem(activeNoteItemId);
       if (!item) return;
       item.notes = document.getElementById("noteEditTextarea").value;
@@ -917,6 +974,7 @@
     }
 
     function updateCustomerName(id, val) {
+      if (currentRole !== "admin") return;
       const item = findItem(id);
       if (!item) return;
       const trimmed = val.trim();
@@ -974,6 +1032,7 @@
     }
 
     function toggleUkApprove(id) {
+      if (currentRole !== "admin") return;
       const item = findItem(id);
       if (!item) return;
       item.ukApproved = !item.ukApproved;
@@ -1001,6 +1060,7 @@
     }
 
     function deleteSingleItem(id) {
+      if (currentRole !== "admin") return;
       const item = findItem(id);
       if (!item) return;
       if (!confirm(`"${item.customer}" ကို စာရင်းမှ ဖျက်မည်မှာ သေချာပါသလား?`)) return;
@@ -1175,6 +1235,7 @@
     }
 
     function confirmBulkImport() {
+      if (currentRole !== "admin") return;
       if (parsedBulkRows.length === 0) {
         alert("ထည့်သွင်းရန် စာရင်းမရှိသေးပါ။ အနည်းဆုံး အချက်အလက်တစ်ခုခု Paste ထည့်ပါ။");
         return;
@@ -1223,6 +1284,7 @@
     }
 
     function confirmAddCustomer() {
+      if (currentRole !== "admin") return;
       const customer = document.getElementById("addName").value.trim();
       if (!customer) return alert("Customer နာမည် ထည့်ပါ။");
 
@@ -1263,6 +1325,7 @@
     }
 
     function confirmNewBatch() {
+      if (currentRole !== "admin") return;
       const name = document.getElementById("newBatchName").value.trim();
       if (!name) return alert("Batch နာမည် ထည့်ပါ။");
       if (appData.batches.includes(name)) {
@@ -1285,6 +1348,7 @@
     }
 
     function confirmRenameBatch() {
+      if (currentRole !== "admin") return;
       const newName = document.getElementById("renameBatchInput").value.trim();
       if (!newName) return alert("Batch နာမည် အသစ်ရိုက်ပါ။");
       if (newName === activeBatch) {
@@ -1308,6 +1372,7 @@
     }
 
     function deleteCurrentBatch() {
+      if (currentRole !== "admin") return;
       if (!confirm(`"${activeBatch}" Batch နှင့် အထဲရှိ စာရင်းအားလုံးကို ဖျက်မည်မှာ သေချာပါသလား?`)) return;
 
       appData.batches = appData.batches.filter(b => b !== activeBatch);
@@ -1346,18 +1411,19 @@
         return;
       }
       const baseUrl = window.location.origin + window.location.pathname;
-      const shareUrl = `${baseUrl}?u=${encodeURIComponent(user)}&r=${encodeURIComponent(repo)}&t=${encodeURIComponent(btoa(token))}&role=${role}`;
+      const roleQuery = role === "admin" ? "" : `&role=${role}`;
+      const shareUrl = `${baseUrl}?u=${encodeURIComponent(user)}&r=${encodeURIComponent(repo)}&t=${encodeURIComponent(btoa(token))}${roleQuery}`;
 
       navigator.clipboard.writeText(shareUrl).then(() => {
         const fb = document.getElementById("copyFeedback");
-        fb.textContent = `✅ ${ROLE_LABELS[role]} Link ကို Copy ကူးပြီးပါပြီ — Viber မှ ပို့ပေးနိုင်ပါပြီ။`;
+        fb.textContent = `✅ ${ROLE_LABELS[role]} Link ကို Copy ကူးပြီးပါပြီ — ပို့ပေးနိုင်ပါပြီ။`;
         fb.classList.remove("hidden");
       });
     }
 
     function exportCSV() {
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
-      const rows = [["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Notes", "Remaining_Note"]];
+      const rows = [["Batch", "Customer", "Boxes", "KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]];
       batchItems.forEach(i => {
         rows.push([i.batch, i.customer, i.photos, getDisplayKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
       });
