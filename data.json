@@ -90,10 +90,13 @@
       "id": "item-1795102170158-4",
       "batch": "UK-MM-Batch-01",
       "customer": "Pyae Aung",
-      "photos": 1,
-      "boxWeights": [],
-      "expectedKg": 1.75,
-      "actualKg": null,
+      "photos": 2,
+      "boxWeights": [
+        10,
+        15
+      ],
+      "expectedKg": 25,
+      "actualKg": 25,
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
