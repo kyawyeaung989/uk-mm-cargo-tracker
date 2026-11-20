@@ -256,7 +256,7 @@
               <th class="py-2.5 px-2.5 whitespace-nowrap">Customer နာမည်</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">📦 ပုံး (UK vs ရုံး)</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">⚖️ KG (UK vs ရုံး)</th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
               <th class="py-2.5 px-2.5 whitespace-nowrap">📌 ကျန်ရှိမှတ်တမ်း</th>
@@ -514,24 +514,28 @@
           <input id="addKg" type="number" step="0.01" placeholder="ဥပမာ: 55" class="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm" />
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-4 gap-2">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေရှင်းမှု</label>
-          <select id="addPayment" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm">
+          <select id="addPayment" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm">
             <option value="Unpaid">Unpaid</option>
             <option value="Paid">Paid</option>
           </select>
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေကြေး</label>
-          <select id="addCurrency" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm">
+          <select id="addCurrency" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm">
             <option value="GBP">£ GBP</option>
             <option value="MMK">Ks MMK</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">ပမာဏ (Optional)</label>
-          <input id="addAmount" type="number" step="0.01" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-sm" />
+          <label class="block text-xs font-semibold text-slate-600 mb-1">ပမာဏ</label>
+          <input id="addAmount" type="number" step="0.01" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-emerald-800 mb-1">ငွေရှင်း KG</label>
+          <input id="addPaidKg" type="number" step="0.01" placeholder="kg" class="w-full border border-emerald-200 rounded-xl px-2 py-2 text-xs sm:text-sm" />
         </div>
       </div>
       <div>
@@ -803,6 +807,11 @@
       return "";
     }
 
+    function getPaidKg(item) {
+      if (item.paidKg != null && item.paidKg !== "") return item.paidKg;
+      return "";
+    }
+
     function renderTable() {
       const tbody = document.getElementById("tableBody");
       const emptyState = document.getElementById("emptyState");
@@ -869,12 +878,13 @@
         const rcvBox = getReceivedBoxes(item);
         const ukKg = getUkKg(item);
         const actKg = getActualKg(item);
+        const paidKgVal = getPaidKg(item);
         const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
 
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
-        // 1. Customer Name (Uniform height & width)
+        // 1. Customer Name
         const customerHtml = isAdmin
           ? `<input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-2 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
           : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
@@ -947,23 +957,29 @@
 
         const kgHtml = `<div class="flex flex-col gap-1">${ukKgRow}${rcvKgRow}</div>`;
 
-        // 4. Payment Column: Aligned 2-row stack
+        // 4. Payment Column: Aligned grid with Paid/Unpaid, Currency + Amount, and Paid KG
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
         if (canEditPage) {
           paymentHtml = `
-            <div class="flex flex-col gap-1 w-[124px]">
-              <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-full text-xs font-semibold rounded px-2 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
-                <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
-                <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
-              </select>
+            <div class="flex flex-col gap-1 w-[142px]">
+              <div class="h-6 flex items-center gap-1">
+                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-full text-xs font-semibold rounded px-1.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                  <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
+                  <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
+                </select>
+                <div class="h-6 flex items-center gap-0.5 shrink-0">
+                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-12 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
+                  <span class="text-[10px] font-semibold text-emerald-800">kg</span>
+                </div>
+              </div>
               <div class="h-6 flex items-center gap-1">
                 <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-1 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
                   <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
                   <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
                 </select>
-                <input type="number" step="0.01" value="${amtVal}" placeholder="ပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
               </div>
             </div>
           `;
@@ -1221,6 +1237,21 @@
       saveToGitHub();
     }
 
+    function updatePaidKg(id, val) {
+      if (currentRole !== "admin" && currentRole !== "page") return;
+      const item = findItem(id);
+      if (!item) return;
+      const trimmed = String(val ?? "").trim();
+      if (trimmed === "") {
+        item.paidKg = null;
+      } else {
+        const num = parseFloat(trimmed);
+        item.paidKg = !isNaN(num) ? num : null;
+      }
+      renderTable();
+      saveToGitHub();
+    }
+
     function toggleUkApprove(id) {
       if (currentRole !== "admin") return;
       const item = findItem(id);
@@ -1450,6 +1481,7 @@
           payment,
           paidCurrency: "GBP",
           paidAmount: null,
+          paidKg: null,
           ukApproved: false,
           released: false,
           notes: r.notes,
@@ -1477,6 +1509,7 @@
       document.getElementById("addPayment").value = "Unpaid";
       document.getElementById("addCurrency").value = "GBP";
       document.getElementById("addAmount").value = "";
+      document.getElementById("addPaidKg").value = "";
       document.getElementById("addNotes").value = "";
       document.getElementById("addRemaining").value = "";
       document.getElementById("addCustomerModal").classList.remove("hidden");
@@ -1497,6 +1530,9 @@
       const amtRaw = document.getElementById("addAmount").value.trim();
       const amtVal = amtRaw === "" ? null : parseFloat(amtRaw);
       const cleanAmt = (amtVal != null && !isNaN(amtVal)) ? amtVal : null;
+      const paidKgRaw = document.getElementById("addPaidKg").value.trim();
+      const paidKgVal = paidKgRaw === "" ? null : parseFloat(paidKgRaw);
+      const cleanPaidKg = (paidKgVal != null && !isNaN(paidKgVal)) ? paidKgVal : null;
       const notes = document.getElementById("addNotes").value.trim();
       const remainingNote = document.getElementById("addRemaining").value.trim();
 
@@ -1514,6 +1550,7 @@
         payment,
         paidCurrency,
         paidAmount: cleanAmt,
+        paidKg: cleanPaidKg,
         ukApproved: false,
         released: false,
         notes,
@@ -1630,14 +1667,14 @@
 
     function exportCSV() {
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
-      const isAdmin = currentRole === "admin";
-      const headers = isAdmin
-        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
+      const canSeeFinance = currentRole === "admin" || currentRole === "page";
+      const headers = canSeeFinance
+        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "Paid_KG", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"]
         : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Remaining_Note"];
       const rows = [headers];
       batchItems.forEach(i => {
-        if (isAdmin) {
-          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+        if (canSeeFinance) {
+          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", getPaidKg(i), i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
         } else {
           rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
         }
