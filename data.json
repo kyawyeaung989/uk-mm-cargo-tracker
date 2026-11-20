@@ -44,10 +44,14 @@
       "id": "item-1795102170158-1",
       "batch": "UK-MM-Batch-01",
       "customer": "Myat Ko Tun",
-      "photos": 1,
-      "boxWeights": [],
-      "expectedKg": 0.75,
-      "actualKg": null,
+      "photos": 3,
+      "boxWeights": [
+        10,
+        15,
+        5
+      ],
+      "expectedKg": 30,
+      "actualKg": 30,
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
