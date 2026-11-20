@@ -611,6 +611,66 @@
       "ukApproved": false,
       "released": false,
       "notes": "Tingkang chan"
+    },
+    {
+      "id": "item-1795145724823-0",
+      "batch": "UK-MM-Batch-01",
+      "customer": "Barmaso",
+      "photos": 1,
+      "boxWeights": [],
+      "expectedKg": 5,
+      "actualKg": 5,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "ukApproved": false,
+      "released": false,
+      "notes": "",
+      "remainingNote": ""
+    },
+    {
+      "id": "item-1795145724823-1",
+      "batch": "UK-MM-Batch-01",
+      "customer": "Ngapi",
+      "photos": 1,
+      "boxWeights": [],
+      "expectedKg": 5,
+      "actualKg": 5,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "ukApproved": false,
+      "released": false,
+      "notes": "",
+      "remainingNote": ""
+    },
+    {
+      "id": "item-1795145724823-2",
+      "batch": "UK-MM-Batch-01",
+      "customer": "Mati",
+      "photos": 1,
+      "boxWeights": [],
+      "expectedKg": 7,
+      "actualKg": 7,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "ukApproved": false,
+      "released": false,
+      "notes": "",
+      "remainingNote": ""
+    },
+    {
+      "id": "item-1795145724823-3",
+      "batch": "UK-MM-Batch-01",
+      "customer": "zarmani",
+      "photos": 1,
+      "boxWeights": [],
+      "expectedKg": 9,
+      "actualKg": 9,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "ukApproved": false,
+      "released": false,
+      "notes": "",
+      "remainingNote": ""
     }
   ]
 }
