@@ -12,8 +12,8 @@
       "boxWeights": [
         44
       ],
-      "expectedKg": 44,
-      "actualKg": 44,
+      "expectedKg": 30,
+      "actualKg": 30,
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
