@@ -48,7 +48,7 @@
       "actualKg": null,
       "kgMatch": "Match",
       "payment": "Unpaid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": ""
     },
