@@ -32,6 +32,9 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
     }
+    th, td {
+      vertical-align: top;
+    }
   </style>
 </head>
 <body class="text-slate-800 pb-16">
@@ -39,7 +42,7 @@
   <!-- Top Navbar with Cute Cartoon Mascot -->
   <header class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-white shadow-md sticky top-0 z-30 border-b border-indigo-800/40">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 min-w-0">
         <!-- Cute Cargo Bunny Mascot SVG -->
         <div class="mascot-float bg-amber-100/95 border-2 border-amber-300 rounded-2xl p-1.5 shadow-sm shrink-0">
           <svg width="42" height="42" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,31 +61,31 @@
           </svg>
         </div>
 
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-bold text-base sm:text-lg leading-tight tracking-tight">UK → MM Cargo Approval Board</h1>
-            <span class="hidden md:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full">✨ Happy Cargo Team</span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="font-bold text-base sm:text-lg leading-tight tracking-tight whitespace-nowrap">UK → MM Cargo Approval Board</h1>
+            <span class="hidden md:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full whitespace-nowrap">✨ Happy Cargo Team</span>
           </div>
-          <p id="roleGreeting" class="text-xs text-amber-200/90 mt-0.5">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
-          <p id="syncStatus" class="text-[11px] text-slate-300 mt-0.5">⏳ ချိတ်ဆက်နေသည်...</p>
+          <p id="roleGreeting" class="text-xs text-amber-200/90 mt-0.5 truncate">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
+          <p id="syncStatus" class="text-[11px] text-slate-300 mt-0.5 whitespace-nowrap">⏳ ချိတ်ဆက်နေသည်...</p>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2 shrink-0">
         <div id="roleContainer">
-          <select id="roleSelect" onchange="changeRole()" class="bg-slate-800/90 border border-slate-600 text-white text-xs sm:text-sm rounded-xl px-3 py-1.5 font-medium focus:outline-none focus:border-amber-400">
+          <select id="roleSelect" onchange="changeRole()" class="h-9 bg-slate-800/90 border border-slate-600 text-white text-xs sm:text-sm rounded-xl px-3 font-medium focus:outline-none focus:border-amber-400 whitespace-nowrap">
             <option value="admin">👑 View All (Admin / Full)</option>
             <option value="office">⚖️ Office Staff (KG &amp; ထုတ်ပေးမှု)</option>
             <option value="page">💳 Page Admin (Paid / Unpaid)</option>
           </select>
         </div>
-        <div id="lockedRoleBadge" class="hidden bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-3 py-1.5 font-semibold"></div>
+        <div id="lockedRoleBadge" class="hidden h-9 bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-3 font-semibold flex items-center whitespace-nowrap"></div>
 
-        <button onclick="loadFromGitHub()" class="bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-3 py-1.5 rounded-xl font-medium flex items-center gap-1 transition">
+        <button onclick="loadFromGitHub()" class="h-9 bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-3 rounded-xl font-medium flex items-center gap-1 transition whitespace-nowrap">
           🔄 Refresh
         </button>
 
-        <button id="setupBtn" onclick="openSetupModal()" class="bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition">
+        <button id="setupBtn" onclick="openSetupModal()" class="h-9 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-3 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition whitespace-nowrap">
           ⚙️ Setup / Share Link
         </button>
       </div>
@@ -133,93 +136,92 @@
     <!-- Summary Cards -->
     <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-3">
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-indigo-100">
-        <p class="text-xs text-slate-500 font-medium">စုစုပေါင်း Customer</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
         <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
       </div>
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-sky-100">
-        <p class="text-xs text-slate-500 font-medium">⚖️ KG ကိုက်ပြီး</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
         <p id="statKg" class="text-2xl font-bold text-sky-600 mt-1">0</p>
       </div>
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-emerald-100">
-        <p class="text-xs text-slate-500 font-medium">💳 Paid (ငွေဝင်ပြီး)</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
         <p id="statPaid" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
       </div>
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-purple-100">
-        <p class="text-xs text-slate-500 font-medium">🇬🇧 UK Approved</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
         <p id="statUk" class="text-2xl font-bold text-purple-600 mt-1">0</p>
       </div>
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-teal-100">
-        <p class="text-xs text-slate-500 font-medium">✅ ထုတ်ပေးနိုင်ပြီ</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
         <p id="statReady" class="text-2xl font-bold text-teal-600 mt-1">0</p>
       </div>
       <div class="soft-card rounded-2xl p-3.5 shadow-sm border border-amber-100">
-        <p class="text-xs text-slate-500 font-medium">🚚 ထုတ်ပေးလိုက်ပြီ</p>
+        <p class="text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
         <p id="statReleased" class="text-2xl font-bold text-amber-700 mt-1">0</p>
       </div>
     </div>
 
-    <!-- Admin-Only Financial Totals Bar (Strictly Hidden from Payment Admin & Office Staff) -->
+    <!-- Admin-Only Financial Totals Bar -->
     <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between bg-gradient-to-r from-indigo-50/90 to-white">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl">🇬🇧</span>
-          <div>
-            <p class="text-xs font-bold text-indigo-950">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
-            <p class="text-[11px] text-slate-500">Main Admin / UK Owner သာ မြင်ရသည်</p>
+      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl shrink-0">🇬🇧</span>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-indigo-950 truncate">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
+            <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
           </div>
         </div>
-        <p id="statTotalGbp" class="text-xl sm:text-2xl font-extrabold text-indigo-700">£ 0.00</p>
+        <p id="statTotalGbp" class="text-lg sm:text-2xl font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
       </div>
 
-      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between bg-gradient-to-r from-emerald-50/90 to-white">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl">🇲🇲</span>
-          <div>
-            <p class="text-xs font-bold text-emerald-950">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
-            <p class="text-[11px] text-slate-500">Main Admin / UK Owner သာ မြင်ရသည်</p>
+      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl shrink-0">🇲🇲</span>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-emerald-950 truncate">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
+            <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
           </div>
         </div>
-        <p id="statTotalMmk" class="text-xl sm:text-2xl font-extrabold text-emerald-700">0 Ks</p>
+        <p id="statTotalMmk" class="text-lg sm:text-2xl font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
       </div>
     </div>
 
     <!-- Batch Dropdown Bar & Action Bar -->
     <div class="soft-card rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <!-- Batch Dropdown Selector + Rename Button -->
         <div class="flex flex-wrap items-center gap-2">
-          <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+          <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5 whitespace-nowrap">
             <span>🚢 Batch ရွေးရန်:</span>
           </label>
-          <select id="batchDropdown" onchange="onBatchDropdownChange()" class="bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-3.5 py-2 focus:outline-none focus:border-indigo-500 min-w-[210px]">
+          <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-3 focus:outline-none focus:border-indigo-500 min-w-[200px]">
           </select>
-          <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full">0 ဦး</span>
+          <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full whitespace-nowrap">0 ဦး</span>
 
-          <button id="renameBatchBtn" onclick="openRenameBatchModal()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold px-3 py-1.5 rounded-xl transition">
+          <button id="renameBatchBtn" onclick="openRenameBatchModal()" class="h-9 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold px-3 rounded-xl transition whitespace-nowrap">
             ✏️ Batch နာမည်ပြင်မည်
           </button>
         </div>
 
-        <div id="adminActionBtns" class="flex flex-wrap gap-2">
-          <button onclick="openNewBatchModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-xl font-semibold shadow-sm transition">
+        <div id="adminActionBtns" class="flex flex-wrap items-center gap-2">
+          <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
             + Batch အသစ်ဖွင့်မည်
           </button>
-          <button onclick="openAddCustomerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-xl font-semibold shadow-sm transition">
+          <button onclick="openAddCustomerModal()" class="h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
             + Customer ထည့်မည်
           </button>
-          <button onclick="openBulkImportModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3.5 py-2 rounded-xl font-semibold shadow-sm transition">
+          <button onclick="openBulkImportModal()" class="h-9 bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3.5 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
             📋 Column လိုက် Paste တင်မည်
           </button>
         </div>
       </div>
 
       <!-- Filter & Search Bar -->
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-3 border-t border-slate-100">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-3 border-t border-slate-100 items-center">
         <div class="sm:col-span-4">
-          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / ကျန်ရှိမှတ်တမ်း ရှာရန်..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 bg-white" />
+          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / ကျန်ရှိမှတ်တမ်း ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
         </div>
         <div class="sm:col-span-3">
-          <select id="statusFilter" onchange="renderTable()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 bg-white">
+          <select id="statusFilter" onchange="renderTable()" class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white">
             <option value="all">အားလုံးပြမည် (All Status)</option>
             <option value="ready">✅ ထုတ်ပေးနိုင်ပြီ (Ready)</option>
             <option value="released">🚚 ထုတ်ပေးလိုက်ပြီ (Released)</option>
@@ -229,16 +231,16 @@
           </select>
         </div>
         <div class="sm:col-span-3 flex items-center">
-          <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-600 cursor-pointer select-none border border-slate-200 rounded-xl px-3 py-2 w-full bg-slate-50/90">
-            <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600" />
-            <span>ထုတ်ပေးလိုက်ပြီးသား ဖျောက်မည်</span>
+          <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none border border-slate-200 rounded-xl px-3 h-9 w-full bg-slate-50/90 whitespace-nowrap">
+            <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600 shrink-0" />
+            <span class="truncate">ထုတ်ပေးပြီးသား ဖျောက်မည်</span>
           </label>
         </div>
         <div class="sm:col-span-2 flex gap-2">
-          <button onclick="exportCSV()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2.5 py-2 rounded-xl border border-slate-300 transition">
+          <button onclick="exportCSV()" class="flex-1 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2.5 rounded-xl border border-slate-300 transition whitespace-nowrap">
             ⬇️ CSV
           </button>
-          <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2.5 py-2 rounded-xl border border-rose-200 transition">
+          <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="flex-1 h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2.5 rounded-xl border border-rose-200 transition whitespace-nowrap">
             🗑️ ဖျက်မည်
           </button>
         </div>
@@ -251,15 +253,15 @@
         <table class="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
             <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
-              <th class="py-2.5 px-2">Customer နာမည်</th>
-              <th class="py-2.5 px-2">📦 ပုံး (UK vs ရုံး)</th>
-              <th class="py-2.5 px-2">⚖️ KG (UK vs ရုံး)</th>
-              <th class="py-2.5 px-2">💳 ငွေရှင်းမှု</th>
-              <th class="py-2.5 px-2">🇬🇧 UK Approve</th>
-              <th class="py-2.5 px-2">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
-              <th class="py-2.5 px-2">📌 ကျန်ရှိမှတ်တမ်း</th>
-              <th class="py-2.5 px-2 text-center">✅ ထုတ်ပေးနိုင်ပြီ</th>
-              <th class="py-2.5 px-2 text-right">🚚 ထုတ်ပေးလိုက်ပြီ</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">Customer နာမည်</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">📦 ပုံး (UK vs ရုံး)</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">⚖️ KG (UK vs ရုံး)</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
+              <th class="py-2.5 px-2.5 whitespace-nowrap">📌 ကျန်ရှိမှတ်တမ်း</th>
+              <th class="py-2.5 px-2.5 text-center whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</th>
+              <th class="py-2.5 px-2.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
@@ -305,10 +307,10 @@
       <div class="flex justify-between items-center pt-1">
         <span id="noteViewHint" class="text-[11px] text-slate-400"></span>
         <div class="flex gap-2">
-          <button id="noteViewEditBtn" onclick="switchViewToEditNote()" class="px-3.5 py-2 text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold rounded-xl transition">
+          <button id="noteViewEditBtn" onclick="switchViewToEditNote()" class="px-3.5 py-2 text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold rounded-xl transition whitespace-nowrap">
             ✏️ Edit လုပ်မည်
           </button>
-          <button onclick="closeModal('noteViewModal')" class="px-4 py-2 text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition">
+          <button onclick="closeModal('noteViewModal')" class="px-4 py-2 text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition whitespace-nowrap">
             ပိတ်မည်
           </button>
         </div>
@@ -385,12 +387,12 @@
   <!-- 2. Per-Box KG Breakdown Modal -->
   <div id="boxModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
-      <div class="flex items-start justify-between">
+      <div class="flex items-start justify-between gap-3">
         <div>
           <h2 class="text-lg font-bold text-slate-800">📦 ပုံးအလိုက် KG ခွဲထည့်ရန် (ရုံးစစ်)</h2>
           <p id="boxModalSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
         </div>
-        <div class="text-right bg-blue-50 border border-blue-200 rounded-xl px-3 py-1.5">
+        <div class="text-right bg-blue-50 border border-blue-200 rounded-xl px-3 py-1.5 shrink-0">
           <span class="text-[11px] text-blue-600 block font-medium">ရုံးစစ် စုစုပေါင်း KG</span>
           <span id="boxModalTotal" class="text-lg font-bold text-blue-800">0.00 kg</span>
         </div>
@@ -406,7 +408,7 @@
         </div>
         <div class="flex gap-2">
           <input id="quickBoxPaste" type="text" placeholder="ဥပမာ: 5.2, 4.8, 6.0, 5.5 (comma သို့မဟုတ် space ခြားပြီး အများကြီးထည့်ရန်)" class="flex-1 border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs" />
-          <button onclick="applyQuickBoxPaste()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-xl">ဖြည့်မည်</button>
+          <button onclick="applyQuickBoxPaste()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-xl whitespace-nowrap">ဖြည့်မည်</button>
         </div>
       </div>
 
@@ -419,7 +421,7 @@
     </div>
   </div>
 
-  <!-- 3. Column-by-Column Ordered Paste Modal (UK Cargo Note Import) -->
+  <!-- 3. Column-by-Column Ordered Paste Modal -->
   <div id="bulkImportModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-5xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
       <div>
@@ -872,155 +874,161 @@
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
+        // 1. Customer Name (Uniform height & width)
         const customerHtml = isAdmin
-          ? `<input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 py-1 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
-          : `<span class="font-semibold text-slate-800">${escapeHtml(item.customer)}</span>`;
+          ? `<input type="text" value="${(item.customer || "").replace(/"/g, '&quot;')}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-2 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
+          : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
 
-        // Boxes Column: Top = UK Expected Boxes, Bottom = Office Received Boxes + Shortfall hint
-        const ukBoxTopHtml = isAdmin
-          ? `<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700">UK: <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="w-11 border border-indigo-200 bg-indigo-50/70 rounded px-1 py-0.5 text-center text-[11px] font-bold text-indigo-900" /></span>`
-          : `<span class="text-[11px] font-semibold text-indigo-700">UK: ${ukBox} ပုံး</span>`;
-
+        // 2. Boxes Column: Aligned 2-row grid (UK vs ရုံး)
         let boxShortfallHint = "";
         if (rcvBox !== "" && rcvBox < ukBox) {
-          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600">⚠️ ${ukBox - rcvBox} လို</span>`;
+          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️ ${ukBox - rcvBox}လို</span>`;
         } else if (rcvBox !== "" && rcvBox > ukBox) {
-          boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700">+${rcvBox - ukBox} ပို</span>`;
+          boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700 whitespace-nowrap">+${rcvBox - ukBox}ပို</span>`;
         }
 
-        const rcvBoxBottomHtml = canEditOffice
-          ? `<div class="flex items-center gap-1 mt-1">
-               <span class="text-[11px] text-slate-500">ရုံး:</span>
-               <input type="number" min="0" value="${rcvBox}" placeholder="ပုံး" onchange="updateReceivedBoxes('${item.id}', this.value)" class="w-12 border border-slate-300 rounded-lg px-1 py-0.5 text-xs font-semibold text-center text-slate-800 bg-white" />
-               ${boxShortfallHint}
+        const ukBoxRow = isAdmin
+          ? `<div class="h-6 flex items-center justify-between gap-1.5 text-[11px] font-semibold text-indigo-800">
+               <span class="w-8 shrink-0">UK:</span>
+               <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+               <span class="text-[10px] text-indigo-600 w-7 shrink-0">ပုံး</span>
              </div>`
-          : `<div class="flex items-center gap-1 mt-1">
-               <span class="text-xs font-semibold text-slate-700">${rcvBox !== "" ? "ရုံး: " + rcvBox + " ပုံး" : "ရုံး: -"}</span>
+          : `<div class="h-6 flex items-center gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-8 shrink-0">UK:</span>
+               <span>${ukBox} ပုံး</span>
+             </div>`;
+
+        const rcvBoxRow = canEditOffice
+          ? `<div class="h-6 flex items-center justify-between gap-1.5 text-[11px]">
+               <span class="w-8 text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-xs font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+               <span class="w-7 shrink-0">${boxShortfallHint}</span>
+             </div>`
+          : `<div class="h-6 flex items-center gap-1 text-xs whitespace-nowrap">
+               <span class="w-8 text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="font-semibold text-slate-700">${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}</span>
                ${boxShortfallHint}
              </div>`;
 
-        const boxHtml = `<div class="flex flex-col justify-center min-w-[92px]">${ukBoxTopHtml}${rcvBoxBottomHtml}</div>`;
+        const boxHtml = `<div class="flex flex-col gap-1 w-[112px]">${ukBoxRow}${rcvBoxRow}</div>`;
 
-        // KG Column: Top = UK Expected KG, Bottom = Office Actual KG + Breakdown + Match status
-        const ukKgTopHtml = isAdmin
-          ? `<div class="flex items-center gap-1 text-[11px] font-semibold text-indigo-700">
-               <span>UK:</span>
-               <input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="w-14 border border-indigo-200 bg-indigo-50/70 rounded px-1 py-0.5 text-[11px] font-bold text-indigo-900" />
-               <span>kg</span>
+        // 3. KG Column: Aligned 2-row grid (UK vs ရုံး + Split + Match)
+        const ukKgRow = isAdmin
+          ? `<div class="h-6 flex items-center gap-1.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-8 shrink-0">UK:</span>
+               <input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-16 border border-indigo-200 bg-indigo-50/70 rounded px-1.5 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+               <span class="text-[10px] text-indigo-600">kg</span>
              </div>`
-          : `<span class="text-[11px] font-semibold text-indigo-700">UK: ${ukKg !== "" ? ukKg + " kg" : "-"}</span>`;
+          : `<div class="h-6 flex items-center gap-1.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-8 shrink-0">UK:</span>
+               <span>${ukKg !== "" ? ukKg + " kg" : "-"}</span>
+             </div>`;
 
-        let kgHtml = "";
-        if (canEditOffice) {
-          kgHtml = `
-            <div class="flex flex-col gap-1 min-w-[148px]">
-              ${ukKgTopHtml}
-              <div class="flex flex-wrap items-center gap-1">
-                <span class="text-[11px] text-slate-500">ရုံး:</span>
-                <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="w-14 border border-slate-300 rounded-lg px-1.5 py-0.5 text-xs font-semibold text-slate-800 bg-white" />
-                <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="text-[11px] px-1.5 py-0.5 rounded-lg border ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                  📦 ${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
-                </button>
-                <select onchange="updateKgMatch('${item.id}', this.value)" class="text-[11px] font-semibold rounded-lg px-1.5 py-0.5 border ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
-                  <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
-                  <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
-                </select>
-              </div>
-            </div>
-          `;
-        } else {
-          kgHtml = `
-            <div class="flex flex-col gap-1 min-w-[125px]">
-              ${ukKgTopHtml}
-              <div class="flex items-center gap-1">
-                <span class="text-xs font-semibold text-slate-700">${actKg !== "" ? "ရုံး: " + actKg + " kg" : "ရုံး: -"}</span>
-                ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
-                <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-lg ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-                  ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
-                </span>
-              </div>
-            </div>
-          `;
-        }
+        const rcvKgRow = canEditOffice
+          ? `<div class="h-6 flex items-center gap-1.5 whitespace-nowrap">
+               <span class="w-8 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-16 border border-slate-300 rounded px-1.5 text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+               <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-2 rounded text-[11px] border whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                 📦 ${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
+               </button>
+               <select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-1.5 rounded text-[11px] font-semibold border whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+                 <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
+                 <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
+               </select>
+             </div>`
+          : `<div class="h-6 flex items-center gap-1.5 whitespace-nowrap">
+               <span class="w-8 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="text-xs font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
+               ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
+               <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                 ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
+               </span>
+             </div>`;
 
+        const kgHtml = `<div class="flex flex-col gap-1">${ukKgRow}${rcvKgRow}</div>`;
+
+        // 4. Payment Column: Aligned 2-row stack
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
         if (canEditPage) {
           paymentHtml = `
-            <div class="flex flex-col gap-1 min-w-[116px]">
-              <select onchange="updatePayment('${item.id}', this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+            <div class="flex flex-col gap-1 w-[124px]">
+              <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-full text-xs font-semibold rounded px-2 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
                 <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
                 <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
               </select>
-              <div class="flex items-center gap-1">
-                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="text-[11px] font-bold rounded-lg px-1 py-0.5 border border-slate-300 bg-slate-50 text-slate-700">
+              <div class="h-6 flex items-center gap-1">
+                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-1 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
                   <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
                   <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
                 </select>
-                <input type="number" step="0.01" value="${amtVal}" placeholder="ပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="w-20 border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" step="0.01" value="${amtVal}" placeholder="ပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
               </div>
             </div>
           `;
         } else {
-          paymentHtml = `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span>`;
+          paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-xl whitespace-nowrap ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>`;
         }
 
+        // 5. UK Approve Column
         let ukHtml = canEditUk
-          ? `<button onclick="toggleUkApprove('${item.id}')" class="text-xs font-semibold px-2.5 py-1 rounded-xl border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">
-               ${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve'}
-             </button>`
-          : `<span class="inline-block text-xs font-semibold px-2 py-1 rounded-xl ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span>`;
+          ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-xs font-semibold px-2.5 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve'}</button></div>`
+          : `<div class="h-7 flex items-center"><span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
 
+        // 6. Original Notes Column
         const noteText = item.notes || "";
         const notePreview = noteText
           ? `<span class="line-clamp-2 text-xs text-slate-700">${escapeHtml(noteText)}</span>`
-          : `<span class="text-xs text-slate-400 italic">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန် နှိပ်ပါ'}</span>`;
+          : `<span class="text-xs text-slate-400 italic whitespace-nowrap">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန် နှိပ်ပါ'}</span>`;
 
         const notesHtml = `
           <div
             onclick="handleNoteSingleClick('${item.id}')"
             ondblclick="handleNoteDoubleClick('${item.id}', ${canEditOriginalNotes})"
             title="${canEditOriginalNotes ? '၁ ချက်နှိပ် = ဖတ်ရန် | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : '၁ ချက်နှိပ် = Pop-up ဖြင့် ဖတ်ရန် (View Only)'}"
-            class="w-32 sm:w-36 min-h-[34px] px-2 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center transition"
+            class="w-32 h-13 px-2 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center overflow-hidden transition"
           >
             ${notePreview}
           </div>
         `;
 
+        // 7. Remaining Note Column
         let remainingHtml = canEditRemaining
-          ? `<input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="2 ပုံးကျန် / 20kg ကျန်" class="w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 py-1 text-xs focus:border-amber-500 focus:outline-none" />`
-          : `<span class="inline-block text-xs ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span>`;
+          ? `<div class="h-7 flex items-center"><input type="text" value="${(item.remainingNote || "").replace(/"/g, '&quot;')}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="2 ပုံးကျန် / 20kg" class="h-7 w-32 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-2 text-xs focus:border-amber-500 focus:outline-none" /></div>`
+          : `<div class="h-7 flex items-center"><span class="inline-block text-xs whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
 
+        // 8. Ready Status Column
         let readyHtml = ready
-          ? `<span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-1 rounded-xl">✅ ရပြီ</span>`
-          : `<span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2 py-1 rounded-xl">⏳ စောင့်ဆဲ</span>`;
+          ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
+          : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
 
+        // 9. Release Column
         let releasedHtml = "";
         if (item.released) {
           releasedHtml = canEditOffice
-            ? `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl">🚚 ထုတ်ပြီး ✓</button>`
-            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2 py-1 rounded-xl">🚚 ထုတ်ပြီး ✓</span>`;
+            ? `<button onclick="toggleRelease('${item.id}')" class="h-7 text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး ✓</button>`
+            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး ✓</span>`;
         } else if (canEditOffice) {
-          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2.5 py-1 rounded-xl transition">🚚 ထုတ်ပေးမည်</button>`;
+          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="h-7 text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2.5 rounded-xl transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`;
         } else {
           releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
         }
 
         const deleteRowBtn = isAdmin
-          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="ml-1 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
+          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-7 px-1.5 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
           : "";
 
         tr.innerHTML = `
-          <td class="py-2.5 px-2">${customerHtml}</td>
-          <td class="py-2.5 px-2">${boxHtml}</td>
-          <td class="py-2.5 px-2">${kgHtml}</td>
-          <td class="py-2.5 px-2 whitespace-nowrap">${paymentHtml}</td>
-          <td class="py-2.5 px-2 whitespace-nowrap">${ukHtml}</td>
-          <td class="py-2.5 px-2">${notesHtml}</td>
-          <td class="py-2.5 px-2">${remainingHtml}</td>
-          <td class="py-2.5 px-2 text-center whitespace-nowrap">${readyHtml}</td>
-          <td class="py-2.5 px-2 text-right whitespace-nowrap">${releasedHtml}${deleteRowBtn}</td>
+          <td class="py-2.5 px-2.5">${customerHtml}</td>
+          <td class="py-2.5 px-2.5">${boxHtml}</td>
+          <td class="py-2.5 px-2.5">${kgHtml}</td>
+          <td class="py-2.5 px-2.5">${paymentHtml}</td>
+          <td class="py-2.5 px-2.5">${ukHtml}</td>
+          <td class="py-2.5 px-2.5">${notesHtml}</td>
+          <td class="py-2.5 px-2.5">${remainingHtml}</td>
+          <td class="py-2.5 px-2.5 text-center">${readyHtml}</td>
+          <td class="py-2.5 px-2.5 text-right"><div class="h-7 inline-flex items-center justify-end gap-0.5">${releasedHtml}${deleteRowBtn}</div></td>
         `;
         tbody.appendChild(tr);
       });
