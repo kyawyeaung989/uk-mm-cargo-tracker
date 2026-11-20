@@ -110,12 +110,13 @@
       "photos": 1,
       "boxWeights": [],
       "expectedKg": 6.65,
-      "actualKg": null,
+      "actualKg": 5,
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
       "released": false,
-      "notes": "* Myat Sandy ပါဝင်, coffee machine, medication"
+      "notes": "* Myat Sandy ပါဝင်, coffee machine, medication",
+      "receivedBoxes": 1
     },
     {
       "id": "item-1795102170158-6",
