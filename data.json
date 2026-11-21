@@ -196,7 +196,7 @@
       "photos": 1,
       "boxWeights": [],
       "expectedKg": 0.7,
-      "actualKg": null,
+      "actualKg": 0.71,
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
@@ -204,8 +204,8 @@
       "notes": "(1.50 kg)",
       "receivedBoxes": 1,
       "updatedBy": "Office",
-      "updatedAt": "2026-11-21T07:55:19.284Z",
-      "updatedLabel": "Updated by Office (21 Nov, 2:25 PM)"
+      "updatedAt": "2026-11-21T07:58:14.827Z",
+      "updatedLabel": "Updated by Office (21 Nov, 2:28 PM)"
     },
     {
       "id": "item-1795102170158-8",
