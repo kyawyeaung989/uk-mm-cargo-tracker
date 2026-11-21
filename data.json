@@ -167,9 +167,10 @@
       "released": false,
       "notes": "* Myat Sandy ပါဝင်, coffee machine, medication",
       "receivedBoxes": 1,
-      "updatedBy": "Office",
-      "updatedAt": "2026-11-21T07:54:42.222Z",
-      "updatedLabel": "Updated by Office (21 Nov, 2:24 PM)"
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": "",
+      "paidCurrency": "MMK"
     },
     {
       "id": "item-1795102170158-6",
