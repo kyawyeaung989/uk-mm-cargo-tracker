@@ -91,7 +91,11 @@
       "payment": "Paid",
       "ukApproved": true,
       "released": true,
-      "notes": ""
+      "notes": "",
+      "paidCurrency": "MMK",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-2",
