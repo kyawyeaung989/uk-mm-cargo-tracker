@@ -21,10 +21,10 @@
       "notes": "",
       "paidAmount": null,
       "paidCurrency": "GBP",
-      "remainingNote": "",
-      "updatedBy": null,
-      "updatedAt": null,
-      "updatedLabel": ""
+      "remainingNote": "kopk",
+      "updatedBy": "Office",
+      "updatedAt": "2026-11-21T06:32:02.726Z",
+      "updatedLabel": "Updated by Office (21 Nov, 1:02 PM)"
     },
     {
       "id": "item-1795102170158-0",
