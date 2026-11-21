@@ -201,7 +201,11 @@
       "payment": "Unpaid",
       "ukApproved": false,
       "released": false,
-      "notes": "(1.50 kg)"
+      "notes": "(1.50 kg)",
+      "receivedBoxes": 1,
+      "updatedBy": "Office",
+      "updatedAt": "2026-11-21T07:55:19.284Z",
+      "updatedLabel": "Updated by Office (21 Nov, 2:25 PM)"
     },
     {
       "id": "item-1795102170158-8",
