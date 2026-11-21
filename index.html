@@ -798,7 +798,7 @@
         statusEl.innerHTML = `<span class="text-emerald-300 font-semibold">✅ Live Synced (${now})</span>`;
         renderAll();
       } catch (err) {
-        statusEl.innerHTML = `<span class="text-amber-300">⚠️ ${err.message} — Setup ကို စစ်ဆေးပါ</span>`;
+        statusEl.innerHTML = `<span class="text-amber-300">⚠️ Sync Error: ${escapeHtml(err.message)}</span>`;
         renderAll();
       }
     }
@@ -851,7 +851,7 @@
         const now = new Date().toLocaleTimeString();
         statusEl.innerHTML = `<span class="text-emerald-300 font-semibold">✅ Live Synced (${now})</span>`;
       } catch (err) {
-        statusEl.innerHTML = `<span class="text-rose-300">❌ Save Error: ${err.message}</span>`;
+        statusEl.innerHTML = `<span class="text-rose-300">❌ Save Error: ${escapeHtml(err.message)}</span>`;
         alert("Save မအောင်မြင်ပါ: " + err.message + "\nRefresh နှိပ်ပြီး ပြန်စမ်းကြည့်ပါ။");
       }
     }
@@ -980,228 +980,232 @@
       const tbody = document.getElementById("tableBody");
       const emptyState = document.getElementById("emptyState");
 
-      const batchItems = appData.items.filter(i => i.batch === activeBatch);
+      try {
+        const batchItems = appData.items.filter(i => i.batch === activeBatch);
 
-      document.getElementById("statTotal").textContent = batchItems.length;
-      document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
-      document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
-      document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
-      document.getElementById("statReady").textContent = batchItems.filter(i => !item.released && isReadyToRelease(item)).length;
-      document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
+        document.getElementById("statTotal").textContent = batchItems.length;
+        document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
+        document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
+        document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
+        document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
+        document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
-      const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
-      document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
+        const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
+        document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
 
-      const { ukBoxesSum, rcvBoxesSum, ukKgSum, rcvKgSum } = calcBatchCargoTotals(batchItems);
-      document.getElementById("statTotalBoxes").textContent = `${ukBoxesSum} / ${rcvBoxesSum} ပုံး`;
-      document.getElementById("statTotalKgPair").textContent = `${ukKgSum.toFixed(1)} / ${rcvKgSum.toFixed(1)} kg`;
+        const { ukBoxesSum, rcvBoxesSum, ukKgSum, rcvKgSum } = calcBatchCargoTotals(batchItems);
+        document.getElementById("statTotalBoxes").textContent = `${ukBoxesSum} / ${rcvBoxesSum} ပုံး`;
+        document.getElementById("statTotalKgPair").textContent = `${ukKgSum.toFixed(1)} / ${rcvKgSum.toFixed(1)} kg`;
 
-      const filtered = getFilteredBatchItems();
+        const filtered = getFilteredBatchItems();
 
-      tbody.innerHTML = "";
-      if (filtered.length === 0) {
-        emptyState.classList.remove("hidden");
-        return;
-      }
-      emptyState.classList.add("hidden");
-
-      const isAdmin = currentRole === "admin";
-      const canEditOffice = isAdmin || currentRole === "office";
-      const canEditPage = isAdmin || currentRole === "page";
-      const canEditUk = isAdmin;
-      const canEditOriginalNotes = isAdmin;
-      const canEditRemaining = isAdmin || currentRole === "office";
-
-      filtered.forEach(item => {
-        const ready = isReadyToRelease(item);
-        const ukBox = getUkBoxes(item);
-        const rcvBox = getReceivedBoxes(item);
-        const ukKg = getUkKg(item);
-        const actKg = getActualKg(item);
-        const paidKgVal = getPaidKg(item);
-        const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
-        const stampText = getItemUpdateLabel(item);
-
-        const tr = document.createElement("tr");
-        tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
-
-        // 1. Customer Name + Office/Page Admin Timestamp (Admin edits hidden)
-        const nameInputOrText = isAdmin
-          ? `<input type="text" value="${escapeAttr(item.customer || "")}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-28 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 font-semibold text-slate-800 text-xs focus:outline-none" />`
-          : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
-
-        const stampHtml = stampText
-          ? `<div class="text-[9.5px] text-slate-400 leading-tight mt-0.5 px-1.5 max-w-[122px] truncate" title="${escapeAttr(stampText)}">${escapeHtml(stampText)}</div>`
-          : "";
-
-        const customerHtml = `<div class="flex flex-col">${nameInputOrText}${stampHtml}</div>`;
-
-        // 2. Boxes Column
-        let boxShortfallHint = "";
-        if (rcvBox !== "" && rcvBox < ukBox) {
-          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️${ukBox - rcvBox}လို</span>`;
-        } else if (rcvBox !== "" && rcvBox > ukBox) {
-          boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700 whitespace-nowrap">+${rcvBox - ukBox}ပို</span>`;
+        tbody.innerHTML = "";
+        if (filtered.length === 0) {
+          emptyState.classList.remove("hidden");
+          return;
         }
+        emptyState.classList.add("hidden");
 
-        const ukBoxRow = isAdmin
-          ? `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-6 shrink-0">UK:</span>
-               <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-11 border border-indigo-200 bg-indigo-50/70 rounded px-0.5 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
-               <span class="text-[10px] text-indigo-600">ပုံး</span>
-             </div>`
-          : `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-6 shrink-0">UK:</span>
-               <span>${ukBox} ပုံး</span>
-             </div>`;
+        const isAdmin = currentRole === "admin";
+        const canEditOffice = isAdmin || currentRole === "office";
+        const canEditPage = isAdmin || currentRole === "page";
+        const canEditUk = isAdmin;
+        const canEditOriginalNotes = isAdmin;
+        const canEditRemaining = isAdmin || currentRole === "office";
 
-        const rcvBoxRow = canEditOffice
-          ? `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
-               <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-11 border border-slate-300 rounded px-0.5 text-[11px] font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
-               ${boxShortfallHint}
-             </div>`
-          : `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
-               <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <span class="font-semibold text-slate-700">${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}</span>
-               ${boxShortfallHint}
-             </div>`;
+        filtered.forEach(item => {
+          const ready = isReadyToRelease(item);
+          const ukBox = getUkBoxes(item);
+          const rcvBox = getReceivedBoxes(item);
+          const ukKg = getUkKg(item);
+          const actKg = getActualKg(item);
+          const paidKgVal = getPaidKg(item);
+          const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
+          const stampText = getItemUpdateLabel(item);
 
-        const boxHtml = `<div class="flex flex-col gap-1 w-[98px]">${ukBoxRow}${rcvBoxRow}</div>`;
+          const tr = document.createElement("tr");
+          tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
-        // 3. KG Column
-        const matchControlHtml = canEditOffice
-          ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-0.5 rounded text-[10.5px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
-               <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳စစ်ဆဲ</option>
-               <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ကိုက်</option>
-             </select>`
-          : `<span class="text-[10.5px] font-semibold px-1 py-0.5 rounded shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-               ${item.kgMatch === 'Match' ? '✅ကိုက်' : '⏳စစ်ဆဲ'}
-             </span>`;
+          // 1. Customer Name + Office/Page Admin Timestamp (Admin edits hidden)
+          const nameInputOrText = isAdmin
+            ? `<input type="text" value="${escapeAttr(item.customer || "")}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-28 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 font-semibold text-slate-800 text-xs focus:outline-none" />`
+            : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
 
-        const ukKgInputOrText = isAdmin
-          ? `<input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
-             <span class="text-[10px] text-indigo-600">kg</span>`
-          : `<span>${ukKg !== "" ? ukKg + "kg" : "-"}</span>`;
+          const stampHtml = stampText
+            ? `<div class="text-[9.5px] text-slate-400 leading-tight mt-0.5 px-1.5 max-w-[122px] truncate" title="${escapeAttr(stampText)}">${escapeHtml(stampText)}</div>`
+            : "";
 
-        const ukKgRow = `
-          <div class="h-6 flex items-center justify-between gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-            <div class="flex items-center gap-0.5 min-w-0">
-              <span class="w-5 shrink-0">UK:</span>
-              ${ukKgInputOrText}
-            </div>
-            ${matchControlHtml}
-          </div>
-        `;
+          const customerHtml = `<div class="flex flex-col">${nameInputOrText}${stampHtml}</div>`;
 
-        const rcvKgRow = canEditOffice
-          ? `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
-               <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
-               <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-1.5 rounded text-[10.5px] border shrink-0 whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                 📦${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
-               </button>
-             </div>`
-          : `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
-               <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <span class="text-[11px] font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
-               ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[10.5px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
-             </div>`;
+          // 2. Boxes Column
+          let boxShortfallHint = "";
+          if (rcvBox !== "" && rcvBox < ukBox) {
+            boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️${ukBox - rcvBox}လို</span>`;
+          } else if (rcvBox !== "" && rcvBox > ukBox) {
+            boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700 whitespace-nowrap">+${rcvBox - ukBox}ပို</span>`;
+          }
 
-        const kgHtml = `<div class="flex flex-col gap-1 w-[138px]">${ukKgRow}${rcvKgRow}</div>`;
+          const ukBoxRow = isAdmin
+            ? `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+                 <span class="w-6 shrink-0">UK:</span>
+                 <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-11 border border-indigo-200 bg-indigo-50/70 rounded px-0.5 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+                 <span class="text-[10px] text-indigo-600">ပုံး</span>
+               </div>`
+            : `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+                 <span class="w-6 shrink-0">UK:</span>
+                 <span>${ukBox} ပုံး</span>
+               </div>`;
 
-        // 4. Payment Column
-        const cur = item.paidCurrency || "GBP";
-        const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
-        let paymentHtml = "";
-        if (canEditPage) {
-          paymentHtml = `
-            <div class="flex flex-col gap-1 w-[134px]">
-              <div class="h-6 flex items-center gap-1">
-                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[72px] shrink-0 text-[10.5px] font-semibold rounded px-0.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
-                  <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌Unpaid</option>
-                  <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅Paid</option>
-                </select>
-                <div class="h-6 flex items-center gap-0.5 min-w-0 flex-1">
-                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-9 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
-                  <span class="text-[10px] font-semibold text-emerald-800 shrink-0">kg</span>
-                </div>
+          const rcvBoxRow = canEditOffice
+            ? `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
+                 <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
+                 <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-11 border border-slate-300 rounded px-0.5 text-[11px] font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+                 ${boxShortfallHint}
+               </div>`
+            : `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
+                 <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
+                 <span class="font-semibold text-slate-700">${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}</span>
+                 ${boxShortfallHint}
+               </div>`;
+
+          const boxHtml = `<div class="flex flex-col gap-1 w-[98px]">${ukBoxRow}${rcvBoxRow}</div>`;
+
+          // 3. KG Column
+          const matchControlHtml = canEditOffice
+            ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-0.5 rounded text-[10.5px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+                 <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳စစ်ဆဲ</option>
+                 <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ကိုက်</option>
+               </select>`
+            : `<span class="text-[10.5px] font-semibold px-1 py-0.5 rounded shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                 ${item.kgMatch === 'Match' ? '✅ကိုက်' : '⏳စစ်ဆဲ'}
+               </span>`;
+
+          const ukKgInputOrText = isAdmin
+            ? `<input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+               <span class="text-[10px] text-indigo-600">kg</span>`
+            : `<span>${ukKg !== "" ? ukKg + "kg" : "-"}</span>`;
+
+          const ukKgRow = `
+            <div class="h-6 flex items-center justify-between gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+              <div class="flex items-center gap-0.5 min-w-0">
+                <span class="w-5 shrink-0">UK:</span>
+                ${ukKgInputOrText}
               </div>
-              <div class="h-6 flex items-center gap-1">
-                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-0.5 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
-                  <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
-                  <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
-                </select>
-                <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
-              </div>
+              ${matchControlHtml}
             </div>
           `;
-        } else {
-          paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>`;
-        }
 
-        // 5. UK Approve Column
-        let ukHtml = canEditUk
-          ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-[11px] font-semibold px-2 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : 'Approve'}</button></div>`
-          : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
+          const rcvKgRow = canEditOffice
+            ? `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
+                 <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+                 <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+                 <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-1.5 rounded text-[10.5px] border shrink-0 whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                   📦${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
+                 </button>
+               </div>`
+            : `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
+                 <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+                 <span class="text-[11px] font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
+                 ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[10.5px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
+               </div>`;
 
-        // 6. Original Notes Column
-        const noteText = item.notes || "";
-        const notePreview = noteText
-          ? `<span class="line-clamp-2 text-[11px] text-slate-700">${escapeHtml(noteText)}</span>`
-          : `<span class="text-[11px] text-slate-400 italic whitespace-nowrap">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန်'}</span>`;
+          const kgHtml = `<div class="flex flex-col gap-1 w-[138px]">${ukKgRow}${rcvKgRow}</div>`;
 
-        const notesHtml = `
-          <div
-            onclick="handleNoteSingleClick('${item.id}')"
-            ondblclick="handleNoteDoubleClick('${item.id}', ${canEditOriginalNotes})"
-            title="${canEditOriginalNotes ? '၁ ချက်နှိပ် = ဖတ်ရန် | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : '၁ ချက်နှိပ် = Pop-up ဖြင့် ဖတ်ရန် (View Only)'}"
-            class="w-24 h-12 px-1.5 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center overflow-hidden transition"
-          >
-            ${notePreview}
-          </div>
-        `;
+          // 4. Payment Column
+          const cur = item.paidCurrency || "GBP";
+          const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
+          let paymentHtml = "";
+          if (canEditPage) {
+            paymentHtml = `
+              <div class="flex flex-col gap-1 w-[134px]">
+                <div class="h-6 flex items-center gap-1">
+                  <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[72px] shrink-0 text-[10.5px] font-semibold rounded px-0.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                    <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌Unpaid</option>
+                    <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅Paid</option>
+                  </select>
+                  <div class="h-6 flex items-center gap-0.5 min-w-0 flex-1">
+                    <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-9 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
+                    <span class="text-[10px] font-semibold text-emerald-800 shrink-0">kg</span>
+                  </div>
+                </div>
+                <div class="h-6 flex items-center gap-1">
+                  <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-0.5 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
+                    <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
+                    <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
+                  </select>
+                  <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+                </div>
+              </div>
+            `;
+          } else {
+            paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>`;
+          }
 
-        // 7. General Note / မှတ်စု Column
-        let remainingHtml = canEditRemaining
-          ? `<div class="h-7 flex items-center"><input type="text" value="${escapeAttr(item.remainingNote || "")}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="မှတ်စု..." class="h-7 w-28 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 text-[11px] focus:border-amber-500 focus:outline-none" /></div>`
-          : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
+          // 5. UK Approve Column
+          let ukHtml = canEditUk
+            ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-[11px] font-semibold px-2 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : 'Approve'}</button></div>`
+            : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
 
-        // 8. Ready Status Column
-        let readyHtml = ready
-          ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
-          : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
+          // 6. Original Notes Column
+          const noteText = item.notes || "";
+          const notePreview = noteText
+            ? `<span class="line-clamp-2 text-[11px] text-slate-700">${escapeHtml(noteText)}</span>`
+            : `<span class="text-[11px] text-slate-400 italic whitespace-nowrap">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန်'}</span>`;
 
-        // 9. Release Column (Centered header + centered action container)
-        let releasedHtml = "";
-        if (item.released) {
-          releasedHtml = canEditOffice
-            ? `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</button>`
-            : `<span class="inline-block text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</span>`;
-        } else if (canEditOffice) {
-          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2 rounded-xl transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`;
-        } else {
-          releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
-        }
+          const notesHtml = `
+            <div
+              onclick="handleNoteSingleClick('${item.id}')"
+              ondblclick="handleNoteDoubleClick('${item.id}', ${canEditOriginalNotes})"
+              title="${canEditOriginalNotes ? '၁ ချက်နှိပ် = ဖတ်ရန် | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : '၁ ချက်နှိပ် = Pop-up ဖြင့် ဖတ်ရန် (View Only)'}"
+              class="w-24 h-12 px-1.5 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center overflow-hidden transition"
+            >
+              ${notePreview}
+            </div>
+          `;
 
-        const deleteRowBtn = isAdmin
-          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-7 px-1 text-rose-400 hover:text-rose-600 text-xs shrink-0">🗑️</button>`
-          : "";
+          // 7. General Note / မှတ်စု Column
+          let remainingHtml = canEditRemaining
+            ? `<div class="h-7 flex items-center"><input type="text" value="${escapeAttr(item.remainingNote || "")}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="မှတ်စု..." class="h-7 w-28 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 text-[11px] focus:border-amber-500 focus:outline-none" /></div>`
+            : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
 
-        tr.innerHTML = `
-          <td class="py-2 px-1.5">${customerHtml}</td>
-          <td class="py-2 px-1.5">${boxHtml}</td>
-          <td class="py-2 px-1.5">${kgHtml}</td>
-          <td class="py-2 px-1.5">${paymentHtml}</td>
-          <td class="py-2 px-1.5">${ukHtml}</td>
-          <td class="py-2 px-1.5">${notesHtml}</td>
-          <td class="py-2 px-1.5">${remainingHtml}</td>
-          <td class="py-2 px-1.5 text-center">${readyHtml}</td>
-          <td class="py-2 px-1.5 text-center"><div class="h-7 flex items-center justify-center gap-0.5 whitespace-nowrap">${releasedHtml}${deleteRowBtn}</div></td>
-        `;
-        tbody.appendChild(tr);
-      });
+          // 8. Ready Status Column
+          let readyHtml = ready
+            ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
+            : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
+
+          // 9. Release Column (Centered header + centered action container)
+          let releasedHtml = "";
+          if (item.released) {
+            releasedHtml = canEditOffice
+              ? `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</button>`
+              : `<span class="inline-block text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</span>`;
+          } else if (canEditOffice) {
+            releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2 rounded-xl transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`;
+          } else {
+            releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
+          }
+
+          const deleteRowBtn = isAdmin
+            ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-7 px-1 text-rose-400 hover:text-rose-600 text-xs shrink-0">🗑️</button>`
+            : "";
+
+          tr.innerHTML = `
+            <td class="py-2 px-1.5">${customerHtml}</td>
+            <td class="py-2 px-1.5">${boxHtml}</td>
+            <td class="py-2 px-1.5">${kgHtml}</td>
+            <td class="py-2 px-1.5">${paymentHtml}</td>
+            <td class="py-2 px-1.5">${ukHtml}</td>
+            <td class="py-2 px-1.5">${notesHtml}</td>
+            <td class="py-2 px-1.5">${remainingHtml}</td>
+            <td class="py-2 px-1.5 text-center">${readyHtml}</td>
+            <td class="py-2 px-1.5 text-center"><div class="h-7 flex items-center justify-center gap-0.5 whitespace-nowrap">${releasedHtml}${deleteRowBtn}</div></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" class="py-6 px-4 text-center text-rose-600 font-semibold">⚠️ Render Error: ${escapeHtml(err.message)}</td></tr>`;
+      }
     }
 
     function escapeHtml(str) {
