@@ -224,7 +224,11 @@
       "payment": "Unpaid",
       "ukApproved": false,
       "released": false,
-      "notes": "cosmetics, box fee"
+      "notes": "cosmetics, box fee",
+      "paidCurrency": "MMK",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-9",
