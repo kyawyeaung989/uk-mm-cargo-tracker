@@ -21,7 +21,10 @@
       "notes": "",
       "paidAmount": null,
       "paidCurrency": "GBP",
-      "remainingNote": "kfjaljfla"
+      "remainingNote": "",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-0",
