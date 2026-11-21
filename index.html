@@ -163,9 +163,9 @@
         </div>
       </div>
 
-      <!-- Admin-Only Financial & Batch Cargo Totals Bar -->
-      <div id="adminFinanceBar" class="hidden grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
-        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-indigo-50/90 to-white">
+      <!-- Batch Cargo & Admin Financial Totals Bar -->
+      <div id="batchTotalsBar" class="hidden grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+        <div id="adminGbpCard" class="hidden soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-indigo-200/80 items-center justify-between gap-2 bg-gradient-to-r from-indigo-50/90 to-white">
           <div class="min-w-0">
             <p class="text-[11px] font-bold text-indigo-950 truncate">🇬🇧 Batch စုစုပေါင်း £ (GBP)</p>
             <p class="text-[10.5px] text-slate-500 truncate">Main Admin / UK Owner</p>
@@ -173,7 +173,7 @@
           <p id="statTotalGbp" class="text-base sm:text-lg font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
         </div>
 
-        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-emerald-50/90 to-white">
+        <div id="adminMmkCard" class="hidden soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-emerald-200/80 items-center justify-between gap-2 bg-gradient-to-r from-emerald-50/90 to-white">
           <div class="min-w-0">
             <p class="text-[11px] font-bold text-emerald-950 truncate">🇲🇲 Batch စုစုပေါင်း Ks (MMK)</p>
             <p class="text-[10.5px] text-slate-500 truncate">Main Admin / UK Owner</p>
@@ -181,7 +181,7 @@
           <p id="statTotalMmk" class="text-base sm:text-lg font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
         </div>
 
-        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-sky-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-50/90 to-white">
+        <div id="cargoBoxesCard" class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-sky-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-50/90 to-white">
           <div class="min-w-0">
             <p class="text-[11px] font-bold text-sky-950 truncate">📦 စုစုပေါင်း ပုံး (UK / ရုံးစစ်)</p>
             <p class="text-[10.5px] text-slate-500 truncate">Batch Boxes Comparison</p>
@@ -189,7 +189,7 @@
           <p id="statTotalBoxes" class="text-sm sm:text-base font-extrabold text-sky-700 whitespace-nowrap shrink-0">0 / 0 ပုံး</p>
         </div>
 
-        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-purple-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-purple-50/90 to-white">
+        <div id="cargoKgCard" class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-purple-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-purple-50/90 to-white">
           <div class="min-w-0">
             <p class="text-[11px] font-bold text-purple-950 truncate">⚖️ စုစုပေါင်း KG (UK / ရုံးစစ်)</p>
             <p class="text-[10.5px] text-slate-500 truncate">Batch Weight Comparison</p>
@@ -722,6 +722,14 @@
       applyRolePermissions();
     }
 
+    function setCardVisible(el, show, useFlex = false) {
+      if (!el) return;
+      el.classList.toggle("hidden", !show);
+      if (useFlex) {
+        el.classList.toggle("flex", show);
+      }
+    }
+
     function applyRolePermissions() {
       const roleContainer = document.getElementById("roleContainer");
       const lockedBadge = document.getElementById("lockedRoleBadge");
@@ -729,9 +737,16 @@
       const adminActionBtns = document.getElementById("adminActionBtns");
       const renameBatchBtn = document.getElementById("renameBatchBtn");
       const deleteBatchBtn = document.getElementById("deleteBatchBtn");
-      const adminFinanceBar = document.getElementById("adminFinanceBar");
+      const batchTotalsBar = document.getElementById("batchTotalsBar");
+      const adminGbpCard = document.getElementById("adminGbpCard");
+      const adminMmkCard = document.getElementById("adminMmkCard");
+      const cargoBoxesCard = document.getElementById("cargoBoxesCard");
+      const cargoKgCard = document.getElementById("cargoKgCard");
 
       document.getElementById("roleGreeting").textContent = ROLE_GREETINGS[currentRole] || ROLE_GREETINGS.admin;
+
+      const isAdmin = currentRole === "admin";
+      const canSeeCargoTotals = isAdmin || currentRole === "office";
 
       if (isRoleLocked) {
         roleContainer.classList.add("hidden");
@@ -742,21 +757,24 @@
         adminActionBtns.classList.add("hidden");
         renameBatchBtn.classList.add("hidden");
         deleteBatchBtn.classList.add("hidden");
-        adminFinanceBar.classList.add("hidden");
-        adminFinanceBar.classList.remove("grid");
       } else {
         roleContainer.classList.remove("hidden");
         lockedBadge.classList.add("hidden");
         lockedBadge.classList.remove("flex");
         document.getElementById("roleSelect").value = currentRole;
-        const isAdmin = currentRole === "admin";
         setupBtn.classList.toggle("hidden", !isAdmin);
         adminActionBtns.classList.toggle("hidden", !isAdmin);
         renameBatchBtn.classList.toggle("hidden", !isAdmin);
         deleteBatchBtn.classList.toggle("hidden", !isAdmin);
-        adminFinanceBar.classList.toggle("hidden", !isAdmin);
-        adminFinanceBar.classList.toggle("grid", isAdmin);
       }
+
+      const anyBarCard = isAdmin || canSeeCargoTotals;
+      batchTotalsBar.classList.toggle("hidden", !anyBarCard);
+      batchTotalsBar.classList.toggle("grid", anyBarCard);
+      setCardVisible(adminGbpCard, isAdmin, true);
+      setCardVisible(adminMmkCard, isAdmin, true);
+      setCardVisible(cargoBoxesCard, canSeeCargoTotals, true);
+      setCardVisible(cargoKgCard, canSeeCargoTotals, true);
     }
 
     function changeRole() {
@@ -1112,20 +1130,20 @@
 
           const kgHtml = `<div class="flex flex-col gap-1 w-[138px]">${ukKgRow}${rcvKgRow}</div>`;
 
-          // 4. Payment Column
+          // 4. Payment Column (wider KG input so numbers like 500 never clip)
           const cur = item.paidCurrency || "GBP";
           const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
           let paymentHtml = "";
           if (canEditPage) {
             paymentHtml = `
-              <div class="flex flex-col gap-1 w-[134px]">
+              <div class="flex flex-col gap-1 w-[148px]">
                 <div class="h-6 flex items-center gap-1">
-                  <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[72px] shrink-0 text-[10.5px] font-semibold rounded px-0.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                  <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[70px] shrink-0 text-[10.5px] font-semibold rounded px-0.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
                     <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌Unpaid</option>
                     <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅Paid</option>
                   </select>
                   <div class="h-6 flex items-center gap-0.5 min-w-0 flex-1">
-                    <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-9 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
+                    <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-14 min-w-[52px] border border-emerald-300/90 bg-emerald-50/40 rounded px-1.5 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
                     <span class="text-[10px] font-semibold text-emerald-800 shrink-0">kg</span>
                   </div>
                 </div>
@@ -1134,7 +1152,7 @@
                     <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
                     <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
                   </select>
-                  <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+                  <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
                 </div>
               </div>
             `;
