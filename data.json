@@ -22,9 +22,10 @@
       "paidAmount": null,
       "paidCurrency": "GBP",
       "remainingNote": "kopk",
-      "updatedBy": "Office",
-      "updatedAt": "2026-11-21T06:32:02.726Z",
-      "updatedLabel": "Updated by Office (21 Nov, 1:02 PM)"
+      "updatedBy": "Page Admin",
+      "updatedAt": "2026-11-21T06:33:59.742Z",
+      "updatedLabel": "Updated by Page Admin (21 Nov, 1:03 PM)",
+      "paidKg": 5000
     },
     {
       "id": "item-1795102170158-0",
