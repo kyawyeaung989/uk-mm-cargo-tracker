@@ -561,7 +561,7 @@
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">ငွေကြေး</label>
-          <select id="addCurrency" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm">
+          <select id="addCurrency" onchange="syncAddModalRateVisibility()" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm">
             <option value="GBP">£ GBP</option>
             <option value="MMK">Ks MMK</option>
           </select>
@@ -570,7 +570,7 @@
           <label class="block text-xs font-semibold text-slate-600 mb-1">ပမာဏ</label>
           <input id="addAmount" type="number" step="0.01" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-xs sm:text-sm" />
         </div>
-        <div>
+        <div id="addRateWrap" class="invisible pointer-events-none">
           <label class="block text-xs font-semibold text-amber-800 mb-1">Rate (ဖြတ်ဈေး)</label>
           <input id="addRate" type="text" placeholder="ဥပမာ: 6700" class="w-full border border-amber-200 rounded-xl px-2 py-2 text-xs sm:text-sm" />
         </div>
@@ -654,6 +654,15 @@
       office: "⚖️ KG နဲ့ ပုံး/ထုပ်ကို သေချာဂရုစိုက်စစ်ပေးနေတဲ့ Office Staff Team Member များ — ကျေးဇူးတင်ပါတယ်နော်!",
       page: "💳 Payment တွေကို သေချာစစ်ဆေးပေးနေတဲ့ Team Member / Staff များ — ကျေးဇူးတင်ပါတယ်နော်!"
     };
+
+    function syncAddModalRateVisibility() {
+      const cur = document.getElementById("addCurrency")?.value || "GBP";
+      const rateWrap = document.getElementById("addRateWrap");
+      if (!rateWrap) return;
+      const isMmk = cur === "MMK";
+      rateWrap.classList.toggle("invisible", !isMmk);
+      rateWrap.classList.toggle("pointer-events-none", !isMmk);
+    }
 
     // Only log timestamps when Office Staff or Page Admin edits (never for Admin/UK)
     function formatStaffUpdatedStamp(roleKey) {
@@ -1014,7 +1023,7 @@
         document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
         document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
         document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
-        document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
+        document.getElementById("statReady").textContent = batchItems.filter(i => !item.released && isReadyToRelease(i)).length;
         document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
         const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
@@ -1140,11 +1149,13 @@
 
           const kgHtml = `<div class="flex flex-col gap-1 w-[148px]">${ukKgRow}${rcvKgRow}</div>`;
 
-          // 4. Payment Column: Row 1 = Status + KG (up to 4 digits), Row 2 = Currency + Wide Amount + Manual Rate
+          // 4. Payment Column: Rate visible ONLY when MMK ("Ks") is selected; layout & alignment strictly fixed
           const cur = item.paidCurrency || "GBP";
+          const isMmk = cur === "MMK";
           const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
           let paymentHtml = "";
           if (canEditPage) {
+            const rateVisibilityCls = isMmk ? "" : "invisible pointer-events-none";
             paymentHtml = `
               <div class="flex flex-col gap-1 w-[228px]">
                 <div class="h-6 flex items-center gap-1">
@@ -1159,11 +1170,11 @@
                 </div>
                 <div class="h-6 flex items-center gap-1">
                   <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-0.5 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
-                    <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
-                    <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
+                    <option value="GBP" ${!isMmk ? 'selected' : ''}>£</option>
+                    <option value="MMK" ${isMmk ? 'selected' : ''}>Ks</option>
                   </select>
                   <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" title="ငွေပမာဏ: ${escapeAttr(String(amtVal))}" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-[114px] min-w-[108px] border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
-                  <input type="text" value="${escapeAttr(rateVal)}" placeholder="Rate" title="ငွေလဲနှုန်း / ဖြတ်ဈေး (Manual - Auto မတွက်ပါ): ${escapeAttr(rateVal)}" onchange="updateExchangeRate('${item.id}', this.value)" class="h-6 w-[60px] min-w-[54px] border border-amber-300/90 bg-amber-50/50 rounded px-1 text-[11px] font-semibold text-amber-950 focus:outline-none focus:border-amber-500" />
+                  <input type="text" value="${escapeAttr(rateVal)}" placeholder="Rate" title="ငွေလဲနှုန်း / ဖြတ်ဈေး (Manual - Auto မတွက်ပါ): ${escapeAttr(rateVal)}" onchange="updateExchangeRate('${item.id}', this.value)" class="h-6 w-[60px] min-w-[54px] shrink-0 border border-amber-300/90 bg-amber-50/50 rounded px-1 text-[11px] font-semibold text-amber-950 focus:outline-none focus:border-amber-500 ${rateVisibilityCls}" />
                 </div>
               </div>
             `;
@@ -1730,6 +1741,7 @@
       document.getElementById("addPaidKg").value = "";
       document.getElementById("addNotes").value = "";
       document.getElementById("addRemaining").value = "";
+      syncAddModalRateVisibility();
       document.getElementById("addCustomerModal").classList.remove("hidden");
     }
 
@@ -1748,7 +1760,7 @@
       const amtRaw = document.getElementById("addAmount").value.trim();
       const amtVal = amtRaw === "" ? null : parseFloat(amtRaw);
       const cleanAmt = (amtVal != null && !isNaN(amtVal)) ? amtVal : null;
-      const exchangeRate = document.getElementById("addRate").value.trim();
+      const exchangeRate = paidCurrency === "MMK" ? document.getElementById("addRate").value.trim() : "";
       const paidKgRaw = document.getElementById("addPaidKg").value.trim();
       const paidKgVal = paidKgRaw === "" ? null : parseFloat(paidKgRaw);
       const cleanPaidKg = (paidKgVal != null && !isNaN(paidKgVal)) ? paidKgVal : null;
@@ -1939,7 +1951,7 @@
           "ပုံး (UK / ရုံး)",
           "KG (UK / ရုံး)",
           "ကိုက်/စစ်ဆဲ",
-          showMoney ? "ငွေ / Rate / KG" : "ငွေရှင်းမှု",
+          showMoney ? "ငွေ / KG" : "ငွေရှင်းမှု",
           "UK Approve",
           "Original Notes (အပြည့်)",
           "မှတ်စု (အပြည့်)",
@@ -1971,19 +1983,22 @@
           let payCell = "";
           if (showMoney) {
             const cur = item.paidCurrency || "GBP";
-            const curSym = cur === "MMK" ? "Ks" : "£";
+            const isMmk = cur === "MMK";
+            const curSym = isMmk ? "Ks" : "£";
             const amtText = (item.paidAmount != null && item.paidAmount !== "" && !isNaN(parseFloat(item.paidAmount)))
-              ? (cur === "MMK" ? `${Number(item.paidAmount).toLocaleString()} Ks` : `£ ${Number(item.paidAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+              ? (isMmk ? `${Number(item.paidAmount).toLocaleString()} Ks` : `£ ${Number(item.paidAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
               : "-";
             const paidKgText = paidKgVal !== "" ? `${paidKgVal} kg` : "-";
-            const rateText = rateVal !== "" ? rateVal : "-";
+            const rateLine = (isMmk && rateVal !== "")
+              ? `<div style="font-size:9.5px;color:#92400e;"><b>Rate:</b> ${escapeHtml(rateVal)}</div>`
+              : "";
             const statusBadge = item.payment === "Paid"
               ? `<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">Paid</span>`
               : `<span style="background:#ffe4e6;color:#9f1239;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">Unpaid</span>`;
             payCell = `
               <div>${statusBadge}</div>
               <div style="font-size:9.5px;color:#334155;margin-top:2px;"><b>ငွေ:</b> ${amtText} (${curSym})</div>
-              <div style="font-size:9.5px;color:#92400e;"><b>Rate:</b> ${escapeHtml(rateText)}</div>
+              ${rateLine}
               <div style="font-size:9.5px;color:#334155;"><b>KG:</b> ${paidKgText}</div>
             `;
           } else {
