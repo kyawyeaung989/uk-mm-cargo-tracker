@@ -1023,7 +1023,7 @@
         document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
         document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
         document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
-        document.getElementById("statReady").textContent = batchItems.filter(i => !item.released && isReadyToRelease(i)).length;
+        document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
         document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
         const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
