@@ -110,7 +110,7 @@
   <!-- Page Container -->
   <div class="max-w-[1680px] mx-auto px-2.5 sm:px-4 mt-3.5 flex items-start justify-center gap-3">
 
-    <!-- Left Companion -->
+    <!-- Left Companion (11px uniform font) -->
     <aside class="hidden 2xl:block w-36 shrink-0 sticky top-16">
       <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3 shadow-sm text-center">
         <div class="gentle-wave inline-block mb-1">
@@ -128,7 +128,7 @@
           </svg>
         </div>
         <p class="text-[11px] font-bold text-pink-900">🌸 ကြိုးစားမှုအတွက်</p>
-        <p class="text-[10px] text-slate-600 mt-1 leading-snug">သေချာစစ်ဆေးပေးနေတဲ့ အတွက် ကျေးဇူးတင်ပါတယ် ✨</p>
+        <p class="text-[11px] text-slate-600 mt-1 leading-snug">သေချာစစ်ဆေးပေးနေတဲ့ အတွက် ကျေးဇူးတင်ပါတယ် ✨</p>
       </div>
     </aside>
 
@@ -163,28 +163,38 @@
         </div>
       </div>
 
-      <!-- Admin-Only Financial Totals Bar -->
-      <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div class="soft-card rounded-2xl px-4 py-2.5 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl shrink-0">🇬🇧</span>
-            <div class="min-w-0">
-              <p class="text-xs font-bold text-indigo-950 truncate">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
-              <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
-            </div>
+      <!-- Admin-Only Financial & Batch Cargo Totals Bar -->
+      <div id="adminFinanceBar" class="hidden grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-indigo-50/90 to-white">
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold text-indigo-950 truncate">🇬🇧 Batch စုစုပေါင်း £ (GBP)</p>
+            <p class="text-[10.5px] text-slate-500 truncate">Main Admin / UK Owner</p>
           </div>
-          <p id="statTotalGbp" class="text-lg sm:text-2xl font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
+          <p id="statTotalGbp" class="text-base sm:text-lg font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
         </div>
 
-        <div class="soft-card rounded-2xl px-4 py-2.5 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl shrink-0">🇲🇲</span>
-            <div class="min-w-0">
-              <p class="text-xs font-bold text-emerald-950 truncate">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
-              <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
-            </div>
+        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-emerald-50/90 to-white">
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold text-emerald-950 truncate">🇲🇲 Batch စုစုပေါင်း Ks (MMK)</p>
+            <p class="text-[10.5px] text-slate-500 truncate">Main Admin / UK Owner</p>
           </div>
-          <p id="statTotalMmk" class="text-lg sm:text-2xl font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
+          <p id="statTotalMmk" class="text-base sm:text-lg font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
+        </div>
+
+        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-sky-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-50/90 to-white">
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold text-sky-950 truncate">📦 စုစုပေါင်း ပုံး (UK / ရုံးစစ်)</p>
+            <p class="text-[10.5px] text-slate-500 truncate">Batch Boxes Comparison</p>
+          </div>
+          <p id="statTotalBoxes" class="text-sm sm:text-base font-extrabold text-sky-700 whitespace-nowrap shrink-0">0 / 0 ပုံး</p>
+        </div>
+
+        <div class="soft-card rounded-2xl px-3.5 py-2.5 shadow-sm border border-purple-200/80 flex items-center justify-between gap-2 bg-gradient-to-r from-purple-50/90 to-white">
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold text-purple-950 truncate">⚖️ စုစုပေါင်း KG (UK / ရုံးစစ်)</p>
+            <p class="text-[10.5px] text-slate-500 truncate">Batch Weight Comparison</p>
+          </div>
+          <p id="statTotalKgPair" class="text-sm sm:text-base font-extrabold text-purple-700 whitespace-nowrap shrink-0">0 / 0 kg</p>
         </div>
       </div>
 
@@ -252,7 +262,7 @@
         </div>
       </div>
 
-      <!-- Main Data Table (Compact column widths so rightmost action buttons fit cleanly without clipping) -->
+      <!-- Main Data Table -->
       <div class="soft-card rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
@@ -266,7 +276,7 @@
                 <th class="py-2 px-1.5 whitespace-nowrap">Original Notes <span class="font-normal normal-case text-indigo-600">(1x)</span></th>
                 <th class="py-2 px-1.5 whitespace-nowrap">📝 မှတ်စု</th>
                 <th class="py-2 px-1.5 text-center whitespace-nowrap">✅ ရပြီ</th>
-                <th class="py-2 px-1.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးမှု</th>
+                <th class="py-2 px-1.5 text-center whitespace-nowrap">🚚 ထုတ်ပေးမှု</th>
               </tr>
             </thead>
             <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
@@ -293,7 +303,7 @@
       </div>
     </main>
 
-    <!-- Right Companion -->
+    <!-- Right Companion (11px uniform font matching Left Companion) -->
     <aside class="hidden 2xl:block w-36 shrink-0 sticky top-16">
       <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3 shadow-sm text-center">
         <div class="mascot-float inline-block mb-1">
@@ -307,7 +317,7 @@
           </svg>
         </div>
         <p class="text-[11px] font-bold text-teal-900">🍀 အဆင်ပြေပါစေ</p>
-        <p class="text-[10] text-slate-600 mt-1 leading-snug">Team အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးတင်ပါတယ် 💕</p>
+        <p class="text-[11px] text-slate-600 mt-1 leading-snug">Team အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးတင်ပါတယ် 💕</p>
       </div>
     </aside>
 
@@ -630,11 +640,56 @@
       page: "💳 Payment Admin (Locked)"
     };
 
+    const ROLE_SHORT_LABELS = {
+      office: "Office",
+      page: "Page Admin"
+    };
+
     const ROLE_GREETINGS = {
       admin: "✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!",
       office: "⚖️ KG နဲ့ ပုံး/ထုပ်ကို သေချာဂရုစိုက်စစ်ပေးနေတဲ့ Office Staff Team Member များ — ကျေးဇူးတင်ပါတယ်နော်!",
       page: "💳 Payment တွေကို သေချာစစ်ဆေးပေးနေတဲ့ Team Member / Staff များ — ကျေးဇူးတင်ပါတယ်နော်!"
     };
+
+    // Only log timestamps when Office Staff or Page Admin edits (never for Admin/UK)
+    function formatStaffUpdatedStamp(roleKey) {
+      const actor = ROLE_SHORT_LABELS[roleKey];
+      if (!actor) return "";
+      const now = new Date();
+      const day = now.getDate();
+      const month = now.toLocaleString("en-US", { month: "short" });
+      const time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+      return `Updated by ${actor} (${day} ${month}, ${time})`;
+    }
+
+    function touchItem(item) {
+      if (currentRole === "office" || currentRole === "page") {
+        item.updatedBy = ROLE_SHORT_LABELS[currentRole];
+        item.updatedAt = new Date().toISOString();
+        item.updatedLabel = formatStaffUpdatedStamp(currentRole);
+      } else {
+        item.updatedBy = null;
+        item.updatedAt = null;
+        item.updatedLabel = "";
+      }
+    }
+
+    function getItemUpdateLabel(item) {
+      if (!item.updatedBy || !["Office", "Page Admin"].includes(item.updatedBy)) {
+        return "";
+      }
+      if (item.updatedLabel) return item.updatedLabel;
+      if (item.updatedAt) {
+        const d = new Date(item.updatedAt);
+        if (!isNaN(d.getTime())) {
+          const day = d.getDate();
+          const month = d.toLocaleString("en-US", { month: "short" });
+          const time = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+          return `Updated by ${item.updatedBy} (${day} ${month}, ${time})`;
+        }
+      }
+      return "";
+    }
 
     function getConfig() {
       return {
@@ -688,6 +743,7 @@
         renameBatchBtn.classList.add("hidden");
         deleteBatchBtn.classList.add("hidden");
         adminFinanceBar.classList.add("hidden");
+        adminFinanceBar.classList.remove("grid");
       } else {
         roleContainer.classList.remove("hidden");
         lockedBadge.classList.add("hidden");
@@ -699,6 +755,7 @@
         renameBatchBtn.classList.toggle("hidden", !isAdmin);
         deleteBatchBtn.classList.toggle("hidden", !isAdmin);
         adminFinanceBar.classList.toggle("hidden", !isAdmin);
+        adminFinanceBar.classList.toggle("grid", isAdmin);
       }
     }
 
@@ -746,7 +803,7 @@
       }
     }
 
-    async function saveToGitHub() {
+    async function saveToGitHub(isRetry = false) {
       const { user, repo, token } = getConfig();
       const statusEl = document.getElementById("syncStatus");
 
@@ -755,7 +812,7 @@
         return;
       }
 
-      statusEl.textContent = "⏳ Saving to GitHub...";
+      statusEl.textContent = isRetry ? "🔄 Syncing latest & retrying..." : "⏳ Saving to GitHub...";
       try {
         const contentStr = JSON.stringify(appData, null, 2);
         const encoded = btoa(unescape(encodeURIComponent(contentStr)));
@@ -773,6 +830,16 @@
             sha: fileSha
           })
         });
+
+        if (res.status === 409 && !isRetry) {
+          const headers = { "Accept": "application/vnd.github.v3+json", "Authorization": `Bearer ${token}` };
+          const latestRes = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/data.json?t=${Date.now()}`, { headers });
+          if (latestRes.ok) {
+            const latestJson = await latestRes.json();
+            fileSha = latestJson.sha;
+            return await saveToGitHub(true);
+          }
+        }
 
         if (!res.ok) {
           const errData = await res.json();
@@ -846,6 +913,27 @@
       return "";
     }
 
+    function calcBatchCargoTotals(batchItems) {
+      let ukBoxesSum = 0;
+      let rcvBoxesSum = 0;
+      let ukKgSum = 0;
+      let rcvKgSum = 0;
+
+      batchItems.forEach(item => {
+        ukBoxesSum += getUkBoxes(item);
+        const rcvB = getReceivedBoxes(item);
+        if (rcvB !== "") rcvBoxesSum += Number(rcvB) || 0;
+
+        const uKg = parseFloat(getUkKg(item));
+        if (!isNaN(uKg)) ukKgSum += uKg;
+
+        const aKg = parseFloat(getActualKg(item));
+        if (!isNaN(aKg)) rcvKgSum += aKg;
+      });
+
+      return { ukBoxesSum, rcvBoxesSum, ukKgSum, rcvKgSum };
+    }
+
     function getFilteredBatchItems() {
       const search = document.getElementById("searchInput").value.trim().toLowerCase();
       const filter = document.getElementById("statusFilter").value;
@@ -898,12 +986,16 @@
       document.getElementById("statKg").textContent = batchItems.filter(i => i.kgMatch === "Match").length;
       document.getElementById("statPaid").textContent = batchItems.filter(i => i.payment === "Paid").length;
       document.getElementById("statUk").textContent = batchItems.filter(i => i.ukApproved).length;
-      document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
+      document.getElementById("statReady").textContent = batchItems.filter(i => !item.released && isReadyToRelease(item)).length;
       document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
       const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
       document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
+
+      const { ukBoxesSum, rcvBoxesSum, ukKgSum, rcvKgSum } = calcBatchCargoTotals(batchItems);
+      document.getElementById("statTotalBoxes").textContent = `${ukBoxesSum} / ${rcvBoxesSum} ပုံး`;
+      document.getElementById("statTotalKgPair").textContent = `${ukKgSum.toFixed(1)} / ${rcvKgSum.toFixed(1)} kg`;
 
       const filtered = getFilteredBatchItems();
 
@@ -929,16 +1021,23 @@
         const actKg = getActualKg(item);
         const paidKgVal = getPaidKg(item);
         const hasBreakdown = Array.isArray(item.boxWeights) && item.boxWeights.length > 0;
+        const stampText = getItemUpdateLabel(item);
 
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
-        // 1. Customer Name (Compact w-28)
-        const customerHtml = isAdmin
+        // 1. Customer Name + Office/Page Admin Timestamp (Admin edits hidden)
+        const nameInputOrText = isAdmin
           ? `<input type="text" value="${escapeAttr(item.customer || "")}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-28 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 font-semibold text-slate-800 text-xs focus:outline-none" />`
           : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
 
-        // 2. Boxes Column (Compact w-[98px])
+        const stampHtml = stampText
+          ? `<div class="text-[9.5px] text-slate-400 leading-tight mt-0.5 px-1.5 max-w-[122px] truncate" title="${escapeAttr(stampText)}">${escapeHtml(stampText)}</div>`
+          : "";
+
+        const customerHtml = `<div class="flex flex-col">${nameInputOrText}${stampHtml}</div>`;
+
+        // 2. Boxes Column
         let boxShortfallHint = "";
         if (rcvBox !== "" && rcvBox < ukBox) {
           boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️${ukBox - rcvBox}လို</span>`;
@@ -971,7 +1070,7 @@
 
         const boxHtml = `<div class="flex flex-col gap-1 w-[98px]">${ukBoxRow}${rcvBoxRow}</div>`;
 
-        // 3. KG Column (Compact w-[138px])
+        // 3. KG Column
         const matchControlHtml = canEditOffice
           ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-0.5 rounded text-[10.5px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
                <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳စစ်ဆဲ</option>
@@ -1012,7 +1111,7 @@
 
         const kgHtml = `<div class="flex flex-col gap-1 w-[138px]">${ukKgRow}${rcvKgRow}</div>`;
 
-        // 4. Payment Column (Compact w-[134px])
+        // 4. Payment Column
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
@@ -1047,7 +1146,7 @@
           ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-[11px] font-semibold px-2 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : 'Approve'}</button></div>`
           : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
 
-        // 6. Original Notes Column (Compact w-24)
+        // 6. Original Notes Column
         const noteText = item.notes || "";
         const notePreview = noteText
           ? `<span class="line-clamp-2 text-[11px] text-slate-700">${escapeHtml(noteText)}</span>`
@@ -1064,7 +1163,7 @@
           </div>
         `;
 
-        // 7. General Note / မှတ်စု Column (Compact w-28)
+        // 7. General Note / မှတ်စု Column
         let remainingHtml = canEditRemaining
           ? `<div class="h-7 flex items-center"><input type="text" value="${escapeAttr(item.remainingNote || "")}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="မှတ်စု..." class="h-7 w-28 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 text-[11px] focus:border-amber-500 focus:outline-none" /></div>`
           : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
@@ -1074,7 +1173,7 @@
           ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
           : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
 
-        // 9. Release Column (Compact buttons so full button + trash icon stay completely visible)
+        // 9. Release Column (Centered header + centered action container)
         let releasedHtml = "";
         if (item.released) {
           releasedHtml = canEditOffice
@@ -1099,7 +1198,7 @@
           <td class="py-2 px-1.5">${notesHtml}</td>
           <td class="py-2 px-1.5">${remainingHtml}</td>
           <td class="py-2 px-1.5 text-center">${readyHtml}</td>
-          <td class="py-2 px-1.5 text-right"><div class="h-7 inline-flex items-center justify-end gap-0.5 whitespace-nowrap">${releasedHtml}${deleteRowBtn}</div></td>
+          <td class="py-2 px-1.5 text-center"><div class="h-7 flex items-center justify-center gap-0.5 whitespace-nowrap">${releasedHtml}${deleteRowBtn}</div></td>
         `;
         tbody.appendChild(tr);
       });
@@ -1178,6 +1277,7 @@
       const item = findItem(activeNoteItemId);
       if (!item) return;
       item.notes = document.getElementById("noteEditTextarea").value;
+      touchItem(item);
       closeModal("noteEditModal");
       renderTable();
       saveToGitHub();
@@ -1194,6 +1294,8 @@
       const trimmed = val.trim();
       if (!trimmed) return;
       item.customer = trimmed;
+      touchItem(item);
+      renderTable();
       saveToGitHub();
     }
 
@@ -1204,6 +1306,7 @@
       const count = Math.max(1, parseInt(val) || 1);
       item.ukBoxes = count;
       item.photos = count;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1223,6 +1326,7 @@
           item.boxWeights = nextWeights.slice(0, count);
         }
       }
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1238,6 +1342,7 @@
         const num = parseFloat(trimmed);
         if (!isNaN(num)) item.expectedKg = num;
       }
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1252,6 +1357,7 @@
         const num = parseFloat(trimmed);
         if (!isNaN(num)) item.actualKg = num;
       }
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1260,6 +1366,7 @@
       const item = findItem(id);
       if (!item) return;
       item.kgMatch = val;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1269,6 +1376,7 @@
       const item = findItem(id);
       if (!item) return;
       item.payment = val;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1278,6 +1386,7 @@
       const item = findItem(id);
       if (!item) return;
       item.paidCurrency = val === "MMK" ? "MMK" : "GBP";
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1294,6 +1403,7 @@
         item.paidAmount = !isNaN(num) ? num : null;
       }
       if (!item.paidCurrency) item.paidCurrency = "GBP";
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1309,6 +1419,7 @@
         const num = parseFloat(trimmed);
         item.paidKg = !isNaN(num) ? num : null;
       }
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1318,6 +1429,7 @@
       const item = findItem(id);
       if (!item) return;
       item.ukApproved = !item.ukApproved;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1326,6 +1438,7 @@
       const item = findItem(id);
       if (!item) return;
       item.remainingNote = val;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1337,6 +1450,7 @@
         if (!confirm("UK Approve၊ KG ကိုက်ညီမှု သို့မဟုတ် Paid တစ်ခုခု မပြည့်စုံသေးပါ။ ပစ္စည်းထုတ်ပေးလိုက်ပြီဟု မှတ်မည်လား?")) return;
       }
       item.released = !item.released;
+      touchItem(item);
       renderTable();
       saveToGitHub();
     }
@@ -1423,6 +1537,7 @@
       item.receivedBoxes = weights.length;
       item.boxWeights = weights;
       item.actualKg = total;
+      touchItem(item);
 
       closeModal("boxModal");
       renderTable();
@@ -1726,14 +1841,14 @@
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
       const canSeeFinance = currentRole === "admin" || currentRole === "page";
       const headers = canSeeFinance
-        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "Paid_KG", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note"]
-        : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note"];
+        ? ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "Currency", "Paid_Amount", "Paid_KG", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note", "Staff_Updated"]
+        : ["Batch", "Customer", "UK_Boxes", "Received_Boxes", "UK_KG", "Actual_KG", "KG_Match", "Payment", "UK_Approved", "Ready_To_Release", "Released", "Original_Notes", "Note", "Staff_Updated"];
       const rows = [headers];
       batchItems.forEach(i => {
         if (canSeeFinance) {
-          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", getPaidKg(i), i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.paidCurrency || "GBP", i.paidAmount ?? "", getPaidKg(i), i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || "", getItemUpdateLabel(i)]);
         } else {
-          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || ""]);
+          rows.push([i.batch, i.customer, getUkBoxes(i), getReceivedBoxes(i), getUkKg(i), getActualKg(i), i.kgMatch, i.payment, i.ukApproved ? "Yes" : "No", isReadyToRelease(i) ? "Yes" : "No", i.released ? "Yes" : "No", i.notes || "", i.remainingNote || "", getItemUpdateLabel(i)]);
         }
       });
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
