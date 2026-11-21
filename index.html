@@ -55,7 +55,6 @@
   <!-- Fixed-Layout Top Navbar -->
   <header class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-white shadow-md sticky top-0 z-30 border-b border-indigo-800/40">
     <div class="max-w-[1440px] mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
-      <!-- Left: Mascot + Title + Status -->
       <div class="flex items-center gap-2 min-w-0 flex-1">
         <div class="mascot-float bg-amber-100/95 border-2 border-amber-300 rounded-2xl p-1 shadow-sm shrink-0">
           <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -87,7 +86,6 @@
         </div>
       </div>
 
-      <!-- Right: Always-Visible Role Selector + Refresh + Setup -->
       <div class="flex items-center gap-1.5 shrink-0">
         <div id="roleContainer" class="shrink-0">
           <select id="roleSelect" onchange="changeRole()" class="h-8 sm:h-9 bg-slate-800/95 border border-slate-500 text-white text-xs sm:text-sm rounded-xl px-2 font-semibold focus:outline-none focus:border-amber-400 whitespace-nowrap">
@@ -110,13 +108,13 @@
   </header>
 
   <!-- Page Container -->
-  <div class="max-w-[1680px] mx-auto px-3 sm:px-4 mt-3.5 flex items-start justify-center gap-3.5">
+  <div class="max-w-[1680px] mx-auto px-2.5 sm:px-4 mt-3.5 flex items-start justify-center gap-3">
 
     <!-- Left Companion -->
-    <aside class="hidden 2xl:block w-40 shrink-0 sticky top-16">
+    <aside class="hidden 2xl:block w-36 shrink-0 sticky top-16">
       <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3 shadow-sm text-center">
         <div class="gentle-wave inline-block mb-1">
-          <svg width="56" height="56" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="52" height="52" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="36" cy="36" r="30" fill="#FCE7F3"/>
             <circle cx="24" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
             <circle cx="48" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
@@ -130,44 +128,44 @@
           </svg>
         </div>
         <p class="text-[11px] font-bold text-pink-900">🌸 ကြိုးစားမှုအတွက်</p>
-        <p class="text-[10.5px] text-slate-600 mt-1 leading-snug">သေချာစစ်ဆေးပေးနေတဲ့ အတွက် ကျေးဇူးတင်ပါတယ် ✨</p>
+        <p class="text-[10px] text-slate-600 mt-1 leading-snug">သေချာစစ်ဆေးပေးနေတဲ့ အတွက် ကျေးဇူးတင်ပါတယ် ✨</p>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 min-w-0 max-w-7xl space-y-4">
+    <main class="flex-1 min-w-0 max-w-[1360px] space-y-3.5">
 
       <!-- Summary Cards -->
-      <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 sm:gap-3">
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-indigo-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
+      <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-2 sm:gap-2.5">
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-indigo-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
           <p id="statTotal" class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">0</p>
         </div>
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-sky-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-sky-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
           <p id="statKg" class="text-xl sm:text-2xl font-bold text-sky-600 mt-0.5">0</p>
         </div>
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-emerald-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-emerald-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
           <p id="statPaid" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-0.5">0</p>
         </div>
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-purple-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-purple-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
           <p id="statUk" class="text-xl sm:text-2xl font-bold text-purple-600 mt-0.5">0</p>
         </div>
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-teal-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-teal-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
           <p id="statReady" class="text-xl sm:text-2xl font-bold text-teal-600 mt-0.5">0</p>
         </div>
-        <div class="soft-card rounded-2xl p-3 shadow-sm border border-amber-100">
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
+        <div class="soft-card rounded-2xl p-2.5 sm:p-3 shadow-sm border border-amber-100">
+          <p class="text-[11px] text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
           <p id="statReleased" class="text-xl sm:text-2xl font-bold text-amber-700 mt-0.5">0</p>
         </div>
       </div>
 
       <!-- Admin-Only Financial Totals Bar -->
-      <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
+      <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div class="soft-card rounded-2xl px-4 py-2.5 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
           <div class="flex items-center gap-2.5 min-w-0">
             <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl shrink-0">🇬🇧</span>
             <div class="min-w-0">
@@ -178,7 +176,7 @@
           <p id="statTotalGbp" class="text-lg sm:text-2xl font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
         </div>
 
-        <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
+        <div class="soft-card rounded-2xl px-4 py-2.5 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
           <div class="flex items-center gap-2.5 min-w-0">
             <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl shrink-0">🇲🇲</span>
             <div class="min-w-0">
@@ -191,13 +189,13 @@
       </div>
 
       <!-- Batch Dropdown Bar & Action Bar -->
-      <div class="soft-card rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200/80 space-y-3.5">
-        <div class="flex flex-wrap items-center justify-between gap-2.5">
+      <div class="soft-card rounded-2xl p-3 sm:p-3.5 shadow-sm border border-slate-200/80 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex flex-wrap items-center gap-2">
             <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1 whitespace-nowrap">
               <span>🚢 Batch:</span>
             </label>
-            <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-2.5 focus:outline-none focus:border-indigo-500 min-w-[180px]">
+            <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-2.5 focus:outline-none focus:border-indigo-500 min-w-[175px]">
             </select>
             <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full whitespace-nowrap">0 ဦး</span>
 
@@ -206,7 +204,7 @@
             </button>
           </div>
 
-          <div id="adminActionBtns" class="flex flex-wrap items-center gap-2">
+          <div id="adminActionBtns" class="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
               + Batch အသစ်
             </button>
@@ -220,7 +218,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-3 border-t border-slate-100 items-center">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-2.5 border-t border-slate-100 items-center">
           <div class="sm:col-span-4">
             <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / မှတ်စု ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
           </div>
@@ -254,21 +252,21 @@
         </div>
       </div>
 
-      <!-- Main Data Table -->
+      <!-- Main Data Table (Compact column widths so rightmost action buttons fit cleanly without clipping) -->
       <div class="soft-card rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
-                <th class="py-2.5 px-2.5 whitespace-nowrap">Customer နာမည်</th>
-                <th class="py-2.5 px-2.5 whitespace-nowrap">📦 ပုံး (UK vs ရုံး)</th>
-                <th class="py-2.5 pl-2.5 pr-3 whitespace-nowrap">⚖️ KG (UK vs ရုံး)</th>
-                <th class="py-2.5 pl-3 pr-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
-                <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
-                <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
-                <th class="py-2.5 px-2.5 whitespace-nowrap">📝 မှတ်စု</th>
-                <th class="py-2.5 px-2.5 text-center whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</th>
-                <th class="py-2.5 px-2.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</th>
+              <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[10.5px] font-bold text-slate-700 uppercase">
+                <th class="py-2 px-1.5 whitespace-nowrap">Customer နာမည်</th>
+                <th class="py-2 px-1.5 whitespace-nowrap">📦 ပုံး (UK/ရုံး)</th>
+                <th class="py-2 px-1.5 whitespace-nowrap">⚖️ KG (UK/ရုံး)</th>
+                <th class="py-2 px-1.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
+                <th class="py-2 px-1.5 whitespace-nowrap">🇬🇧 UK Approve</th>
+                <th class="py-2 px-1.5 whitespace-nowrap">Original Notes <span class="font-normal normal-case text-indigo-600">(1x)</span></th>
+                <th class="py-2 px-1.5 whitespace-nowrap">📝 မှတ်စု</th>
+                <th class="py-2 px-1.5 text-center whitespace-nowrap">✅ ရပြီ</th>
+                <th class="py-2 px-1.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးမှု</th>
               </tr>
             </thead>
             <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
@@ -296,10 +294,10 @@
     </main>
 
     <!-- Right Companion -->
-    <aside class="hidden 2xl:block w-40 shrink-0 sticky top-16">
+    <aside class="hidden 2xl:block w-36 shrink-0 sticky top-16">
       <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3 shadow-sm text-center">
         <div class="mascot-float inline-block mb-1">
-          <svg width="56" height="56" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="52" height="52" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="36" cy="36" r="30" fill="#CCFBF1"/>
             <path d="M36 14L39.5 22.5L48.5 23.5L41.5 29.5L43.5 38.5L36 33.8L28.5 38.5L30.5 29.5L23.5 23.5L32.5 22.5L36 14Z" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
             <circle cx="36" cy="46" r="12" fill="#FFFBEB" stroke="#115E59" stroke-width="2.2"/>
@@ -309,7 +307,7 @@
           </svg>
         </div>
         <p class="text-[11px] font-bold text-teal-900">🍀 အဆင်ပြေပါစေ</p>
-        <p class="text-[10.5px] text-slate-600 mt-1 leading-snug">Team အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးတင်ပါတယ် 💕</p>
+        <p class="text-[10] text-slate-600 mt-1 leading-snug">Team အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးတင်ပါတယ် 💕</p>
       </div>
     </aside>
 
@@ -319,7 +317,7 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 0. Original Note View Pop-up Modal (Single Click) -->
+  <!-- 0. Original Note View Pop-up Modal -->
   <div id="noteViewModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -347,7 +345,7 @@
     </div>
   </div>
 
-  <!-- 0b. Original Note Edit Modal (Admin / UK Only via Double Click) -->
+  <!-- 0b. Original Note Edit Modal -->
   <div id="noteEditModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
       <div>
@@ -870,6 +868,26 @@
       });
     }
 
+    function calcFinancialTotals(itemsList) {
+      let totalGbp = 0;
+      let totalMmk = 0;
+      let paidGbp = 0;
+      let paidMmk = 0;
+      itemsList.forEach(item => {
+        const amt = parseFloat(item.paidAmount);
+        if (!isNaN(amt) && amt > 0) {
+          if ((item.paidCurrency || "GBP") === "MMK") {
+            totalMmk += amt;
+            if (item.payment === "Paid") paidMmk += amt;
+          } else {
+            totalGbp += amt;
+            if (item.payment === "Paid") paidGbp += amt;
+          }
+        }
+      });
+      return { totalGbp, totalMmk, paidGbp, paidMmk };
+    }
+
     function renderTable() {
       const tbody = document.getElementById("tableBody");
       const emptyState = document.getElementById("emptyState");
@@ -883,18 +901,7 @@
       document.getElementById("statReady").textContent = batchItems.filter(i => !i.released && isReadyToRelease(i)).length;
       document.getElementById("statReleased").textContent = batchItems.filter(i => i.released).length;
 
-      let totalGbp = 0;
-      let totalMmk = 0;
-      batchItems.forEach(item => {
-        const amt = parseFloat(item.paidAmount);
-        if (!isNaN(amt) && amt > 0) {
-          if ((item.paidCurrency || "GBP") === "MMK") {
-            totalMmk += amt;
-          } else {
-            totalGbp += amt;
-          }
-        }
-      });
+      const { totalGbp, totalMmk } = calcFinancialTotals(batchItems);
       document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
 
@@ -926,60 +933,63 @@
         const tr = document.createElement("tr");
         tr.className = item.released ? "bg-slate-50/70 opacity-80" : (ready ? "bg-teal-50/40 hover:bg-teal-50/70" : "hover:bg-indigo-50/20");
 
+        // 1. Customer Name (Compact w-28)
         const customerHtml = isAdmin
-          ? `<input type="text" value="${escapeAttr(item.customer || "")}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-32 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-2 font-semibold text-slate-800 text-xs sm:text-sm focus:outline-none" />`
+          ? `<input type="text" value="${escapeAttr(item.customer || "")}" onchange="updateCustomerName('${item.id}', this.value)" class="h-7 w-28 border border-transparent hover:border-slate-300 focus:border-indigo-400 focus:bg-white bg-transparent rounded-lg px-1.5 font-semibold text-slate-800 text-xs focus:outline-none" />`
           : `<div class="h-7 flex items-center font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.customer)}</div>`;
 
+        // 2. Boxes Column (Compact w-[98px])
         let boxShortfallHint = "";
         if (rcvBox !== "" && rcvBox < ukBox) {
-          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️ ${ukBox - rcvBox}လို</span>`;
+          boxShortfallHint = `<span class="text-[10px] font-bold text-rose-600 whitespace-nowrap">⚠️${ukBox - rcvBox}လို</span>`;
         } else if (rcvBox !== "" && rcvBox > ukBox) {
           boxShortfallHint = `<span class="text-[10px] font-bold text-amber-700 whitespace-nowrap">+${rcvBox - ukBox}ပို</span>`;
         }
 
         const ukBoxRow = isAdmin
-          ? `<div class="h-6 flex items-center gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-7 shrink-0">UK:</span>
-               <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+          ? `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-6 shrink-0">UK:</span>
+               <input type="number" min="1" value="${ukBox}" onchange="updateUkBox('${item.id}', this.value)" class="h-6 w-11 border border-indigo-200 bg-indigo-50/70 rounded px-0.5 text-center text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
                <span class="text-[10px] text-indigo-600">ပုံး</span>
              </div>`
-          : `<div class="h-6 flex items-center gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-               <span class="w-7 shrink-0">UK:</span>
+          : `<div class="h-6 flex items-center gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+               <span class="w-6 shrink-0">UK:</span>
                <span>${ukBox} ပုံး</span>
              </div>`;
 
         const rcvBoxRow = canEditOffice
-          ? `<div class="h-6 flex items-center gap-1 text-[11px] whitespace-nowrap">
-               <span class="w-7 text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-xs font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+          ? `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
+               <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <input type="number" min="0" value="${rcvBox}" placeholder="-" onchange="updateReceivedBoxes('${item.id}', this.value)" class="h-6 w-11 border border-slate-300 rounded px-0.5 text-[11px] font-semibold text-center text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
                ${boxShortfallHint}
              </div>`
-          : `<div class="h-6 flex items-center gap-1 text-xs whitespace-nowrap">
-               <span class="w-7 text-slate-500 font-medium shrink-0">ရုံး:</span>
+          : `<div class="h-6 flex items-center gap-0.5 text-[11px] whitespace-nowrap">
+               <span class="w-6 text-slate-500 font-medium shrink-0">ရုံး:</span>
                <span class="font-semibold text-slate-700">${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}</span>
                ${boxShortfallHint}
              </div>`;
 
-        const boxHtml = `<div class="flex flex-col gap-1 w-[112px]">${ukBoxRow}${rcvBoxRow}</div>`;
+        const boxHtml = `<div class="flex flex-col gap-1 w-[98px]">${ukBoxRow}${rcvBoxRow}</div>`;
 
+        // 3. KG Column (Compact w-[138px])
         const matchControlHtml = canEditOffice
-          ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-1 rounded text-[11px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
-               <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
-               <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ ကိုက်</option>
+          ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-0.5 rounded text-[10.5px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
+               <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳စစ်ဆဲ</option>
+               <option value="Match" ${item.kgMatch === 'Match' ? 'selected' : ''}>✅ကိုက်</option>
              </select>`
-          : `<span class="text-[11px] font-semibold px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-               ${item.kgMatch === 'Match' ? '✅ ကိုက်' : '⏳ စစ်ဆဲ'}
+          : `<span class="text-[10.5px] font-semibold px-1 py-0.5 rounded shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+               ${item.kgMatch === 'Match' ? '✅ကိုက်' : '⏳စစ်ဆဲ'}
              </span>`;
 
         const ukKgInputOrText = isAdmin
-          ? `<input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-14 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
+          ? `<input type="number" step="0.01" value="${ukKg}" placeholder="-" onchange="updateUkKg('${item.id}', this.value)" class="h-6 w-12 border border-indigo-200 bg-indigo-50/70 rounded px-1 text-[11px] font-bold text-indigo-950 focus:outline-none focus:border-indigo-400" />
              <span class="text-[10px] text-indigo-600">kg</span>`
-          : `<span>${ukKg !== "" ? ukKg + " kg" : "-"}</span>`;
+          : `<span>${ukKg !== "" ? ukKg + "kg" : "-"}</span>`;
 
         const ukKgRow = `
-          <div class="h-6 flex items-center justify-between gap-1 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
-            <div class="flex items-center gap-1 min-w-0">
-              <span class="w-6 shrink-0">UK:</span>
+          <div class="h-6 flex items-center justify-between gap-0.5 text-[11px] font-semibold text-indigo-800 whitespace-nowrap">
+            <div class="flex items-center gap-0.5 min-w-0">
+              <span class="w-5 shrink-0">UK:</span>
               ${ukKgInputOrText}
             </div>
             ${matchControlHtml}
@@ -987,103 +997,109 @@
         `;
 
         const rcvKgRow = canEditOffice
-          ? `<div class="h-6 flex items-center gap-1 whitespace-nowrap">
-               <span class="w-6 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-14 border border-slate-300 rounded px-1 text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
-               <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-1.5 rounded text-[11px] border shrink-0 whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                 📦 ${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
+          ? `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
+               <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <input type="number" step="0.01" value="${actKg}" placeholder="KG" onchange="updateActualKg('${item.id}', this.value)" class="h-6 w-12 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-indigo-400" />
+               <button onclick="openBoxModal('${item.id}')" title="ပုံးအလိုက် KG ခွဲထည့်ရန်" class="h-6 px-1.5 rounded text-[10.5px] border shrink-0 whitespace-nowrap ${hasBreakdown ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'}">
+                 📦${hasBreakdown ? rcvBox + 'ပုံး' : 'ခွဲ'}
                </button>
              </div>`
-          : `<div class="h-6 flex items-center gap-1 whitespace-nowrap">
-               <span class="w-6 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
-               <span class="text-xs font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
-               ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[11px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
+          : `<div class="h-6 flex items-center gap-0.5 whitespace-nowrap">
+               <span class="w-5 text-[11px] text-slate-500 font-medium shrink-0">ရုံး:</span>
+               <span class="text-[11px] font-semibold text-slate-700">${actKg !== "" ? actKg + " kg" : "-"}</span>
+               ${hasBreakdown ? `<button onclick="openBoxModal('${item.id}')" class="text-[10.5px] text-blue-600 underline">(${rcvBox}ပုံး)</button>` : ""}
              </div>`;
 
-        const kgHtml = `<div class="flex flex-col gap-1 w-[154px]">${ukKgRow}${rcvKgRow}</div>`;
+        const kgHtml = `<div class="flex flex-col gap-1 w-[138px]">${ukKgRow}${rcvKgRow}</div>`;
 
+        // 4. Payment Column (Compact w-[134px])
         const cur = item.paidCurrency || "GBP";
         const amtVal = (item.paidAmount != null && item.paidAmount !== "") ? item.paidAmount : "";
         let paymentHtml = "";
         if (canEditPage) {
           paymentHtml = `
-            <div class="flex flex-col gap-1 w-[146px]">
+            <div class="flex flex-col gap-1 w-[134px]">
               <div class="h-6 flex items-center gap-1">
-                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[78px] shrink-0 text-[11px] font-semibold rounded px-1 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
-                  <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌ Unpaid</option>
-                  <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅ Paid</option>
+                <select onchange="updatePayment('${item.id}', this.value)" class="h-6 w-[72px] shrink-0 text-[10.5px] font-semibold rounded px-0.5 border ${item.payment === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-rose-50 text-rose-700 border-rose-300'}">
+                  <option value="Unpaid" ${item.payment !== 'Paid' ? 'selected' : ''}>❌Unpaid</option>
+                  <option value="Paid" ${item.payment === 'Paid' ? 'selected' : ''}>✅Paid</option>
                 </select>
                 <div class="h-6 flex items-center gap-0.5 min-w-0 flex-1">
-                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-10 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
+                  <input type="number" step="0.01" value="${paidKgVal}" placeholder="KG" title="ငွေရှင်းထားသည့် KG" onchange="updatePaidKg('${item.id}', this.value)" class="h-6 w-9 min-w-0 border border-emerald-300/90 bg-emerald-50/40 rounded px-1 text-[11px] font-bold text-emerald-950 focus:outline-none focus:border-emerald-500" />
                   <span class="text-[10px] font-semibold text-emerald-800 shrink-0">kg</span>
                 </div>
               </div>
               <div class="h-6 flex items-center gap-1">
-                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-1 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
+                <select onchange="updatePaidCurrency('${item.id}', this.value)" class="h-6 text-[11px] font-bold rounded px-0.5 border border-slate-300 bg-slate-50 text-slate-700 shrink-0">
                   <option value="GBP" ${cur === 'GBP' ? 'selected' : ''}>£</option>
                   <option value="MMK" ${cur === 'MMK' ? 'selected' : ''}>Ks</option>
                 </select>
-                <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1.5 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" step="0.01" value="${amtVal}" placeholder="ငွေပမာဏ" onchange="updatePaidAmount('${item.id}', this.value)" class="h-6 w-full min-w-0 border border-slate-300 rounded px-1 text-[11px] font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500" />
               </div>
             </div>
           `;
         } else {
-          paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-xl whitespace-nowrap ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>`;
+          paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.payment === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.payment === 'Paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>`;
         }
 
+        // 5. UK Approve Column
         let ukHtml = canEditUk
-          ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-xs font-semibold px-2.5 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved ✓' : 'Approve'}</button></div>`
-          : `<div class="h-7 flex items-center"><span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved ✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
+          ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-[11px] font-semibold px-2 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : 'Approve'}</button></div>`
+          : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
 
+        // 6. Original Notes Column (Compact w-24)
         const noteText = item.notes || "";
         const notePreview = noteText
-          ? `<span class="line-clamp-2 text-xs text-slate-700">${escapeHtml(noteText)}</span>`
-          : `<span class="text-xs text-slate-400 italic whitespace-nowrap">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန် နှိပ်ပါ'}</span>`;
+          ? `<span class="line-clamp-2 text-[11px] text-slate-700">${escapeHtml(noteText)}</span>`
+          : `<span class="text-[11px] text-slate-400 italic whitespace-nowrap">${canEditOriginalNotes ? 'မှတ်ချက်မရှိ' : 'ဖတ်ရန်'}</span>`;
 
         const notesHtml = `
           <div
             onclick="handleNoteSingleClick('${item.id}')"
             ondblclick="handleNoteDoubleClick('${item.id}', ${canEditOriginalNotes})"
             title="${canEditOriginalNotes ? '၁ ချက်နှိပ် = ဖတ်ရန် | ၂ ချက်နှိပ် = Edit လုပ်ရန်' : '၁ ချက်နှိပ် = Pop-up ဖြင့် ဖတ်ရန် (View Only)'}"
-            class="w-32 h-13 px-2 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center overflow-hidden transition"
+            class="w-24 h-12 px-1.5 py-1 rounded-xl border ${noteText ? 'bg-indigo-50/60 hover:bg-indigo-100/70 border-indigo-200/80' : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200/80'} cursor-pointer select-none flex items-center overflow-hidden transition"
           >
             ${notePreview}
           </div>
         `;
 
+        // 7. General Note / မှတ်စု Column (Compact w-28)
         let remainingHtml = canEditRemaining
-          ? `<div class="h-7 flex items-center"><input type="text" value="${escapeAttr(item.remainingNote || "")}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="ပုံးကျန် / ဖုန်းဆက် / မှတ်စု..." class="h-7 w-36 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-2 text-xs focus:border-amber-500 focus:outline-none" /></div>`
-          : `<div class="h-7 flex items-center"><span class="inline-block text-xs whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
+          ? `<div class="h-7 flex items-center"><input type="text" value="${escapeAttr(item.remainingNote || "")}" onchange="updateRemainingNote('${item.id}', this.value)" placeholder="မှတ်စု..." class="h-7 w-28 border ${(item.remainingNote || "").trim() ? 'border-amber-300 bg-amber-50/70 text-amber-900 font-medium' : 'border-slate-200 bg-white'} rounded-lg px-1.5 text-[11px] focus:border-amber-500 focus:outline-none" /></div>`
+          : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] whitespace-nowrap ${(item.remainingNote || "").trim() ? 'bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-lg' : 'text-slate-400'}">${escapeHtml(item.remainingNote || "-")}</span></div>`;
 
+        // 8. Ready Status Column
         let readyHtml = ready
-          ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
-          : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-xs font-medium bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
+          ? `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-300 px-2 py-0.5 rounded-xl whitespace-nowrap">✅ ရပြီ</span></div>`
+          : `<div class="h-7 flex items-center justify-center"><span class="inline-block text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl whitespace-nowrap">⏳ စောင့်ဆဲ</span></div>`;
 
+        // 9. Release Column (Compact buttons so full button + trash icon stay completely visible)
         let releasedHtml = "";
         if (item.released) {
           releasedHtml = canEditOffice
-            ? `<button onclick="toggleRelease('${item.id}')" class="h-7 text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး ✓</button>`
-            : `<span class="inline-block text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး ✓</span>`;
+            ? `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</button>`
+            : `<span class="inline-block text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-xl whitespace-nowrap">🚚 ထုတ်ပြီး✓</span>`;
         } else if (canEditOffice) {
-          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="h-7 text-xs font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2.5 rounded-xl transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`;
+          releasedHtml = `<button onclick="toggleRelease('${item.id}')" class="h-7 text-[11px] font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-2 rounded-xl transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`;
         } else {
           releasedHtml = `<span class="text-xs text-slate-400">-</span>`;
         }
 
         const deleteRowBtn = isAdmin
-          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-7 px-1.5 text-rose-400 hover:text-rose-600 text-xs">🗑️</button>`
+          ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-7 px-1 text-rose-400 hover:text-rose-600 text-xs shrink-0">🗑️</button>`
           : "";
 
         tr.innerHTML = `
-          <td class="py-2.5 px-2.5">${customerHtml}</td>
-          <td class="py-2.5 px-2.5">${boxHtml}</td>
-          <td class="py-2.5 pl-2.5 pr-3">${kgHtml}</td>
-          <td class="py-2.5 pl-3 pr-2.5">${paymentHtml}</td>
-          <td class="py-2.5 px-2.5">${ukHtml}</td>
-          <td class="py-2.5 px-2.5">${notesHtml}</td>
-          <td class="py-2.5 px-2.5">${remainingHtml}</td>
-          <td class="py-2.5 px-2.5 text-center">${readyHtml}</td>
-          <td class="py-2.5 px-2.5 text-right"><div class="h-7 inline-flex items-center justify-end gap-0.5">${releasedHtml}${deleteRowBtn}</div></td>
+          <td class="py-2 px-1.5">${customerHtml}</td>
+          <td class="py-2 px-1.5">${boxHtml}</td>
+          <td class="py-2 px-1.5">${kgHtml}</td>
+          <td class="py-2 px-1.5">${paymentHtml}</td>
+          <td class="py-2 px-1.5">${ukHtml}</td>
+          <td class="py-2 px-1.5">${notesHtml}</td>
+          <td class="py-2 px-1.5">${remainingHtml}</td>
+          <td class="py-2 px-1.5 text-center">${readyHtml}</td>
+          <td class="py-2 px-1.5 text-right"><div class="h-7 inline-flex items-center justify-end gap-0.5 whitespace-nowrap">${releasedHtml}${deleteRowBtn}</div></td>
         `;
         tbody.appendChild(tr);
       });
@@ -1747,15 +1763,7 @@
         const isPage = currentRole === "page";
         const showMoney = isAdmin || isPage;
 
-        let totalGbp = 0;
-        let totalMmk = 0;
-        items.forEach(item => {
-          const amt = parseFloat(item.paidAmount);
-          if (!isNaN(amt) && amt > 0) {
-            if ((item.paidCurrency || "GBP") === "MMK") totalMmk += amt;
-            else totalGbp += amt;
-          }
-        });
+        const { totalGbp, totalMmk, paidGbp, paidMmk } = calcFinancialTotals(items);
 
         const roleTitleMap = {
           admin: "Full Admin / UK Owner Report",
@@ -1849,9 +1857,9 @@
         }).join("");
 
         const financeSummaryHtml = isAdmin ? `
-          <div style="display:flex;gap:20px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:7px 12px;margin-bottom:10px;font-size:11px;">
-            <span><b>စုစုပေါင်း GBP:</b> £ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            <span><b>စုစုပေါင်း MMK:</b> ${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks</span>
+          <div style="display:flex;flex-wrap:wrap;gap:24px;background:#eef2ff;border:1.5px solid #a5b4fc;border-radius:8px;padding:8px 14px;margin-bottom:10px;font-size:11.5px;color:#1e1b4b;">
+            <div><b>စုစုပေါင်း Pound (£ GBP):</b> £ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:10px;color:#4338ca;">(Paid ပြီး: £ ${paidGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })})</span></div>
+            <div><b>စုစုပေါင်း ကျပ်ငွေ (Ks MMK):</b> ${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks <span style="font-size:10px;color:#047857;">(Paid ပြီး: ${paidMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks)</span></div>
           </div>
         ` : "";
 
