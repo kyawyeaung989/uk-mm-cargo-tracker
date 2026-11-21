@@ -20,7 +20,8 @@
       "released": true,
       "notes": "",
       "paidAmount": null,
-      "paidCurrency": "GBP"
+      "paidCurrency": "GBP",
+      "remainingNote": "kfjaljfla"
     },
     {
       "id": "item-1795102170158-0",
