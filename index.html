@@ -238,12 +238,15 @@
             <span class="truncate">ထုတ်ပေးပြီးသား ဖျောက်မည်</span>
           </label>
         </div>
-        <div class="sm:col-span-2 flex gap-2">
-          <button onclick="exportCSV()" class="flex-1 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2.5 rounded-xl border border-slate-300 transition whitespace-nowrap">
+        <div class="sm:col-span-2 flex gap-1.5">
+          <button onclick="exportCSV()" class="flex-1 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2 rounded-xl border border-slate-300 transition whitespace-nowrap">
             ⬇️ CSV
           </button>
-          <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="flex-1 h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2.5 rounded-xl border border-rose-200 transition whitespace-nowrap">
-            🗑️ ဖျက်မည်
+          <button onclick="exportPDF()" class="flex-1 h-9 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-2 rounded-xl shadow-xs transition whitespace-nowrap">
+            📄 PDF
+          </button>
+          <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2 rounded-xl border border-rose-200 transition whitespace-nowrap">
+            🗑️
           </button>
         </div>
       </div>
@@ -814,12 +817,31 @@
       return "";
     }
 
-    function renderTable() {
-      const tbody = document.getElementById("tableBody");
-      const emptyState = document.getElementById("emptyState");
+    function getFilteredBatchItems() {
       const search = document.getElementById("searchInput").value.trim().toLowerCase();
       const filter = document.getElementById("statusFilter").value;
       const hideReleased = document.getElementById("hideReleased").checked;
+      const batchItems = appData.items.filter(i => i.batch === activeBatch);
+
+      return batchItems.filter(item => {
+        if (hideReleased && item.released) return false;
+        if (search) {
+          const hay = `${item.customer || ""} ${item.notes || ""} ${item.remainingNote || ""}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+
+        if (filter === "ready") return !item.released && isReadyToRelease(item);
+        if (filter === "released") return item.released;
+        if (filter === "pending_kg") return item.kgMatch !== "Match";
+        if (filter === "unpaid") return item.payment !== "Paid";
+        if (filter === "pending_uk") return !item.ukApproved;
+        return true;
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("tableBody");
+      const emptyState = document.getElementById("emptyState");
 
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
 
@@ -845,20 +867,7 @@
       document.getElementById("statTotalGbp").textContent = `£ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       document.getElementById("statTotalMmk").textContent = `${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks`;
 
-      const filtered = batchItems.filter(item => {
-        if (hideReleased && item.released) return false;
-        if (search) {
-          const hay = `${item.customer || ""} ${item.notes || ""} ${item.remainingNote || ""}`.toLowerCase();
-          if (!hay.includes(search)) return false;
-        }
-
-        if (filter === "ready") return !item.released && isReadyToRelease(item);
-        if (filter === "released") return item.released;
-        if (filter === "pending_kg") return item.kgMatch !== "Match";
-        if (filter === "unpaid") return item.payment !== "Paid";
-        if (filter === "pending_uk") return !item.ukApproved;
-        return true;
-      });
+      const filtered = getFilteredBatchItems();
 
       tbody.innerHTML = "";
       if (filtered.length === 0) {
@@ -924,7 +933,7 @@
 
         const boxHtml = `<div class="flex flex-col gap-1 w-[112px]">${ukBoxRow}${rcvBoxRow}</div>`;
 
-        // 3. KG Column: Match dropdown beside UK KG with clean spacing
+        // 3. KG Column
         const matchControlHtml = canEditOffice
           ? `<select onchange="updateKgMatch('${item.id}', this.value)" class="h-6 px-1 rounded text-[11px] font-semibold border shrink-0 whitespace-nowrap ${item.kgMatch === 'Match' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'}">
                <option value="Pending" ${item.kgMatch !== 'Match' ? 'selected' : ''}>⏳ စစ်ဆဲ</option>
@@ -1673,6 +1682,7 @@
       });
     }
 
+    // ==================== EXPORT CSV & A4 LANDSCAPE PDF ====================
     function exportCSV() {
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
       const canSeeFinance = currentRole === "admin" || currentRole === "page";
@@ -1693,6 +1703,287 @@
       a.href = URL.createObjectURL(blob);
       a.download = `${activeBatch}-export-${Date.now()}.csv`;
       a.click();
+    }
+
+    function exportPDF() {
+      const items = getFilteredBatchItems();
+      const isAdmin = currentRole === "admin";
+      const isPage = currentRole === "page";
+      const showMoney = isAdmin || isPage;
+
+      let totalGbp = 0;
+      let totalMmk = 0;
+      items.forEach(item => {
+        const amt = parseFloat(item.paidAmount);
+        if (!isNaN(amt) && amt > 0) {
+          if ((item.paidCurrency || "GBP") === "MMK") totalMmk += amt;
+          else totalGbp += amt;
+        }
+      });
+
+      const roleTitleMap = {
+        admin: "👑 Full Admin / UK Owner Report",
+        office: "⚖️ Office Staff Cargo & KG Checklist",
+        page: "💳 Payment Admin Report"
+      };
+
+      const headers = [
+        "#",
+        "Customer နာမည်",
+        "ပုံး (UK / ရုံး)",
+        "KG (UK / ရုံး)",
+        "ကိုက်/စစ်ဆဲ",
+        showMoney ? "ငွေရှင်းမှု / ပမာဏ / Paid KG" : "ငွေရှင်းမှု",
+        "UK Approve",
+        "UK / Original Notes (အပြည့်)",
+        "📝 မှတ်စု (အပြည့်)",
+        "အခြေအနေ"
+      ];
+
+      const bodyRowsHtml = items.map((item, idx) => {
+        const ukBox = getUkBoxes(item);
+        const rcvBox = getReceivedBoxes(item);
+        const ukKg = getUkKg(item);
+        const actKg = getActualKg(item);
+        const paidKgVal = getPaidKg(item);
+        const ready = isReadyToRelease(item);
+
+        let boxDiff = "";
+        if (rcvBox !== "" && rcvBox < ukBox) boxDiff = ` <span class="badge-rose">(${ukBox - rcvBox}လို)</span>`;
+        else if (rcvBox !== "" && rcvBox > ukBox) boxDiff = ` <span class="badge-amber">(+${rcvBox - ukBox}ပို)</span>`;
+
+        const boxCell = `<div><b>UK:</b> ${ukBox} ပုံး</div><div><b>ရုံး:</b> ${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}${boxDiff}</div>`;
+        const kgCell = `<div><b>UK:</b> ${ukKg !== "" ? ukKg + " kg" : "-"}</div><div><b>ရုံး:</b> ${actKg !== "" ? actKg + " kg" : "-"}</div>`;
+        const matchCell = item.kgMatch === "Match"
+          ? `<span class="badge-green">✅ ကိုက်</span>`
+          : `<span class="badge-amber">⏳ စစ်ဆဲ</span>`;
+
+        let payCell = "";
+        if (showMoney) {
+          const cur = item.paidCurrency || "GBP";
+          const curSym = cur === "MMK" ? "Ks" : "£";
+          const amtText = (item.paidAmount != null && item.paidAmount !== "" && !isNaN(parseFloat(item.paidAmount)))
+            ? (cur === "MMK" ? `${Number(item.paidAmount).toLocaleString()} Ks` : `£ ${Number(item.paidAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+            : "-";
+          const paidKgText = paidKgVal !== "" ? `${paidKgVal} kg` : "-";
+          payCell = `
+            <div>${item.payment === "Paid" ? `<span class="badge-green">✅ Paid</span>` : `<span class="badge-rose">❌ Unpaid</span>`}</div>
+            <div class="sub-line"><b>ငွေ:</b> ${amtText} (${curSym})</div>
+            <div class="sub-line"><b>KG:</b> ${paidKgText}</div>
+          `;
+        } else {
+          payCell = item.payment === "Paid"
+            ? `<span class="badge-green">✅ Paid</span>`
+            : `<span class="badge-rose">❌ Unpaid</span>`;
+        }
+
+        const ukCell = item.ukApproved
+          ? `<span class="badge-purple">🇬🇧 Approved ✓</span>`
+          : `<span class="badge-gray">⏳ စောင့်ဆဲ</span>`;
+
+        const origNoteCell = `<div class="note-full">${escapeHtml(item.notes || "-")}</div>`;
+        const remNoteCell = `<div class="note-full">${escapeHtml(item.remainingNote || "-")}</div>`;
+
+        const statusCell = item.released
+          ? `<span class="badge-green">🚚 ထုတ်ပြီး ✓</span>`
+          : (ready ? `<span class="badge-teal">✅ ထုတ်ပေးနိုင်ပြီ</span>` : `<span class="badge-gray">⏳ စောင့်ဆဲ</span>`);
+
+        return `
+          <tr>
+            <td class="center">${idx + 1}</td>
+            <td class="bold">${escapeHtml(item.customer || "")}</td>
+            <td>${boxCell}</td>
+            <td>${kgCell}</td>
+            <td class="center">${matchCell}</td>
+            <td>${payCell}</td>
+            <td class="center">${ukCell}</td>
+            <td>${origNoteCell}</td>
+            <td>${remNoteCell}</td>
+            <td class="center">${statusCell}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const financeSummaryHtml = isAdmin ? `
+        <div class="summary-box">
+          <span><b>🇬🇧 စုစုပေါင်း £ (GBP):</b> £ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span><b>🇲🇲 စုစုပေါင်း Ks (MMK):</b> ${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks</span>
+        </div>
+      ` : "";
+
+      const win = window.open("", "_blank");
+      if (!win) {
+        alert("PDF Window ဖွင့်ရန် Browser Pop-up ကို ခွင့်ပြုပေးပါ (Allow Pop-ups)။");
+        return;
+      }
+
+      const nowStr = new Date().toLocaleString();
+      win.document.write(`
+        <!DOCTYPE html>
+        <html lang="my">
+        <head>
+          <meta charset="UTF-8" />
+          <title>${escapeHtml(activeBatch)} - ${escapeHtml(ROLE_LABELS[currentRole] || currentRole)}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+          <style>
+            @page {
+              size: A4 landscape;
+              margin: 10mm;
+            }
+            * {
+              box-sizing: border-box;
+            }
+            body {
+              font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
+              color: #0f172a;
+              margin: 0;
+              padding: 0;
+              font-size: 10.5px;
+              line-height: 1.45;
+            }
+            .top-bar {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              border-bottom: 2px solid #1e1b4b;
+              padding-bottom: 8px;
+              margin-bottom: 10px;
+              gap: 12px;
+            }
+            h1 {
+              margin: 0;
+              font-size: 16px;
+              color: #1e1b4b;
+            }
+            .meta {
+              font-size: 10px;
+              color: #475569;
+              margin-top: 2px;
+            }
+            .summary-box {
+              display: flex;
+              gap: 18px;
+              background: #f8fafc;
+              border: 1px solid #cbd5e1;
+              border-radius: 8px;
+              padding: 6px 12px;
+              margin-bottom: 10px;
+              font-size: 11px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              table-layout: fixed;
+            }
+            thead {
+              display: table-header-group;
+            }
+            tr {
+              break-inside: avoid;
+              page-break-inside: avoid;
+            }
+            th {
+              background: #eef2ff;
+              color: #1e1b4b;
+              border: 1px solid #94a3b8;
+              padding: 6px 5px;
+              font-size: 9.5px;
+              text-align: left;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+            }
+            td {
+              border: 1px solid #cbd5e1;
+              padding: 6px 5px;
+              vertical-align: top;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+              white-space: normal;
+            }
+            td.center, th.center { text-align: center; }
+            td.bold { font-weight: 700; }
+            .sub-line { font-size: 9.5px; color: #334155; margin-top: 2px; }
+            .note-full {
+              white-space: pre-wrap;
+              word-break: break-word;
+              overflow-wrap: anywhere;
+              font-size: 10px;
+            }
+            span[class^="badge-"] {
+              display: inline-block;
+              padding: 1.5px 6px;
+              border-radius: 6px;
+              font-size: 9px;
+              font-weight: 700;
+              border: 1px solid transparent;
+            }
+            .badge-green { background: #dcfce7; color: #166534; border-color: #86efac; }
+            .badge-rose { background: #ffe4e6; color: #9f1239; border-color: #fda4af; }
+            .badge-amber { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+            .badge-purple { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+            .badge-teal { background: #ccfbf1; color: #115e59; border-color: #5eead4; }
+            .badge-gray { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+            .no-print {
+              margin-bottom: 10px;
+              text-align: right;
+            }
+            .print-btn {
+              background: #1e1b4b;
+              color: #fff;
+              border: none;
+              padding: 7px 14px;
+              border-radius: 8px;
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+            }
+            @media print {
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="no-print">
+            <button class="print-btn" onclick="window.print()">🖨️ Save as PDF / Print</button>
+          </div>
+          <div class="top-bar">
+            <div>
+              <h1>UK → MM Cargo Approval Board — ${escapeHtml(activeBatch)}</h1>
+              <div class="meta">${escapeHtml(roleTitleMap[currentRole] || currentRole)} &nbsp;|&nbsp; စုစုပေါင်း: ${items.length} ဦး &nbsp;|&nbsp; ထုတ်ယူသည့်အချိန်: ${escapeHtml(nowStr)}</div>
+            </div>
+          </div>
+          ${financeSummaryHtml}
+          <table>
+            <colgroup>
+              <col style="width: 3%;">
+              <col style="width: 11%;">
+              <col style="width: 9%;">
+              <col style="width: 9%;">
+              <col style="width: 7%;">
+              <col style="width: ${showMoney ? '13%' : '8%'};">
+              <col style="width: 8%;">
+              <col style="width: ${showMoney ? '21%' : '24%'};">
+              <col style="width: ${showMoney ? '19%' : '21%'};">
+              <col style="width: 8%;">
+            </colgroup>
+            <thead>
+              <tr>
+                ${headers.map((h, i) => `<th class="${[0, 4, 6, 9].includes(i) ? 'center' : ''}">${h}</th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${bodyRowsHtml || `<tr><td colspan="${headers.length}" class="center">စာရင်းမရှိပါ</td></tr>`}
+            </tbody>
+          </table>
+          <script>
+            window.onload = function() {
+              setTimeout(function() { window.print(); }, 250);
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+      win.document.close();
     }
 
     function closeModal(id) {
