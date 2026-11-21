@@ -6,6 +6,8 @@
   <title>UK → MM Cargo Approval Board</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -35,16 +37,29 @@
     th, td {
       vertical-align: top;
     }
+    /* Offscreen A4 Landscape PDF Render Container */
+    #pdfRenderStage {
+      position: fixed;
+      left: -99999px;
+      top: 0;
+      width: 1122px; /* ~A4 Landscape at 96dpi */
+      background: #ffffff;
+      color: #0f172a;
+      padding: 24px;
+      z-index: -1;
+      font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
+    }
   </style>
 </head>
 <body class="text-slate-800 pb-16">
 
-  <!-- Top Navbar -->
+  <!-- Fixed-Layout Top Navbar (Role selector always stays anchored on right) -->
   <header class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-white shadow-md sticky top-0 z-30 border-b border-indigo-800/40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5 min-w-0">
+    <div class="max-w-[1440px] mx-auto px-3 sm:px-5 py-2 flex items-center justify-between gap-3">
+      <!-- Left: Mascot + Title + Status -->
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
         <div class="mascot-float bg-amber-100/95 border-2 border-amber-300 rounded-2xl p-1 shadow-sm shrink-0">
-          <svg width="36" height="36" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="34" height="34" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <ellipse cx="23" cy="15" rx="5" ry="12" transform="rotate(-10 23 15)" fill="#FFFBEB" stroke="#78350F" stroke-width="2.5"/>
             <ellipse cx="23" cy="15" rx="2.2" ry="7.5" transform="rotate(-10 23 15)" fill="#FDA4AF"/>
             <ellipse cx="41" cy="15" rx="5" ry="12" transform="rotate(10 41 15)" fill="#FFFBEB" stroke="#78350F" stroke-width="2.5"/>
@@ -60,238 +75,249 @@
           </svg>
         </div>
 
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
-            <h1 class="font-bold text-sm sm:text-lg leading-tight tracking-tight truncate">UK → MM Cargo Approval Board</h1>
-            <span class="hidden lg:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full whitespace-nowrap">✨ Happy Cargo Team</span>
+            <h1 class="font-bold text-sm sm:text-base lg:text-lg leading-tight tracking-tight truncate">UK → MM Cargo Approval Board</h1>
+            <span class="hidden xl:inline-block text-[11px] bg-pink-500/20 text-pink-200 border border-pink-400/30 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">✨ Happy Cargo Team</span>
           </div>
-          <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-            <p id="syncStatus" class="text-[11px] text-slate-300 whitespace-nowrap">⏳ ချိတ်ဆက်နေသည်...</p>
-            <span class="hidden sm:inline text-slate-500 text-[11px]">•</span>
-            <p id="roleGreeting" class="hidden sm:block text-[11px] text-amber-200/90 truncate max-w-xl">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
+          <div class="flex items-center gap-2 mt-0.5 min-w-0">
+            <p id="syncStatus" class="text-[11px] text-slate-300 whitespace-nowrap shrink-0">⏳ ချိတ်ဆက်နေသည်...</p>
+            <span class="hidden lg:inline text-slate-500 text-[11px] shrink-0">•</span>
+            <p id="roleGreeting" class="hidden lg:block text-[11px] text-amber-200/90 truncate">✨ KG နဲ့ ပုံး/ထုပ်ကို သေချာစစ်ပေးတဲ့ Office Staff အဖွဲ့နဲ့ Payment တွေကို သေချာစစ်ပေးတဲ့ Team Member များ ကျေးဇူးတင်ပါတယ်!</p>
           </div>
         </div>
       </div>
 
+      <!-- Right: Always-Anchored Role Selector + Refresh + Setup -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <div id="roleContainer">
-          <select id="roleSelect" onchange="changeRole()" class="h-8 sm:h-9 bg-slate-800/90 border border-slate-600 text-white text-xs sm:text-sm rounded-xl px-2.5 font-medium focus:outline-none focus:border-amber-400 whitespace-nowrap">
+        <div id="roleContainer" class="shrink-0">
+          <select id="roleSelect" onchange="changeRole()" class="h-8 sm:h-9 bg-slate-800/95 border border-slate-500 text-white text-xs sm:text-sm rounded-xl px-2.5 font-semibold focus:outline-none focus:border-amber-400 whitespace-nowrap">
             <option value="admin">👑 View All (Admin / Full)</option>
             <option value="office">⚖️ Office Staff (KG &amp; ထုတ်ပေးမှု)</option>
             <option value="page">💳 Page Admin (Paid / Unpaid)</option>
           </select>
         </div>
-        <div id="lockedRoleBadge" class="hidden h-8 sm:h-9 bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-2.5 font-semibold flex items-center whitespace-nowrap"></div>
+        <div id="lockedRoleBadge" class="hidden h-8 sm:h-9 bg-indigo-900/90 border border-indigo-400 text-indigo-100 text-xs sm:text-sm rounded-xl px-2.5 font-semibold items-center whitespace-nowrap shrink-0"></div>
 
-        <button onclick="loadFromGitHub()" class="h-8 sm:h-9 bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-medium flex items-center gap-1 transition whitespace-nowrap">
+        <button onclick="loadFromGitHub()" class="h-8 sm:h-9 bg-slate-700/90 hover:bg-slate-600 text-white text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-medium flex items-center gap-1 transition whitespace-nowrap shrink-0">
           🔄 Refresh
         </button>
 
-        <button id="setupBtn" onclick="openSetupModal()" class="h-8 sm:h-9 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition whitespace-nowrap">
+        <button id="setupBtn" onclick="openSetupModal()" class="h-8 sm:h-9 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs sm:text-sm px-2.5 sm:px-3 rounded-xl font-semibold flex items-center gap-1 shadow-sm transition whitespace-nowrap shrink-0">
           ⚙️ Setup
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Wide-Screen Left & Right Side Cartoon Companions -->
-  <aside class="hidden 2xl:flex fixed left-4 top-28 w-48 flex-col gap-3 z-20 pointer-events-none">
-    <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3.5 shadow-md text-center">
-      <div class="gentle-wave inline-block mb-1.5">
-        <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="36" cy="36" r="30" fill="#FCE7F3"/>
-          <circle cx="24" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
-          <circle cx="48" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
-          <circle cx="36" cy="36" r="15" fill="#FFFBEB" stroke="#831843" stroke-width="2.2"/>
-          <circle cx="31" cy="34" r="2" fill="#1E293B"/>
-          <circle cx="41" cy="34" r="2" fill="#1E293B"/>
-          <circle cx="27.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
-          <circle cx="44.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
-          <path d="M33.5 38.5C34.8 40.5 37.2 40.5 38.5 38.5" stroke="#831843" stroke-width="2" stroke-linecap="round"/>
-          <rect x="24" y="49" width="24" height="12" rx="3" fill="#34D399" stroke="#065F46" stroke-width="2.2"/>
-        </svg>
-      </div>
-      <p class="text-[11px] font-bold text-pink-900">🌸 စိတ်ရှည်ရှည် ကြိုးစားမှုအတွက်</p>
-      <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">တစ်ပုံးပြီးတစ်ပုံး သေချာစစ်ဆေးပေးနေတဲ့ အတွက် အရမ်းကျေးဇူးတင်ပါတယ် ✨</p>
-    </div>
-  </aside>
+  <!-- Page Container: Left Mascot | Center Main Board | Right Mascot -->
+  <div class="max-w-[1680px] mx-auto px-3 sm:px-4 mt-3.5 flex items-start justify-center gap-3.5">
 
-  <aside class="hidden 2xl:flex fixed right-4 top-28 w-48 flex-col gap-3 z-20 pointer-events-none">
-    <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3.5 shadow-md text-center">
-      <div class="mascot-float inline-block mb-1.5">
-        <svg width="64" height="64" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="36" cy="36" r="30" fill="#CCFBF1"/>
-          <path d="M36 14L39.5 22.5L48.5 23.5L41.5 29.5L43.5 38.5L36 33.8L28.5 38.5L30.5 29.5L23.5 23.5L32.5 22.5L36 14Z" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
-          <circle cx="36" cy="46" r="12" fill="#FFFBEB" stroke="#115E59" stroke-width="2.2"/>
-          <circle cx="32" cy="45" r="1.8" fill="#1E293B"/>
-          <circle cx="40" cy="45" r="1.8" fill="#1E293B"/>
-          <path d="M33.5 48.5C34.8 50.2 37.2 50.2 38.5 48.5" stroke="#115E59" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <p class="text-[11px] font-bold text-teal-900">🍀 အားလုံး အဆင်ပြေပါစေ</p>
-      <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">Team Member အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးအထူးတင်ပါတယ် 💕</p>
-    </div>
-  </aside>
-
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-3.5 space-y-4">
-
-    <!-- Summary Cards -->
-    <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 sm:gap-3">
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-indigo-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
-        <p id="statTotal" class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">0</p>
-      </div>
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-sky-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
-        <p id="statKg" class="text-xl sm:text-2xl font-bold text-sky-600 mt-0.5">0</p>
-      </div>
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-emerald-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
-        <p id="statPaid" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-0.5">0</p>
-      </div>
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-purple-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
-        <p id="statUk" class="text-xl sm:text-2xl font-bold text-purple-600 mt-0.5">0</p>
-      </div>
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-teal-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
-        <p id="statReady" class="text-xl sm:text-2xl font-bold text-teal-600 mt-0.5">0</p>
-      </div>
-      <div class="soft-card rounded-2xl p-3 shadow-sm border border-amber-100">
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
-        <p id="statReleased" class="text-xl sm:text-2xl font-bold text-amber-700 mt-0.5">0</p>
-      </div>
-    </div>
-
-    <!-- Admin-Only Financial Totals Bar -->
-    <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl shrink-0">🇬🇧</span>
-          <div class="min-w-0">
-            <p class="text-xs font-bold text-indigo-950 truncate">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
-            <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
-          </div>
-        </div>
-        <p id="statTotalGbp" class="text-lg sm:text-2xl font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
-      </div>
-
-      <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl shrink-0">🇲🇲</span>
-          <div class="min-w-0">
-            <p class="text-xs font-bold text-emerald-950 truncate">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
-            <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
-          </div>
-        </div>
-        <p id="statTotalMmk" class="text-lg sm:text-2xl font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
-      </div>
-    </div>
-
-    <!-- Batch Dropdown Bar & Action Bar -->
-    <div class="soft-card rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200/80 space-y-3.5">
-      <div class="flex flex-wrap items-center justify-between gap-2.5">
-        <div class="flex flex-wrap items-center gap-2">
-          <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1 whitespace-nowrap">
-            <span>🚢 Batch:</span>
-          </label>
-          <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-2.5 focus:outline-none focus:border-indigo-500 min-w-[180px]">
-          </select>
-          <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full whitespace-nowrap">0 ဦး</span>
-
-          <button id="renameBatchBtn" onclick="openRenameBatchModal()" class="h-9 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold px-3 rounded-xl transition whitespace-nowrap">
-            ✏️ နာမည်ပြင်မည်
-          </button>
-        </div>
-
-        <div id="adminActionBtns" class="flex flex-wrap items-center gap-2">
-          <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
-            + Batch အသစ်
-          </button>
-          <button onclick="openAddCustomerModal()" class="h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
-            + Customer ထည့်မည်
-          </button>
-          <button onclick="openBulkImportModal()" class="h-9 bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
-            📋 Column Paste
-          </button>
-        </div>
-      </div>
-
-      <!-- Filter & Search Bar -->
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-3 border-t border-slate-100 items-center">
-        <div class="sm:col-span-4">
-          <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / မှတ်စု ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
-        </div>
-        <div class="sm:col-span-3">
-          <select id="statusFilter" onchange="renderTable()" class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white">
-            <option value="all">အားလုံးပြမည် (All Status)</option>
-            <option value="ready">✅ ထုတ်ပေးနိုင်ပြီ (Ready)</option>
-            <option value="released">🚚 ထုတ်ပေးလိုက်ပြီ (Released)</option>
-            <option value="pending_kg">⚖️ KG မကိုက်/မစစ်ရသေး</option>
-            <option value="unpaid">💳 Unpaid (ငွေမရှင်းရသေး)</option>
-            <option value="pending_uk">🇬🇧 UK Approve စောင့်ဆိုင်းဆဲ</option>
-          </select>
-        </div>
-        <div class="sm:col-span-3 flex items-center">
-          <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none border border-slate-200 rounded-xl px-3 h-9 w-full bg-slate-50/90 whitespace-nowrap">
-            <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600 shrink-0" />
-            <span class="truncate">ထုတ်ပေးပြီးသား ဖျောက်မည်</span>
-          </label>
-        </div>
-        <div class="sm:col-span-2 flex gap-1.5">
-          <button onclick="exportCSV()" class="flex-1 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2 rounded-xl border border-slate-300 transition whitespace-nowrap">
-            ⬇️ CSV
-          </button>
-          <button onclick="exportPDF()" class="flex-1 h-9 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-2 rounded-xl shadow-xs transition whitespace-nowrap">
-            📄 PDF
-          </button>
-          <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2 rounded-xl border border-rose-200 transition whitespace-nowrap">
-            🗑️
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Data Table -->
-    <div class="soft-card rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs sm:text-sm">
-          <thead>
-            <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
-              <th class="py-2.5 px-2.5 whitespace-nowrap">Customer နာမည်</th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">📦 ပုံး (UK vs ရုံး)</th>
-              <th class="py-2.5 pl-2.5 pr-3 whitespace-nowrap">⚖️ KG (UK vs ရုံး)</th>
-              <th class="py-2.5 pl-3 pr-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
-              <th class="py-2.5 px-2.5 whitespace-nowrap">📝 မှတ်စု</th>
-              <th class="py-2.5 px-2.5 text-center whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</th>
-              <th class="py-2.5 px-2.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-
-      <!-- Cute Cartoon Empty State -->
-      <div id="emptyState" class="hidden py-12 px-4 text-center">
-        <div class="inline-flex flex-col items-center max-w-sm mx-auto bg-amber-50/70 border border-amber-200/80 rounded-3xl p-6 shadow-xs">
-          <svg class="mascot-float mb-2" width="76" height="76" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="40" r="34" fill="#FEF3C7"/>
-            <rect x="22" y="34" width="36" height="26" rx="5" fill="#FBBF24" stroke="#78350F" stroke-width="2.5"/>
-            <path d="M22 41L40 48L58 41" stroke="#78350F" stroke-width="2.5" stroke-linejoin="round"/>
-            <circle cx="33" cy="52" r="2" fill="#78350F"/>
-            <circle cx="47" cy="52" r="2" fill="#78350F"/>
-            <path d="M37 54.5C38.5 56.5 41.5 56.5 43 54.5" stroke="#78350F" stroke-width="2" stroke-linecap="round"/>
-            <path d="M27 22L29 27L34 29L29 31L27 36L25 31L20 29L25 27L27 22Z" fill="#F472B6"/>
-            <circle cx="55" cy="24" r="3.5" fill="#34D399"/>
+    <!-- Left Companion (Fixed width & clean hiding when narrow so nothing overlaps) -->
+    <aside class="hidden xl:block w-40 shrink-0 sticky top-16">
+      <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-3xl p-3 shadow-sm text-center">
+        <div class="gentle-wave inline-block mb-1">
+          <svg width="56" height="56" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="36" cy="36" r="30" fill="#FCE7F3"/>
+            <circle cx="24" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
+            <circle cx="48" cy="22" r="7" fill="#FBCFE8" stroke="#831843" stroke-width="2.2"/>
+            <circle cx="36" cy="36" r="15" fill="#FFFBEB" stroke="#831843" stroke-width="2.2"/>
+            <circle cx="31" cy="34" r="2" fill="#1E293B"/>
+            <circle cx="41" cy="34" r="2" fill="#1E293B"/>
+            <circle cx="27.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
+            <circle cx="44.5" cy="38" r="2.3" fill="#F472B6" opacity="0.75"/>
+            <path d="M33.5 38.5C34.8 40.5 37.2 40.5 38.5 38.5" stroke="#831843" stroke-width="2" stroke-linecap="round"/>
+            <rect x="24" y="49" width="24" height="12" rx="3" fill="#34D399" stroke="#065F46" stroke-width="2.2"/>
           </svg>
-          <p class="font-bold text-slate-800 text-sm">✨ ဒီ Batch လေး သန့်ရှင်းနေပါပြီ!</p>
-          <p class="text-xs text-slate-500 mt-1">အလုပ်တွေ အမြဲအဆင်ပြေပါစေ — စာရင်းထည့်လိုပါက အပေါ်မှ ထည့်နိုင်ပါသည်။</p>
+        </div>
+        <p class="text-[11px] font-bold text-pink-900">🌸 ကြိုးစားမှုအတွက်</p>
+        <p class="text-[10.5px] text-slate-600 mt-1 leading-snug">သေချာစစ်ဆေးပေးနေတဲ့ အတွက် ကျေးဇူးတင်ပါတယ် ✨</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 max-w-7xl space-y-4">
+
+      <!-- Summary Cards -->
+      <div id="summaryGrid" class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 sm:gap-3">
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-indigo-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">စုစုပေါင်း Customer</p>
+          <p id="statTotal" class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">0</p>
+        </div>
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-sky-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">⚖️ KG ကိုက်ပြီး</p>
+          <p id="statKg" class="text-xl sm:text-2xl font-bold text-sky-600 mt-0.5">0</p>
+        </div>
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-emerald-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">💳 Paid (ငွေဝင်ပြီး)</p>
+          <p id="statPaid" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-0.5">0</p>
+        </div>
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-purple-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🇬🇧 UK Approved</p>
+          <p id="statUk" class="text-xl sm:text-2xl font-bold text-purple-600 mt-0.5">0</p>
+        </div>
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-teal-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</p>
+          <p id="statReady" class="text-xl sm:text-2xl font-bold text-teal-600 mt-0.5">0</p>
+        </div>
+        <div class="soft-card rounded-2xl p-3 shadow-sm border border-amber-100">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</p>
+          <p id="statReleased" class="text-xl sm:text-2xl font-bold text-amber-700 mt-0.5">0</p>
         </div>
       </div>
-    </div>
-  </main>
+
+      <!-- Admin-Only Financial Totals Bar -->
+      <div id="adminFinanceBar" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-indigo-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-indigo-50/90 to-white">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-xl bg-indigo-100 px-2.5 py-1 rounded-xl shrink-0">🇬🇧</span>
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-indigo-950 truncate">Batch စုစုပေါင်း £ (GBP) ဝင်ငွေ</p>
+              <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
+            </div>
+          </div>
+          <p id="statTotalGbp" class="text-lg sm:text-2xl font-extrabold text-indigo-700 whitespace-nowrap shrink-0">£ 0.00</p>
+        </div>
+
+        <div class="soft-card rounded-2xl px-4 py-3 shadow-sm border border-emerald-200/80 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/90 to-white">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-xl bg-emerald-100 px-2.5 py-1 rounded-xl shrink-0">🇲🇲</span>
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-emerald-950 truncate">Batch စုစုပေါင်း Ks (MMK) ဝင်ငွေ</p>
+              <p class="text-[11px] text-slate-500 truncate">Main Admin / UK Owner သာ မြင်ရသည်</p>
+            </div>
+          </div>
+          <p id="statTotalMmk" class="text-lg sm:text-2xl font-extrabold text-emerald-700 whitespace-nowrap shrink-0">0 Ks</p>
+        </div>
+      </div>
+
+      <!-- Batch Dropdown Bar & Action Bar -->
+      <div class="soft-card rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200/80 space-y-3.5">
+        <div class="flex flex-wrap items-center justify-between gap-2.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <label for="batchDropdown" class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1 whitespace-nowrap">
+              <span>🚢 Batch:</span>
+            </label>
+            <select id="batchDropdown" onchange="onBatchDropdownChange()" class="h-9 bg-indigo-50/80 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-950 text-xs sm:text-sm font-bold rounded-xl px-2.5 focus:outline-none focus:border-indigo-500 min-w-[180px]">
+            </select>
+            <span id="batchItemCountBadge" class="text-xs font-semibold bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full whitespace-nowrap">0 ဦး</span>
+
+            <button id="renameBatchBtn" onclick="openRenameBatchModal()" class="h-9 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold px-3 rounded-xl transition whitespace-nowrap">
+              ✏️ နာမည်ပြင်မည်
+            </button>
+          </div>
+
+          <div id="adminActionBtns" class="flex flex-wrap items-center gap-2">
+            <button onclick="openNewBatchModal()" class="h-9 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+              + Batch အသစ်
+            </button>
+            <button onclick="openAddCustomerModal()" class="h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+              + Customer ထည့်မည်
+            </button>
+            <button onclick="openBulkImportModal()" class="h-9 bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm px-3 rounded-xl font-semibold shadow-sm transition whitespace-nowrap">
+              📋 Column Paste
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-3 border-t border-slate-100 items-center">
+          <div class="sm:col-span-4">
+            <input id="searchInput" oninput="renderTable()" type="text" placeholder="🔍 Customer နာမည် / Notes / မှတ်စု ရှာရန်..." class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white" />
+          </div>
+          <div class="sm:col-span-3">
+            <select id="statusFilter" onchange="renderTable()" class="w-full h-9 border border-slate-300 rounded-xl px-3 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 bg-white">
+              <option value="all">အားလုံးပြမည် (All Status)</option>
+              <option value="ready">✅ ထုတ်ပေးနိုင်ပြီ (Ready)</option>
+              <option value="released">🚚 ထုတ်ပေးလိုက်ပြီ (Released)</option>
+              <option value="pending_kg">⚖️ KG မကိုက်/မစစ်ရသေး</option>
+              <option value="unpaid">💳 Unpaid (ငွေမရှင်းရသေး)</option>
+              <option value="pending_uk">🇬🇧 UK Approve စောင့်ဆိုင်းဆဲ</option>
+            </select>
+          </div>
+          <div class="sm:col-span-3 flex items-center">
+            <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none border border-slate-200 rounded-xl px-3 h-9 w-full bg-slate-50/90 whitespace-nowrap">
+              <input id="hideReleased" onchange="renderTable()" type="checkbox" class="rounded text-indigo-600 shrink-0" />
+              <span class="truncate">ထုတ်ပေးပြီးသား ဖျောက်မည်</span>
+            </label>
+          </div>
+          <div class="sm:col-span-2 flex gap-1.5">
+            <button onclick="exportCSV()" class="flex-1 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2 rounded-xl border border-slate-300 transition whitespace-nowrap">
+              ⬇️ CSV
+            </button>
+            <button id="pdfDownloadBtn" onclick="downloadPDF()" class="flex-1 h-9 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-2 rounded-xl shadow-xs transition whitespace-nowrap">
+              📄 PDF
+            </button>
+            <button id="deleteBatchBtn" onclick="deleteCurrentBatch()" class="h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-2 rounded-xl border border-rose-200 transition whitespace-nowrap">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Data Table -->
+      <div class="soft-card rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-emerald-50/70 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
+                <th class="py-2.5 px-2.5 whitespace-nowrap">Customer နာမည်</th>
+                <th class="py-2.5 px-2.5 whitespace-nowrap">📦 ပုံး (UK vs ရုံး)</th>
+                <th class="py-2.5 pl-2.5 pr-3 whitespace-nowrap">⚖️ KG (UK vs ရုံး)</th>
+                <th class="py-2.5 pl-3 pr-2.5 whitespace-nowrap">💳 ငွေရှင်းမှု &amp; KG</th>
+                <th class="py-2.5 px-2.5 whitespace-nowrap">🇬🇧 UK Approve</th>
+                <th class="py-2.5 px-2.5 whitespace-nowrap">UK / Original Notes <span class="font-normal normal-case text-indigo-600">(1x ဖတ်)</span></th>
+                <th class="py-2.5 px-2.5 whitespace-nowrap">📝 မှတ်စု</th>
+                <th class="py-2.5 px-2.5 text-center whitespace-nowrap">✅ ထုတ်ပေးနိုင်ပြီ</th>
+                <th class="py-2.5 px-2.5 text-right whitespace-nowrap">🚚 ထုတ်ပေးလိုက်ပြီ</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+
+        <!-- Cute Cartoon Empty State -->
+        <div id="emptyState" class="hidden py-12 px-4 text-center">
+          <div class="inline-flex flex-col items-center max-w-sm mx-auto bg-amber-50/70 border border-amber-200/80 rounded-3xl p-6 shadow-xs">
+            <svg class="mascot-float mb-2" width="76" height="76" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="34" fill="#FEF3C7"/>
+              <rect x="22" y="34" width="36" height="26" rx="5" fill="#FBBF24" stroke="#78350F" stroke-width="2.5"/>
+              <path d="M22 41L40 48L58 41" stroke="#78350F" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="33" cy="52" r="2" fill="#78350F"/>
+              <circle cx="47" cy="52" r="2" fill="#78350F"/>
+              <path d="M37 54.5C38.5 56.5 41.5 56.5 43 54.5" stroke="#78350F" stroke-width="2" stroke-linecap="round"/>
+              <path d="M27 22L29 27L34 29L29 31L27 36L25 31L20 29L25 27L27 22Z" fill="#F472B6"/>
+              <circle cx="55" cy="24" r="3.5" fill="#34D399"/>
+            </svg>
+            <p class="font-bold text-slate-800 text-sm">✨ ဒီ Batch လေး သန့်ရှင်းနေပါပြီ!</p>
+            <p class="text-xs text-slate-500 mt-1">အလုပ်တွေ အမြဲအဆင်ပြေပါစေ — စာရင်းထည့်လိုပါက အပေါ်မှ ထည့်နိုင်ပါသည်။</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Companion -->
+    <aside class="hidden xl:block w-40 shrink-0 sticky top-16">
+      <div class="bg-white/90 backdrop-blur-md border border-teal-200/90 rounded-3xl p-3 shadow-sm text-center">
+        <div class="mascot-float inline-block mb-1">
+          <svg width="56" height="56" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="36" cy="36" r="30" fill="#CCFBF1"/>
+            <path d="M36 14L39.5 22.5L48.5 23.5L41.5 29.5L43.5 38.5L36 33.8L28.5 38.5L30.5 29.5L23.5 23.5L32.5 22.5L36 14Z" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
+            <circle cx="36" cy="46" r="12" fill="#FFFBEB" stroke="#115E59" stroke-width="2.2"/>
+            <circle cx="32" cy="45" r="1.8" fill="#1E293B"/>
+            <circle cx="40" cy="45" r="1.8" fill="#1E293B"/>
+            <path d="M33.5 48.5C34.8 50.2 37.2 50.2 38.5 48.5" stroke="#115E59" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="text-[11px] font-bold text-teal-900">🍀 အဆင်ပြေပါစေ</p>
+        <p class="text-[10.5px] text-slate-600 mt-1 leading-snug">Team အားလုံးရဲ့ ဂရုတစိုက် ကြိုးစားမှုကို ကျေးဇူးတင်ပါတယ် 💕</p>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Hidden Offscreen Container for Direct .pdf File Download -->
+  <div id="pdfRenderStage"></div>
 
   <!-- ==================== MODALS ==================== -->
 
@@ -600,6 +626,7 @@
     let activeNoteItemId = null;
     let parsedBulkRows = [];
     let clickTimer = null;
+    let isGeneratingPdf = false;
 
     const ROLE_LABELS = {
       admin: "👑 UK Owner / Admin",
@@ -654,6 +681,7 @@
       if (isRoleLocked) {
         roleContainer.classList.add("hidden");
         lockedBadge.classList.remove("hidden");
+        lockedBadge.classList.add("flex");
         lockedBadge.textContent = ROLE_LABELS[currentRole];
         setupBtn.classList.add("hidden");
         adminActionBtns.classList.add("hidden");
@@ -663,6 +691,7 @@
       } else {
         roleContainer.classList.remove("hidden");
         lockedBadge.classList.add("hidden");
+        lockedBadge.classList.remove("flex");
         document.getElementById("roleSelect").value = currentRole;
         const isAdmin = currentRole === "admin";
         setupBtn.classList.toggle("hidden", !isAdmin);
@@ -1682,7 +1711,7 @@
       });
     }
 
-    // ==================== EXPORT CSV & A4 LANDSCAPE PDF ====================
+    // ==================== EXPORT CSV & DIRECT .PDF DOWNLOAD ====================
     function exportCSV() {
       const batchItems = appData.items.filter(i => i.batch === activeBatch);
       const canSeeFinance = currentRole === "admin" || currentRole === "page";
@@ -1705,285 +1734,236 @@
       a.click();
     }
 
-    function exportPDF() {
-      const items = getFilteredBatchItems();
-      const isAdmin = currentRole === "admin";
-      const isPage = currentRole === "page";
-      const showMoney = isAdmin || isPage;
-
-      let totalGbp = 0;
-      let totalMmk = 0;
-      items.forEach(item => {
-        const amt = parseFloat(item.paidAmount);
-        if (!isNaN(amt) && amt > 0) {
-          if ((item.paidCurrency || "GBP") === "MMK") totalMmk += amt;
-          else totalGbp += amt;
-        }
-      });
-
-      const roleTitleMap = {
-        admin: "👑 Full Admin / UK Owner Report",
-        office: "⚖️ Office Staff Cargo & KG Checklist",
-        page: "💳 Payment Admin Report"
-      };
-
-      const headers = [
-        "#",
-        "Customer နာမည်",
-        "ပုံး (UK / ရုံး)",
-        "KG (UK / ရုံး)",
-        "ကိုက်/စစ်ဆဲ",
-        showMoney ? "ငွေရှင်းမှု / ပမာဏ / Paid KG" : "ငွေရှင်းမှု",
-        "UK Approve",
-        "UK / Original Notes (အပြည့်)",
-        "📝 မှတ်စု (အပြည့်)",
-        "အခြေအနေ"
-      ];
-
-      const bodyRowsHtml = items.map((item, idx) => {
-        const ukBox = getUkBoxes(item);
-        const rcvBox = getReceivedBoxes(item);
-        const ukKg = getUkKg(item);
-        const actKg = getActualKg(item);
-        const paidKgVal = getPaidKg(item);
-        const ready = isReadyToRelease(item);
-
-        let boxDiff = "";
-        if (rcvBox !== "" && rcvBox < ukBox) boxDiff = ` <span class="badge-rose">(${ukBox - rcvBox}လို)</span>`;
-        else if (rcvBox !== "" && rcvBox > ukBox) boxDiff = ` <span class="badge-amber">(+${rcvBox - ukBox}ပို)</span>`;
-
-        const boxCell = `<div><b>UK:</b> ${ukBox} ပုံး</div><div><b>ရုံး:</b> ${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}${boxDiff}</div>`;
-        const kgCell = `<div><b>UK:</b> ${ukKg !== "" ? ukKg + " kg" : "-"}</div><div><b>ရုံး:</b> ${actKg !== "" ? actKg + " kg" : "-"}</div>`;
-        const matchCell = item.kgMatch === "Match"
-          ? `<span class="badge-green">✅ ကိုက်</span>`
-          : `<span class="badge-amber">⏳ စစ်ဆဲ</span>`;
-
-        let payCell = "";
-        if (showMoney) {
-          const cur = item.paidCurrency || "GBP";
-          const curSym = cur === "MMK" ? "Ks" : "£";
-          const amtText = (item.paidAmount != null && item.paidAmount !== "" && !isNaN(parseFloat(item.paidAmount)))
-            ? (cur === "MMK" ? `${Number(item.paidAmount).toLocaleString()} Ks` : `£ ${Number(item.paidAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
-            : "-";
-          const paidKgText = paidKgVal !== "" ? `${paidKgVal} kg` : "-";
-          payCell = `
-            <div>${item.payment === "Paid" ? `<span class="badge-green">✅ Paid</span>` : `<span class="badge-rose">❌ Unpaid</span>`}</div>
-            <div class="sub-line"><b>ငွေ:</b> ${amtText} (${curSym})</div>
-            <div class="sub-line"><b>KG:</b> ${paidKgText}</div>
-          `;
-        } else {
-          payCell = item.payment === "Paid"
-            ? `<span class="badge-green">✅ Paid</span>`
-            : `<span class="badge-rose">❌ Unpaid</span>`;
-        }
-
-        const ukCell = item.ukApproved
-          ? `<span class="badge-purple">🇬🇧 Approved ✓</span>`
-          : `<span class="badge-gray">⏳ စောင့်ဆဲ</span>`;
-
-        const origNoteCell = `<div class="note-full">${escapeHtml(item.notes || "-")}</div>`;
-        const remNoteCell = `<div class="note-full">${escapeHtml(item.remainingNote || "-")}</div>`;
-
-        const statusCell = item.released
-          ? `<span class="badge-green">🚚 ထုတ်ပြီး ✓</span>`
-          : (ready ? `<span class="badge-teal">✅ ထုတ်ပေးနိုင်ပြီ</span>` : `<span class="badge-gray">⏳ စောင့်ဆဲ</span>`);
-
-        return `
-          <tr>
-            <td class="center">${idx + 1}</td>
-            <td class="bold">${escapeHtml(item.customer || "")}</td>
-            <td>${boxCell}</td>
-            <td>${kgCell}</td>
-            <td class="center">${matchCell}</td>
-            <td>${payCell}</td>
-            <td class="center">${ukCell}</td>
-            <td>${origNoteCell}</td>
-            <td>${remNoteCell}</td>
-            <td class="center">${statusCell}</td>
-          </tr>
-        `;
-      }).join("");
-
-      const financeSummaryHtml = isAdmin ? `
-        <div class="summary-box">
-          <span><b>🇬🇧 စုစုပေါင်း £ (GBP):</b> £ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span><b>🇲🇲 စုစုပေါင်း Ks (MMK):</b> ${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks</span>
-        </div>
-      ` : "";
-
-      const win = window.open("", "_blank");
-      if (!win) {
-        alert("PDF Window ဖွင့်ရန် Browser Pop-up ကို ခွင့်ပြုပေးပါ (Allow Pop-ups)။");
+    async function downloadPDF() {
+      if (isGeneratingPdf) return;
+      if (!window.jspdf || !window.html2canvas) {
+        alert("PDF Library ခဏစောင့်ပြီး ထပ်နှိပ်ပါ (အင်တာနက် ချိတ်ထားရန် လိုအပ်ပါသည်)။");
         return;
       }
 
-      const nowStr = new Date().toLocaleString();
-      win.document.write(`
-        <!DOCTYPE html>
-        <html lang="my">
-        <head>
-          <meta charset="UTF-8" />
-          <title>${escapeHtml(activeBatch)} - ${escapeHtml(ROLE_LABELS[currentRole] || currentRole)}</title>
-          <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-          <style>
-            @page {
-              size: A4 landscape;
-              margin: 10mm;
-            }
-            * {
-              box-sizing: border-box;
-            }
-            body {
-              font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
-              color: #0f172a;
-              margin: 0;
-              padding: 0;
-              font-size: 10.5px;
-              line-height: 1.45;
-            }
-            .top-bar {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-              border-bottom: 2px solid #1e1b4b;
-              padding-bottom: 8px;
-              margin-bottom: 10px;
-              gap: 12px;
-            }
-            h1 {
-              margin: 0;
-              font-size: 16px;
-              color: #1e1b4b;
-            }
-            .meta {
-              font-size: 10px;
-              color: #475569;
-              margin-top: 2px;
-            }
-            .summary-box {
-              display: flex;
-              gap: 18px;
-              background: #f8fafc;
-              border: 1px solid #cbd5e1;
-              border-radius: 8px;
-              padding: 6px 12px;
-              margin-bottom: 10px;
-              font-size: 11px;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              table-layout: fixed;
-            }
-            thead {
-              display: table-header-group;
-            }
-            tr {
-              break-inside: avoid;
-              page-break-inside: avoid;
-            }
-            th {
-              background: #eef2ff;
-              color: #1e1b4b;
-              border: 1px solid #94a3b8;
-              padding: 6px 5px;
-              font-size: 9.5px;
-              text-align: left;
-              word-wrap: break-word;
-              overflow-wrap: break-word;
-            }
-            td {
-              border: 1px solid #cbd5e1;
-              padding: 6px 5px;
-              vertical-align: top;
-              word-wrap: break-word;
-              overflow-wrap: break-word;
-              white-space: normal;
-            }
-            td.center, th.center { text-align: center; }
-            td.bold { font-weight: 700; }
-            .sub-line { font-size: 9.5px; color: #334155; margin-top: 2px; }
-            .note-full {
-              white-space: pre-wrap;
-              word-break: break-word;
-              overflow-wrap: anywhere;
-              font-size: 10px;
-            }
-            span[class^="badge-"] {
-              display: inline-block;
-              padding: 1.5px 6px;
-              border-radius: 6px;
-              font-size: 9px;
-              font-weight: 700;
-              border: 1px solid transparent;
-            }
-            .badge-green { background: #dcfce7; color: #166534; border-color: #86efac; }
-            .badge-rose { background: #ffe4e6; color: #9f1239; border-color: #fda4af; }
-            .badge-amber { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
-            .badge-purple { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
-            .badge-teal { background: #ccfbf1; color: #115e59; border-color: #5eead4; }
-            .badge-gray { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
-            .no-print {
-              margin-bottom: 10px;
-              text-align: right;
-            }
-            .print-btn {
-              background: #1e1b4b;
-              color: #fff;
-              border: none;
-              padding: 7px 14px;
-              border-radius: 8px;
-              font-size: 12px;
-              font-weight: 600;
-              cursor: pointer;
-            }
-            @media print {
-              .no-print { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="no-print">
-            <button class="print-btn" onclick="window.print()">🖨️ Save as PDF / Print</button>
+      isGeneratingPdf = true;
+      const btn = document.getElementById("pdfDownloadBtn");
+      const origBtnText = btn.textContent;
+      btn.textContent = "⏳ PDF...";
+      btn.disabled = true;
+
+      try {
+        const items = getFilteredBatchItems();
+        const isAdmin = currentRole === "admin";
+        const isPage = currentRole === "page";
+        const showMoney = isAdmin || isPage;
+
+        let totalGbp = 0;
+        let totalMmk = 0;
+        items.forEach(item => {
+          const amt = parseFloat(item.paidAmount);
+          if (!isNaN(amt) && amt > 0) {
+            if ((item.paidCurrency || "GBP") === "MMK") totalMmk += amt;
+            else totalGbp += amt;
+          }
+        });
+
+        const roleTitleMap = {
+          admin: "👑 Full Admin / UK Owner Report",
+          office: "⚖️ Office Staff Cargo & KG Checklist",
+          page: "💳 Payment Admin Report"
+        };
+
+        const headers = [
+          "#",
+          "Customer နာမည်",
+          "ပုံး (UK / ရုံး)",
+          "KG (UK / ရုံး)",
+          "ကိုက်/စစ်ဆဲ",
+          showMoney ? "ငွေရှင်းမှု / ပမာဏ / Paid KG" : "ငွေရှင်းမှု",
+          "UK Approve",
+          "UK / Original Notes (အပြည့်)",
+          "📝 မှတ်စု (အပြည့်)",
+          "အခြေအနေ"
+        ];
+
+        const bodyRowsHtml = items.map((item, idx) => {
+          const ukBox = getUkBoxes(item);
+          const rcvBox = getReceivedBoxes(item);
+          const ukKg = getUkKg(item);
+          const actKg = getActualKg(item);
+          const paidKgVal = getPaidKg(item);
+          const ready = isReadyToRelease(item);
+
+          let boxDiff = "";
+          if (rcvBox !== "" && rcvBox < ukBox) boxDiff = ` <span style="background:#ffe4e6;color:#9f1239;padding:1px 4px;border-radius:4px;font-size:9px;font-weight:700;">(${ukBox - rcvBox}လို)</span>`;
+          else if (rcvBox !== "" && rcvBox > ukBox) boxDiff = ` <span style="background:#fef3c7;color:#92400e;padding:1px 4px;border-radius:4px;font-size:9px;font-weight:700;">(+${rcvBox - ukBox}ပို)</span>`;
+
+          const boxCell = `<div><b>UK:</b> ${ukBox} ပုံး</div><div><b>ရုံး:</b> ${rcvBox !== "" ? rcvBox + " ပုံး" : "-"}${boxDiff}</div>`;
+          const kgCell = `<div><b>UK:</b> ${ukKg !== "" ? ukKg + " kg" : "-"}</div><div><b>ရုံး:</b> ${actKg !== "" ? actKg + " kg" : "-"}</div>`;
+          const matchCell = item.kgMatch === "Match"
+            ? `<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">✅ ကိုက်</span>`
+            : `<span style="background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">⏳ စစ်ဆဲ</span>`;
+
+          let payCell = "";
+          if (showMoney) {
+            const cur = item.paidCurrency || "GBP";
+            const curSym = cur === "MMK" ? "Ks" : "£";
+            const amtText = (item.paidAmount != null && item.paidAmount !== "" && !isNaN(parseFloat(item.paidAmount)))
+              ? (cur === "MMK" ? `${Number(item.paidAmount).toLocaleString()} Ks` : `£ ${Number(item.paidAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+              : "-";
+            const paidKgText = paidKgVal !== "" ? `${paidKgVal} kg` : "-";
+            const statusBadge = item.payment === "Paid"
+              ? `<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">✅ Paid</span>`
+              : `<span style="background:#ffe4e6;color:#9f1239;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">❌ Unpaid</span>`;
+            payCell = `
+              <div>${statusBadge}</div>
+              <div style="font-size:9.5px;color:#334155;margin-top:2px;"><b>ငွေ:</b> ${amtText} (${curSym})</div>
+              <div style="font-size:9.5px;color:#334155;"><b>KG:</b> ${paidKgText}</div>
+            `;
+          } else {
+            payCell = item.payment === "Paid"
+              ? `<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">✅ Paid</span>`
+              : `<span style="background:#ffe4e6;color:#9f1239;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">❌ Unpaid</span>`;
+          }
+
+          const ukCell = item.ukApproved
+            ? `<span style="background:#f3e8ff;color:#6b21a8;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">🇬🇧 Approved ✓</span>`
+            : `<span style="background:#f1f5f9;color:#475569;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">⏳ စောင့်ဆဲ</span>`;
+
+          const origNoteCell = `<div style="white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;font-size:10.5px;">${escapeHtml(item.notes || "-")}</div>`;
+          const remNoteCell = `<div style="white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;font-size:10.5px;">${escapeHtml(item.remainingNote || "-")}</div>`;
+
+          const statusCell = item.released
+            ? `<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">🚚 ထုတ်ပြီး ✓</span>`
+            : (ready
+              ? `<span style="background:#ccfbf1;color:#115e59;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">✅ ထုတ်ပေးနိုင်ပြီ</span>`
+              : `<span style="background:#f1f5f9;color:#475569;padding:2px 6px;border-radius:6px;font-size:9.5px;font-weight:700;">⏳ စောင့်ဆဲ</span>`);
+
+          return `
+            <tr class="pdf-row" style="border-bottom:1px solid #cbd5e1;background:${idx % 2 === 1 ? '#f8fafc' : '#ffffff'};">
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;text-align:center;vertical-align:top;">${idx + 1}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 6px;font-weight:700;vertical-align:top;word-break:break-word;">${escapeHtml(item.customer || "")}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;vertical-align:top;font-size:10px;">${boxCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;vertical-align:top;font-size:10px;">${kgCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;text-align:center;vertical-align:top;">${matchCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;vertical-align:top;">${payCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;text-align:center;vertical-align:top;">${ukCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 6px;vertical-align:top;">${origNoteCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 6px;vertical-align:top;">${remNoteCell}</td>
+              <td style="border:1px solid #cbd5e1;padding:6px 5px;text-align:center;vertical-align:top;">${statusCell}</td>
+            </tr>
+          `;
+        }).join("");
+
+        const financeSummaryHtml = isAdmin ? `
+          <div style="display:flex;gap:20px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:7px 12px;margin-bottom:10px;font-size:11px;">
+            <span><b>🇬🇧 စုစုပေါင်း £ (GBP):</b> £ ${totalGbp.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span><b>🇲🇲 စုစုပေါင်း Ks (MMK):</b> ${totalMmk.toLocaleString("en-US", { maximumFractionDigits: 0 })} Ks</span>
           </div>
-          <div class="top-bar">
+        ` : "";
+
+        const nowStr = new Date().toLocaleString();
+        const stage = document.getElementById("pdfRenderStage");
+        stage.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1e1b4b;padding-bottom:8px;margin-bottom:10px;">
             <div>
-              <h1>UK → MM Cargo Approval Board — ${escapeHtml(activeBatch)}</h1>
-              <div class="meta">${escapeHtml(roleTitleMap[currentRole] || currentRole)} &nbsp;|&nbsp; စုစုပေါင်း: ${items.length} ဦး &nbsp;|&nbsp; ထုတ်ယူသည့်အချိန်: ${escapeHtml(nowStr)}</div>
+              <div style="font-size:17px;font-weight:700;color:#1e1b4b;">UK → MM Cargo Approval Board — ${escapeHtml(activeBatch)}</div>
+              <div style="font-size:10.5px;color:#475569;margin-top:3px;">${escapeHtml(roleTitleMap[currentRole] || currentRole)} &nbsp;|&nbsp; စုစုပေါင်း: ${items.length} ဦး &nbsp;|&nbsp; ထုတ်ယူသည့်အချိန်: ${escapeHtml(nowStr)}</div>
             </div>
           </div>
           ${financeSummaryHtml}
-          <table>
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-size:10.5px;">
             <colgroup>
-              <col style="width: 3%;">
-              <col style="width: 11%;">
-              <col style="width: 9%;">
-              <col style="width: 9%;">
-              <col style="width: 7%;">
-              <col style="width: ${showMoney ? '13%' : '8%'};">
-              <col style="width: 8%;">
-              <col style="width: ${showMoney ? '21%' : '24%'};">
-              <col style="width: ${showMoney ? '19%' : '21%'};">
-              <col style="width: 8%;">
+              <col style="width:3%;">
+              <col style="width:11%;">
+              <col style="width:9%;">
+              <col style="width:9%;">
+              <col style="width:7%;">
+              <col style="width:${showMoney ? '13%' : '8%'};">
+              <col style="width:8%;">
+              <col style="width:${showMoney ? '21%' : '24%'};">
+              <col style="width:${showMoney ? '19%' : '21%'};">
+              <col style="width:8%;">
             </colgroup>
             <thead>
-              <tr>
-                ${headers.map((h, i) => `<th class="${[0, 4, 6, 9].includes(i) ? 'center' : ''}">${h}</th>`).join("")}
+              <tr style="background:#eef2ff;color:#1e1b4b;">
+                ${headers.map((h, i) => `<th style="border:1px solid #94a3b8;padding:6px 5px;font-size:9.5px;text-align:${[0, 4, 6, 9].includes(i) ? 'center' : 'left'};word-break:break-word;">${h}</th>`).join("")}
               </tr>
             </thead>
             <tbody>
-              ${bodyRowsHtml || `<tr><td colspan="${headers.length}" class="center">စာရင်းမရှိပါ</td></tr>`}
+              ${bodyRowsHtml || `<tr><td colspan="${headers.length}" style="border:1px solid #cbd5e1;padding:12px;text-align:center;">စာရင်းမရှိပါ</td></tr>`}
             </tbody>
           </table>
-          <script>
-            window.onload = function() {
-              setTimeout(function() { window.print(); }, 250);
-            };
-          <\/script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+        `;
+
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        const pageWidthMm = pdf.internal.pageSize.getWidth();
+        const pageHeightMm = pdf.internal.pageSize.getHeight();
+        const marginMm = 8;
+        const printableWidthMm = pageWidthMm - marginMm * 2;
+        const printableHeightMm = pageHeightMm - marginMm * 2;
+
+        const canvas = await html2canvas(stage, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff"
+        });
+
+        const pxPerMm = canvas.width / printableWidthMm;
+        const pageHeightPx = Math.floor(printableHeightMm * pxPerMm);
+
+        // Collect row Y boundaries so rows don't get sliced awkwardly across pages
+        const stageRect = stage.getBoundingClientRect();
+        const scaleRatio = canvas.width / stageRect.width;
+        const rowBounds = [...stage.querySelectorAll("tbody tr")].map(tr => {
+          const r = tr.getBoundingClientRect();
+          return {
+            top: Math.floor((r.top - stageRect.top) * scaleRatio),
+            bottom: Math.ceil((r.bottom - stageRect.top) * scaleRatio)
+          };
+        });
+
+        let currentY = 0;
+        let pageIndex = 0;
+
+        while (currentY < canvas.height) {
+          let targetBottom = Math.min(canvas.height, currentY + pageHeightPx);
+
+          // Avoid cutting through the middle of a row if possible
+          for (const b of rowBounds) {
+            if (b.top > currentY && b.bottom > targetBottom && b.top < targetBottom) {
+              targetBottom = b.top;
+              break;
+            }
+          }
+
+          const sliceHeightPx = Math.max(1, targetBottom - currentY);
+          const pageCanvas = document.createElement("canvas");
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sliceHeightPx;
+          const ctx = pageCanvas.getContext("2d");
+          ctx.drawImage(canvas, 0, currentY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+
+          if (pageIndex > 0) pdf.addPage();
+          const sliceHeightMm = sliceHeightPx / pxPerMm;
+          pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", marginMm, marginMm, printableWidthMm, sliceHeightMm);
+
+          currentY = targetBottom;
+          pageIndex++;
+        }
+
+        const safeBatch = String(activeBatch || "Batch").replace(/[^a-zA-Z0-9_-]/g, "_");
+        const dateStamp = new Date().toISOString().slice(0, 10);
+        pdf.save(`${safeBatch}-${currentRole}-${dateStamp}.pdf`);
+      } catch (err) {
+        alert("PDF ထုတ်ရာတွင် အခက်အခဲ ရှိပါသည်: " + err.message);
+      } finally {
+        document.getElementById("pdfRenderStage").innerHTML = "";
+        btn.textContent = origBtnText;
+        btn.disabled = false;
+        isGeneratingPdf = false;
+      }
     }
 
     function closeModal(id) {
