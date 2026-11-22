@@ -22,10 +22,11 @@
       "paidAmount": null,
       "paidCurrency": "MMK",
       "remainingNote": "",
-      "updatedBy": "Page Admin",
-      "updatedAt": "2026-11-21T12:33:06.821Z",
-      "updatedLabel": "Updated by Page Admin (21 Nov, 7:03 PM)",
-      "paidKg": 500
+      "updatedBy": "Office",
+      "updatedAt": "2026-11-22T05:12:01.756Z",
+      "updatedLabel": "Updated by Office (22 Nov, 11:42 AM)",
+      "paidKg": 500,
+      "deliveryMode": "pickup"
     },
     {
       "id": "item-1795102170158-0",
