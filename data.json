@@ -17,7 +17,7 @@
       "kgMatch": "Pending",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "",
       "paidAmount": null,
       "paidCurrency": "MMK",
