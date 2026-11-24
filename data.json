@@ -782,7 +782,7 @@
       "exchangeRate": "",
       "ukApproved": false,
       "released": false,
-      "deliveryMode": "",
+      "deliveryMode": "provincial",
       "notes": "General cargo",
       "remainingNote": "",
       "updatedBy": null,
