@@ -763,6 +763,28 @@
       "released": false,
       "notes": "",
       "remainingNote": ""
+    },
+    {
+      "id": "item-1795520960905",
+      "batch": "UK-MM (NOVEMBER BATCH )",
+      "customer": "Eddie Zaw (Cargo)",
+      "photos": 5,
+      "ukBoxes": 5,
+      "receivedBoxes": null,
+      "boxWeights": [],
+      "expectedKg": 87,
+      "actualKg": null,
+      "kgMatch": "Pending",
+      "payment": "Unpaid",
+      "paidCurrency": "MMK",
+      "paidAmount": null,
+      "paidKg": null,
+      "exchangeRate": "",
+      "ukApproved": false,
+      "released": false,
+      "deliveryMode": "",
+      "notes": "General cargo",
+      "remainingNote": ""
     }
   ]
 }
