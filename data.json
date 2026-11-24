@@ -8,7 +8,7 @@
       "id": "item-1795096978260",
       "batch": "UK-MM-Batch-01",
       "customer": "Ma Su",
-      "photos": 1,
+      "photos": 2,
       "boxWeights": [
         44
       ],
@@ -26,7 +26,8 @@
       "updatedAt": null,
       "updatedLabel": "",
       "paidKg": 500,
-      "deliveryMode": "pickup"
+      "deliveryMode": "pickup",
+      "ukBoxes": 2
     },
     {
       "id": "item-1795102170158-0",
