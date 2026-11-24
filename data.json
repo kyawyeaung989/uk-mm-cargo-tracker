@@ -778,7 +778,7 @@
       "payment": "Unpaid",
       "paidCurrency": "MMK",
       "paidAmount": null,
-      "paidKg": null,
+      "paidKg": -0.01,
       "exchangeRate": "",
       "ukApproved": false,
       "released": false,
