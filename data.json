@@ -93,7 +93,7 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "",
       "paidCurrency": "MMK",
       "updatedBy": null,
