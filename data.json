@@ -154,10 +154,13 @@
       "actualKg": 25,
       "kgMatch": "Match",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "Brand, 620 g နဲ့ ဖိနပ်",
-      "receivedBoxes": 16
+      "receivedBoxes": 16,
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-5",
