@@ -111,8 +111,11 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
-      "notes": "ကော်ဖီတစ်ချောင်း"
+      "released": false,
+      "notes": "ကော်ဖီတစ်ချောင်း",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-3",
