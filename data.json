@@ -125,8 +125,11 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
-      "notes": "Brand"
+      "released": false,
+      "notes": "Brand",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-4",
