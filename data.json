@@ -172,13 +172,13 @@
       "actualKg": 6.62,
       "kgMatch": "Match",
       "payment": "Unpaid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "* Myat Sandy ပါဝင်, coffee machine, medication",
       "receivedBoxes": 1,
-      "updatedBy": "Page Admin",
-      "updatedAt": "2026-11-21T13:06:21.502Z",
-      "updatedLabel": "Updated by Page Admin (21 Nov, 7:36 PM)",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": "",
       "paidCurrency": "MMK"
     },
     {
