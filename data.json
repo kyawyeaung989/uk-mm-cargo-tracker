@@ -199,11 +199,11 @@
       "kgMatch": "Pending",
       "payment": "Unpaid",
       "ukApproved": false,
-      "released": false,
+      "released": true,
       "notes": "",
-      "updatedBy": "Office",
-      "updatedAt": "2026-11-21T07:54:34.225Z",
-      "updatedLabel": "Updated by Office (21 Nov, 2:24 PM)",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": "",
       "receivedBoxes": 4
     },
     {
