@@ -69,13 +69,13 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "Brand",
       "receivedBoxes": 28,
       "ukBoxes": 16,
-      "updatedBy": "Office",
-      "updatedAt": "2026-11-21T07:36:33.096Z",
-      "updatedLabel": "Updated by Office (21 Nov, 2:06 PM)"
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-1",
