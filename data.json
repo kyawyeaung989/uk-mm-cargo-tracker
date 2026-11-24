@@ -774,7 +774,7 @@
       "boxWeights": [],
       "expectedKg": 87,
       "actualKg": null,
-      "kgMatch": "Pending",
+      "kgMatch": "Match",
       "payment": "Unpaid",
       "paidCurrency": "MMK",
       "paidAmount": null,
@@ -784,7 +784,10 @@
       "released": false,
       "deliveryMode": "",
       "notes": "General cargo",
-      "remainingNote": ""
+      "remainingNote": "",
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     }
   ]
 }
