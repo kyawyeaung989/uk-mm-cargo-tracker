@@ -232,15 +232,15 @@
       "boxWeights": [],
       "expectedKg": 13.95,
       "actualKg": null,
-      "kgMatch": "Pending",
+      "kgMatch": "Match",
       "payment": "Unpaid",
       "ukApproved": false,
       "released": false,
       "notes": "cosmetics, box fee",
       "paidCurrency": "GBP",
-      "updatedBy": null,
-      "updatedAt": null,
-      "updatedLabel": ""
+      "updatedBy": "Office",
+      "updatedAt": "2026-11-24T11:29:13.485Z",
+      "updatedLabel": "Updated by Office (24 Nov, 5:59 PM)"
     },
     {
       "id": "item-1795102170158-9",
