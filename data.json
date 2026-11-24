@@ -774,7 +774,7 @@
       "boxWeights": [],
       "expectedKg": 87,
       "actualKg": null,
-      "kgMatch": "Match",
+      "kgMatch": "Pending",
       "payment": "Unpaid",
       "paidCurrency": "MMK",
       "paidAmount": null,
