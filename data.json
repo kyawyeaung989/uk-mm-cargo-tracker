@@ -69,7 +69,7 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": false,
+      "released": true,
       "notes": "Brand",
       "receivedBoxes": 28,
       "ukBoxes": 16,
