@@ -1,7 +1,6 @@
 {
   "batches": [
     "UK-MM-Batch-01",
-    "UK-MM-Batch-November",
     "UK-MM (NOVEMBER BATCH )"
   ],
   "items": [
@@ -760,25 +759,6 @@
       "actualKg": 9,
       "kgMatch": "Pending",
       "payment": "Unpaid",
-      "ukApproved": false,
-      "released": false,
-      "notes": "",
-      "remainingNote": ""
-    },
-    {
-      "id": "item-1795189899619",
-      "batch": "UK-MM-Batch-November",
-      "customer": "Daw Thein",
-      "photos": 2,
-      "ukBoxes": 2,
-      "receivedBoxes": null,
-      "boxWeights": [],
-      "expectedKg": 25,
-      "actualKg": null,
-      "kgMatch": "Pending",
-      "payment": "Unpaid",
-      "paidCurrency": "GBP",
-      "paidAmount": null,
       "ukApproved": false,
       "released": false,
       "notes": "",
