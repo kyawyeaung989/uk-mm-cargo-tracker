@@ -75,7 +75,8 @@
       "ukBoxes": 16,
       "updatedBy": null,
       "updatedAt": null,
-      "updatedLabel": ""
+      "updatedLabel": "",
+      "deliveryMode": "pickup"
     },
     {
       "id": "item-1795102170158-1",
