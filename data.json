@@ -198,7 +198,7 @@
       "actualKg": 27.51,
       "kgMatch": "Pending",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": true,
       "notes": "",
       "updatedBy": null,
