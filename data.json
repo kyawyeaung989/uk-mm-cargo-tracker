@@ -14,7 +14,7 @@
       ],
       "expectedKg": 30,
       "actualKg": 30,
-      "kgMatch": "Match",
+      "kgMatch": "Partial",
       "payment": "Partial Paid",
       "ukApproved": true,
       "released": false,
