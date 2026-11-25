@@ -665,7 +665,7 @@
     let currentRole = "admin";
     let isRoleLocked = false;
     let activeBoxItemId = null;
-    let activeNoteContext = null; // { id, type: "original" | "office" | "payment" }
+    let activeNoteContext = null;
     let activePartialReleaseId = null;
     let parsedBulkRows = [];
     let isGeneratingPdf = false;
@@ -1019,9 +1019,7 @@
           if (appData.batches.indexOf(activeBatch) === -1) {
             activeBatch = appData.batches[appData.batches.length - 1];
           }
-        } catch (fetchErr) {
-          // Proceed with current sha if remote fetch fails
-        }
+        } catch (fetchErr) {}
 
         const contentStr = JSON.stringify(appData, null, 2);
         const encoded = btoa(unescape(encodeURIComponent(contentStr)));
@@ -1208,7 +1206,6 @@
       });
     }
 
-    // Partial Paid amount is counted strictly in Paid / Received total (not added to Unpaid)
     function calcFinancialTotals(itemsList) {
       let totalGbp = 0;
       let totalMmk = 0;
@@ -1266,6 +1263,7 @@
       document.getElementById("statTotalKgPair").textContent = `${cargo.ukKgSum.toFixed(1)} / ${cargo.rcvKgSum.toFixed(1)} kg`;
     }
 
+    // Clean line-by-line Release cell (no horizontal overflow into adjacent columns)
     function buildReleaseCellHtml(item, canEditOffice, isAdmin) {
       const modeVal = item.deliveryMode || "";
       const modeLabel = getDeliveryModeLabel(modeVal);
@@ -1273,55 +1271,65 @@
       const totalBoxes = getEffectiveTotalBoxes(item);
       const pRel = getPartialReleasedCount(item);
 
-      const modeSelectHtml = canEditOffice
-        ? `<select onchange="updateDeliveryMode('${item.id}', this.value)" title="ထုတ်ပေး / ပို့ပေးမည့် အမျိုးအစား" class="h-6 w-[98px] shrink-0 text-[10.5px] font-semibold rounded-lg px-1 border ${modeVal === 'pickup' ? 'bg-sky-50 text-sky-800 border-sky-300' : (modeVal === 'delivery' ? 'bg-indigo-50 text-indigo-800 border-indigo-300' : (modeVal === 'provincial' ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-white text-slate-600 border-slate-300'))}">
-             <option value="" ${modeVal === "" ? "selected" : ""}>ရွေးရန်...</option>
-             <option value="pickup" ${modeVal === "pickup" ? "selected" : ""}>🏠 လာယူ</option>
-             <option value="delivery" ${modeVal === "delivery" ? "selected" : ""}>🛵 ပို့</option>
-             <option value="provincial" ${modeVal === "provincial" ? "selected" : ""}>🚌 နယ်မြို့ပို့</option>
-           </select>`
-        : `<div class="h-6 flex items-center justify-center"><span class="text-[10.5px] font-semibold px-1.5 py-0.5 rounded whitespace-nowrap ${modeVal ? 'bg-slate-100 text-slate-700' : 'text-slate-400'}">${modeLabel || "-"}</span></div>`;
+      const line1Mode = canEditOffice
+        ? `<div class="w-full">
+             <select onchange="updateDeliveryMode('${item.id}', this.value)" title="ထုတ်ပေး / ပို့ပေးမည့် အမျိုးအစား" class="h-6 w-full text-[10.5px] font-semibold rounded-lg px-1.5 border ${modeVal === 'pickup' ? 'bg-sky-50 text-sky-800 border-sky-300' : (modeVal === 'delivery' ? 'bg-indigo-50 text-indigo-800 border-indigo-300' : (modeVal === 'provincial' ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-white text-slate-600 border-slate-300'))}">
+               <option value="" ${modeVal === "" ? "selected" : ""}>ရွေးရန်...</option>
+               <option value="pickup" ${modeVal === "pickup" ? "selected" : ""}>🏠 လာယူ</option>
+               <option value="delivery" ${modeVal === "delivery" ? "selected" : ""}>🛵 ပို့</option>
+               <option value="provincial" ${modeVal === "provincial" ? "selected" : ""}>🚌 နယ်မြို့ပို့</option>
+             </select>
+           </div>`
+        : `<div class="h-6 w-full flex items-center justify-center">
+             <span class="text-[10.5px] font-semibold px-2 py-0.5 rounded whitespace-nowrap ${modeVal ? 'bg-slate-100 text-slate-700' : 'text-slate-400'}">${modeLabel || "-"}</span>
+           </div>`;
 
-      const deleteRowBtn = isAdmin
-        ? `<button onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="h-6 px-1 text-rose-400 hover:text-rose-600 text-xs shrink-0">🗑️</button>`
-        : "";
+      let line2MainBtn = "";
+      let line3Extra = "";
 
-      let statusAreaHtml = "";
       if (item.released) {
-        const doneBadge = canEditOffice
-          ? `<button onclick="toggleRelease('${item.id}')" class="h-6 text-[10.5px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 rounded-lg whitespace-nowrap">🚚 ${totalBoxes}/${totalBoxes} ထုတ်ပြီး✓</button>`
+        line2MainBtn = canEditOffice
+          ? `<button type="button" onclick="toggleRelease('${item.id}')" class="h-6 w-full text-[10.5px] font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 px-2 rounded-lg whitespace-nowrap">🚚 ${totalBoxes}/${totalBoxes} ထုတ်ပြီး✓</button>`
           : `<span class="inline-block text-[10.5px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-lg whitespace-nowrap">🚚 ${totalBoxes}/${totalBoxes} ထုတ်ပြီး✓</span>`;
-        statusAreaHtml = `
-          <div class="h-6 flex items-center justify-center gap-0.5 whitespace-nowrap">${doneBadge}${deleteRowBtn}</div>
-          ${releasedStamp ? `<div class="text-[9.5px] font-semibold text-emerald-700 leading-tight mt-0.5 text-center">${escapeHtml(releasedStamp)}</div>` : ""}
-        `;
+        if (releasedStamp) {
+          line3Extra = `<div class="text-[9.5px] font-semibold text-emerald-700 leading-tight text-center truncate w-full" title="${escapeAttr(releasedStamp)}">${escapeHtml(releasedStamp)}</div>`;
+        }
       } else if (pRel > 0) {
         const leftBoxes = Math.max(0, totalBoxes - pRel);
-        const partialBadge = canEditOffice
-          ? `<button onclick="openPartialReleaseModal('${item.id}')" class="h-6 text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-1.5 rounded-lg whitespace-nowrap">📦 ${pRel}/${totalBoxes} ထုတ်ပြီး</button>`
-          : `<span class="inline-block text-[10px] font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-lg whitespace-nowrap">📦 ${pRel}/${totalBoxes} ထုတ်ပြီး</span>`;
+        line2MainBtn = canEditOffice
+          ? `<button type="button" onclick="openPartialReleaseModal('${item.id}')" class="h-6 w-full text-[10.5px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-2 rounded-lg whitespace-nowrap">📦 ${pRel}/${totalBoxes} ထုတ်ပြီး</button>`
+          : `<span class="inline-block text-[10.5px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-lg whitespace-nowrap">📦 ${pRel}/${totalBoxes} ထုတ်ပြီး</span>`;
         const fullBtn = canEditOffice
-          ? `<button onclick="toggleRelease('${item.id}')" title="အကုန်ထုတ်ပေးပြီးအဖြစ် မှတ်ရန်" class="h-6 text-[10px] font-semibold bg-teal-600 hover:bg-teal-700 text-white px-1.5 rounded-lg whitespace-nowrap">✓အကုန်</button>`
+          ? `<button type="button" onclick="toggleRelease('${item.id}')" class="text-[10px] font-semibold text-teal-700 hover:underline whitespace-nowrap">✓အကုန်</button>`
           : "";
-        statusAreaHtml = `
-          <div class="h-6 flex items-center justify-center gap-0.5 whitespace-nowrap">${partialBadge}${fullBtn}${deleteRowBtn}</div>
-          <div class="text-[9.5px] font-bold text-rose-600 leading-tight mt-0.5 text-center">⚠️ ${leftBoxes} ပုံး ကျန်</div>
-        `;
+        line3Extra = `<div class="flex items-center justify-center gap-1.5 text-[9.5px] leading-tight w-full whitespace-nowrap">
+          <span class="font-bold text-rose-600">⚠️ ${leftBoxes} ပုံး ကျန်</span>
+          ${fullBtn}
+        </div>`;
       } else {
         const ready = isReadyToRelease(item);
-        const fullReleaseBtn = canEditOffice
-          ? `<button onclick="toggleRelease('${item.id}')" class="h-6 text-[10px] font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'} px-1.5 rounded-lg transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`
+        line2MainBtn = canEditOffice
+          ? `<button type="button" onclick="toggleRelease('${item.id}')" class="h-6 w-full text-[10.5px] font-semibold ${ready ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300'} px-2 rounded-lg transition whitespace-nowrap">🚚 ထုတ်ပေးမည်</button>`
           : `<span class="text-xs text-slate-400">-</span>`;
-        const partialBtn = canEditOffice
-          ? `<button onclick="openPartialReleaseModal('${item.id}')" title="တချို့ပုံးသာ ထုတ်ပေးရန်" class="h-6 text-[10px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-1.5 rounded-lg transition whitespace-nowrap">တချို့</button>`
-          : "";
-        statusAreaHtml = `<div class="h-6 flex items-center justify-center gap-0.5 whitespace-nowrap">${fullReleaseBtn}${partialBtn}${deleteRowBtn}</div>`;
+        if (canEditOffice) {
+          line3Extra = `<div class="flex items-center justify-center w-full">
+            <button type="button" onclick="openPartialReleaseModal('${item.id}')" class="h-5 text-[10px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2 rounded-md transition whitespace-nowrap">📦 တချို့ထုတ်မည်</button>
+          </div>`;
+        }
       }
 
+      const deleteFooter = isAdmin
+        ? `<div class="flex items-center justify-end w-full pt-0.5">
+             <button type="button" onclick="deleteSingleItem('${item.id}')" title="ဤကြောင်းကို ဖျက်ရန်" class="text-[10px] text-rose-400 hover:text-rose-600 px-1 rounded hover:bg-rose-50 transition leading-none">🗑️ ဖျက်</button>
+           </div>`
+        : "";
+
       return `
-        <div class="flex flex-col gap-1 items-center w-[124px]">
-          ${modeSelectHtml}
-          ${statusAreaHtml}
+        <div class="flex flex-col gap-1 w-[126px] mx-auto">
+          ${line1Mode}
+          <div class="w-full flex justify-center">${line2MainBtn}</div>
+          ${line3Extra}
+          ${deleteFooter}
         </div>
       `;
     }
@@ -1371,7 +1379,6 @@
         const isAdmin = currentRole === "admin";
         const canEditOffice = isAdmin || currentRole === "office";
         const canEditPage = isAdmin || currentRole === "page";
-        const canEditUk = isAdmin;
 
         filtered.forEach(function (entry) {
           const item = entry.item;
@@ -1524,7 +1531,7 @@
             paymentHtml = `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${viewBadgeCls}">${viewBadgeTxt}</span></div>`;
           }
 
-          const ukHtml = canEditUk
+          const ukHtml = isAdmin
             ? `<div class="h-7 flex items-center"><button onclick="toggleUkApprove('${item.id}')" class="h-7 text-[11px] font-semibold px-2 rounded-xl border transition whitespace-nowrap ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : 'Approve'}</button></div>`
             : `<div class="h-7 flex items-center"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-xl whitespace-nowrap ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ စောင့်ဆဲ'}</span></div>`;
 
@@ -1569,7 +1576,6 @@
       const isAdmin = currentRole === "admin";
       const canEditOffice = isAdmin || currentRole === "office";
       const canEditPage = isAdmin || currentRole === "page";
-      const canEditUk = isAdmin;
 
       filtered.forEach(function (entry) {
         const item = entry.item;
@@ -1736,7 +1742,7 @@
         const ukAndReleaseSection = `
           <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
             <div>
-              ${canEditUk
+              ${isAdmin
                 ? `<button onclick="toggleUkApprove('${item.id}')" class="h-8 text-xs font-semibold px-3 rounded-xl border transition ${item.ukApproved ? 'bg-purple-600 text-white border-purple-700' : 'bg-slate-100 text-slate-700 border-slate-300'}">${item.ukApproved ? '🇬🇧 Approved✓' : '🇬🇧 UK Approve'}</button>`
                 : `<span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-xl ${item.ukApproved ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-500'}">${item.ukApproved ? '🇬🇧 Approved✓' : '⏳ UK စောင့်ဆဲ'}</span>`}
             </div>
@@ -1797,12 +1803,11 @@
         .replace(/>/g, "&gt;");
     }
 
-    // Unified Note Pop-up Modal (View & Edit)
     function canEditNoteType(noteType) {
       if (currentRole === "admin") return true;
       if (noteType === "office") return currentRole === "office";
       if (noteType === "payment") return currentRole === "page";
-      return false; // original note is view-only for non-admin
+      return false;
     }
 
     function getNoteFieldAndMeta(noteType) {
@@ -1867,7 +1872,6 @@
       saveToGitHub(item.id);
     }
 
-    // Partial Release Modal handlers
     function openPartialReleaseModal(id) {
       if (currentRole !== "admin" && currentRole !== "office") return;
       const item = findItem(id);
