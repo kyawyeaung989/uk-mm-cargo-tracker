@@ -215,14 +215,14 @@
       "expectedKg": 0.7,
       "actualKg": 0.71,
       "kgMatch": "Pending",
-      "payment": "Unpaid",
+      "payment": "Paid",
       "ukApproved": false,
       "released": false,
       "notes": "(1.50 kg)",
       "receivedBoxes": 1,
-      "updatedBy": "Office",
-      "updatedAt": "2026-11-21T07:58:14.827Z",
-      "updatedLabel": "Updated by Office (21 Nov, 2:28 PM)"
+      "updatedBy": null,
+      "updatedAt": null,
+      "updatedLabel": ""
     },
     {
       "id": "item-1795102170158-8",
