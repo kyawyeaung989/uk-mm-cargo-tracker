@@ -50,7 +50,7 @@
       "expectedKg": 66,
       "actualKg": 32,
       "kgMatch": "Partial",
-      "payment": "Paid",
+      "payment": "Partial Paid",
       "ukApproved": true,
       "released": false,
       "notes": "Brand",
