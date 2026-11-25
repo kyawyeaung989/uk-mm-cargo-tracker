@@ -97,14 +97,14 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "ကော်ဖီတစ်ချောင်း",
       "updatedBy": null,
       "updatedAt": null,
       "updatedLabel": "",
       "partialReleasedBoxes": 0,
-      "releasedAt": "2026-11-25T11:50:11.840Z",
-      "releasedAtLabel": "Released: 25 Nov, 6:20 PM"
+      "releasedAt": null,
+      "releasedAtLabel": ""
     },
     {
       "id": "item-1795102170158-3",
