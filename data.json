@@ -90,7 +90,7 @@
       "id": "item-1795102170158-2",
       "batch": "UK-MM-Batch-01",
       "customer": "Thwet Hnin San",
-      "photos": 1,
+      "photos": 5,
       "boxWeights": [],
       "expectedKg": 0.75,
       "actualKg": null,
@@ -104,7 +104,8 @@
       "updatedLabel": "",
       "partialReleasedBoxes": 0,
       "releasedAt": null,
-      "releasedAtLabel": ""
+      "releasedAtLabel": "",
+      "ukBoxes": 5
     },
     {
       "id": "item-1795102170158-3",
