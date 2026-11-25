@@ -17,7 +17,7 @@
       "kgMatch": "Match",
       "payment": "Partial Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "",
       "paidAmount": null,
       "paidCurrency": "GBP",
@@ -29,8 +29,8 @@
       "deliveryMode": "pickup",
       "ukBoxes": 2,
       "partialReleasedBoxes": 0,
-      "releasedAt": "2026-11-25T13:19:57.791Z",
-      "releasedAtLabel": "Released: 25 Nov, 7:49 PM"
+      "releasedAt": null,
+      "releasedAtLabel": ""
     },
     {
       "id": "item-1795102170158-0",
