@@ -69,14 +69,16 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": true,
+      "released": false,
       "notes": "Brand",
       "receivedBoxes": 28,
       "ukBoxes": 16,
       "updatedBy": null,
       "updatedAt": null,
       "updatedLabel": "",
-      "deliveryMode": "provincial"
+      "deliveryMode": "provincial",
+      "releasedAt": null,
+      "releasedAtLabel": ""
     },
     {
       "id": "item-1795102170158-1",
