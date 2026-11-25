@@ -47,7 +47,7 @@
         0,
         0
       ],
-      "expectedKg": 3.7,
+      "expectedKg": 66,
       "actualKg": 27,
       "kgMatch": "Partial",
       "payment": "Paid",
