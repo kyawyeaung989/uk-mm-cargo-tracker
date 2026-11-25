@@ -78,7 +78,8 @@
       "updatedLabel": "",
       "deliveryMode": "provincial",
       "releasedAt": null,
-      "releasedAtLabel": ""
+      "releasedAtLabel": "",
+      "partialReleasedBoxes": 5
     },
     {
       "id": "item-1795102170158-1",
