@@ -216,7 +216,7 @@
       "actualKg": 0.71,
       "kgMatch": "Pending",
       "payment": "Paid",
-      "ukApproved": false,
+      "ukApproved": true,
       "released": false,
       "notes": "(1.50 kg)",
       "receivedBoxes": 1,
