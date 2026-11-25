@@ -188,7 +188,8 @@
       "updatedLabel": "",
       "paidCurrency": "MMK",
       "releasedAt": "2026-11-25T11:06:30.030Z",
-      "releasedAtLabel": "Released: 25 Nov, 5:36 PM"
+      "releasedAtLabel": "Released: 25 Nov, 5:36 PM",
+      "deliveryMode": "pickup"
     },
     {
       "id": "item-1795102170158-6",
