@@ -87,7 +87,10 @@
       "paidCurrency": "MMK",
       "updatedBy": null,
       "updatedAt": null,
-      "updatedLabel": ""
+      "updatedLabel": "",
+      "partialReleasedBoxes": 2,
+      "releasedAt": null,
+      "releasedAtLabel": ""
     },
     {
       "id": "item-1795102170158-2",
