@@ -180,13 +180,15 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": false,
+      "released": true,
       "notes": "* Myat Sandy ပါဝင်, coffee machine, medication",
       "receivedBoxes": 1,
       "updatedBy": null,
       "updatedAt": null,
       "updatedLabel": "",
-      "paidCurrency": "MMK"
+      "paidCurrency": "MMK",
+      "releasedAt": "2026-11-25T11:06:30.030Z",
+      "releasedAtLabel": "Released: 25 Nov, 5:36 PM"
     },
     {
       "id": "item-1795102170158-6",
