@@ -19,7 +19,7 @@
       "ukApproved": true,
       "released": false,
       "notes": "",
-      "paidAmount": 6500,
+      "paidAmount": null,
       "paidCurrency": "MMK",
       "remainingNote": "def",
       "updatedBy": null,
