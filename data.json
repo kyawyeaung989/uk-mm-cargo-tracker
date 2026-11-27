@@ -23,12 +23,15 @@
       "paidCurrency": "MMK",
       "remainingNote": "def",
       "updatedBy": "Office",
-      "updatedAt": "2026-11-27T05:01:55.246Z",
-      "updatedLabel": "Updated by Office (27 Nov, 11:31 AM)",
+      "updatedAt": "2026-11-27T05:06:41.842Z",
+      "updatedLabel": "Updated by Office (27 Nov, 11:36 AM)",
       "paidKg": 500,
       "deliveryMode": "pickup",
       "ukBoxes": 2,
-      "receivedBoxes": 1
+      "receivedBoxes": 1,
+      "partialReleasedBoxes": 0,
+      "releasedAt": null,
+      "releasedAtLabel": ""
     },
     {
       "id": "item-1795102170158-0",
