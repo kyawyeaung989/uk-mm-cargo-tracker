@@ -10,8 +10,7 @@
       "customer": "Ma Su",
       "photos": 2,
       "boxWeights": [
-        44,
-        0
+        44
       ],
       "expectedKg": 30,
       "actualKg": 30,
@@ -24,12 +23,12 @@
       "paidCurrency": "MMK",
       "remainingNote": "def",
       "updatedBy": "Office",
-      "updatedAt": "2026-11-27T05:01:46.360Z",
+      "updatedAt": "2026-11-27T05:01:55.246Z",
       "updatedLabel": "Updated by Office (27 Nov, 11:31 AM)",
       "paidKg": 500,
       "deliveryMode": "pickup",
       "ukBoxes": 2,
-      "receivedBoxes": 2
+      "receivedBoxes": 1
     },
     {
       "id": "item-1795102170158-0",
