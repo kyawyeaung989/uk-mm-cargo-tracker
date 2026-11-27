@@ -73,16 +73,17 @@
       "kgMatch": "Match",
       "payment": "Paid",
       "ukApproved": true,
-      "released": false,
+      "released": true,
       "notes": "Brand",
       "receivedBoxes": 28,
       "ukBoxes": 16,
       "updatedBy": "Office",
-      "updatedAt": "2026-11-27T05:06:48.915Z",
+      "updatedAt": "2026-11-27T05:06:50.788Z",
       "updatedLabel": "Updated by Office (27 Nov, 11:36 AM)",
       "deliveryMode": "provincial",
-      "releasedAt": null,
-      "releasedAtLabel": ""
+      "releasedAt": "2026-11-27T05:06:50.787Z",
+      "releasedAtLabel": "Released: 27 Nov, 11:36 AM",
+      "partialReleasedBoxes": 0
     },
     {
       "id": "item-1795102170158-1",
